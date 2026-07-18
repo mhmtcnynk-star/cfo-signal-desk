@@ -2,36 +2,36 @@
 
 ## 0:00 - Opening
 
-"This is CFO Signal Desk, an Executive Decision Intelligence cockpit for finance leaders. It answers the daily executive question: What should I do next, and why?"
+"This is CFO Signal Desk, a Personal Executive Decision Intelligence system for finance leaders. It answers the daily executive question: What is the best decision for me today, given what is happening externally, what I am trying to achieve, and what changed in my personal and professional context?"
 
 ## 0:15 - Problem
 
-"CFOs and FP&A teams are flooded by macro headlines, FX moves, inflation signals, supplier pressure, liquidity constraints, and internal priorities. The issue is not lack of information. The issue is knowing which decision deserves executive attention now."
+"Finance leaders are flooded by market noise, career signals, professional network updates, commitments, family constraints, runway pressure, and product opportunities. The issue is not lack of information. The issue is knowing which decision deserves attention now."
 
-## 0:35 - Decision Cockpit
+## 0:35 - Daily Decision Brief
 
-"The cockpit starts with the next recommended decision. It shows why now, business impact, urgency, confidence, and the company context behind the recommendation."
+"The product starts with the best decision today. It explains what changed, why it matters, which user objective is relevant, which constraints apply, and what action should happen now."
 
-## 0:55 - Risk Detection
+## 0:55 - Source Control
 
-"Each signal is classified by severity and decision priority. Here the FX move requires an executive decision because it affects procurement timing, supplier payments, treasury exposure, and gross margin."
+"Every recommendation has visible sources. The user can disable a source, inspect evidence, approve an inference, edit it, mark it incorrect, or delete it. The system does not treat every statement as permanent truth."
 
-## 1:15 - Priorities
+## 1:15 - Personal Intelligence Model
 
-"A CFO can select company priorities such as Cash Flow, Working Capital, FX Exposure, Procurement, Treasury, or Cost Optimization. These priorities change the recommended decisions and KPIs, not just the wording."
+"Raw inputs become structured intelligence objects: goals, constraints, decisions, risks, opportunities, relationships, actions, lessons, preferences, and strategic priorities. Each object has confidence, importance, urgency, horizon, source, evidence, and next action."
 
-## 1:35 - Executive Brief
+## 1:35 - Decision Graph
 
-"When I generate the brief, CFO Signal Desk returns a board-ready decision structure: highest priority risks, opportunities, recommended decisions, immediate actions for today, this week, and this month, and tomorrow's watchlist."
+"The decision graph connects signals, goals, constraints, people, actions, and results. This is how the system detects conflicts, unresolved decisions, missed commitments, new risks, and actions that no longer support the user's strategy."
 
-## 2:05 - Decision Value
+## 2:05 - LinkedIn Intelligence
 
-"The key is that the product does not summarize news. It converts signals into decisions: review procurement timing, update the cash forecast, start a targeted pricing review, evaluate FX exposure, and prioritize collections."
+"The LinkedIn Intelligence panel turns professional activity into career decisions: which narrative to strengthen, which role to prioritize, who to contact, what content theme to use, and which positioning gap needs action."
 
 ## 2:30 - Reliability
 
-"The MVP includes demo mode, so it always works without external market APIs. If an OpenAI API key is configured, it uses the OpenAI Responses API for live structured decision briefs."
+"The MVP includes demo mode, so it always works without external APIs. If an OpenAI API key is configured, the decision route can use the OpenAI Responses API, but the core demo experience does not depend on it."
 
 ## 2:50 - Close
 
-"CFO Signal Desk gives finance leaders a five-minute decision brief for the next operating cycle. It is built for practical usefulness: signal over noise, board-ready reasoning, explainable recommendations, and immediate finance actions."
+"CFO Signal Desk gives finance leaders a personal executive decision brief for the next operating cycle. It is built for practical usefulness: external context plus personal strategy converted into explainable action."
