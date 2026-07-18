@@ -14,6 +14,20 @@ CFO Signal Desk is a single-page Executive Decision Intelligence cockpit optimiz
 - FX, inflation, interest-rate, liquidity, and supply-chain inputs
 - Company priorities
 
+The product constitution in `docs/product-constitution.md` is the governing product filter. No workflow should stop before reaching an executive recommendation.
+
+Core transformation:
+
+```text
+Market Noise
+  -> Relevant Signals
+  -> Business Context
+  -> Financial Impact
+  -> Decision Options
+  -> Executive Recommendation
+  -> Immediate Actions
+```
+
 ## Application Layer
 
 - `app/page.tsx` renders the decision cockpit, stores selected company priorities, and calls the brief-generation endpoint.

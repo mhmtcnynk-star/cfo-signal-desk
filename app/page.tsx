@@ -488,8 +488,8 @@ export default function Home() {
           <p className="eyebrow">Executive Decision Intelligence</p>
           <h1>CFO Signal Desk</h1>
           <p className="heroText">
-            A decision-support cockpit for CFOs: what to do next, why now, what
-            happens if you ignore it, and which KPI is at risk.
+            From Signal to Decision. A decision-support cockpit for CFOs:
+            what matters today, why it matters, what to do, and what can wait.
           </p>
         </div>
         <aside className="nextDecision" aria-label="Next recommended decision">

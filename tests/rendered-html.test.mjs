@@ -33,6 +33,7 @@ test("server-renders the CFO Signal Desk MVP", async () => {
   const html = await response.text();
   assert.match(html, /<title>CFO Signal Desk<\/title>/i);
   assert.match(html, /Executive Decision Intelligence/);
+  assert.match(html, /From Signal to Decision/);
   assert.match(html, /Next Decision/);
   assert.match(html, /CEO-ready decision summary/);
   assert.match(html, /Business Priorities/);
@@ -56,9 +57,10 @@ test("server-renders the CFO Signal Desk MVP", async () => {
 });
 
 test("keeps Build Week submission assets documented", async () => {
-  const [readme, demoScript, checklist, page, layout, packageJson] =
+  const [readme, constitution, demoScript, checklist, page, layout, packageJson] =
     await Promise.all([
       readFile(new URL("README.md", templateRoot), "utf8"),
+      readFile(new URL("docs/product-constitution.md", templateRoot), "utf8"),
       readFile(new URL("docs/demo-script.md", templateRoot), "utf8"),
       readFile(new URL("docs/submission-checklist.md", templateRoot), "utf8"),
       readFile(new URL("app/page.tsx", templateRoot), "utf8"),
@@ -68,6 +70,9 @@ test("keeps Build Week submission assets documented", async () => {
 
   assert.match(readme, /Architecture Overview/);
   assert.match(readme, /OPENAI_API_KEY/);
+  assert.match(readme, /Does this reduce executive uncertainty/);
+  assert.match(constitution, /Turn Market Noise into Executive Clarity/);
+  assert.match(constitution, /From Signal to Decision/);
   assert.match(demoScript, /What should I do next, and why/);
   assert.match(checklist, /OpenAI Build Week/);
   assert.match(page, /Generate Executive Brief/);

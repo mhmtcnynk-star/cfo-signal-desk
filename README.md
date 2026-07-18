@@ -4,9 +4,13 @@ OpenAI Build Week MVP: an Executive Decision Intelligence cockpit that transform
 
 The product answers: **What should I do next, and why?**
 
+Motto: **From Signal to Decision.**
+
 ## Product Overview
 
 CFO Signal Desk is built for CFOs, FP&A Directors, Finance Managers, Controllers, and SME CEOs who need fast, board-ready decision support rather than another dashboard of disconnected signals.
+
+The product constitution is documented in `docs/product-constitution.md`. Every future feature should pass this filter: **Does this reduce executive uncertainty?**
 
 The MVP includes:
 
@@ -81,6 +85,7 @@ app/
 docs/
   architecture.md         Technical and product architecture notes
   demo-script.md          Suggested demo video script
+  product-constitution.md Product principles and decision filter
   submission-checklist.md Build Week submission checklist
 screenshots/
   README.md               Screenshot capture guide
