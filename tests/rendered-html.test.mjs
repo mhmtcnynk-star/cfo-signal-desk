@@ -32,16 +32,26 @@ test("server-renders the CFO Signal Desk MVP", async () => {
 
   const html = await response.text();
   assert.match(html, /<title>CFO Signal Desk<\/title>/i);
-  assert.match(html, /OpenAI Build Week MVP/);
-  assert.match(html, /Today&#x27;s Brief|Today’s Brief|Today's Brief/);
-  assert.match(html, /Executive Summary/);
-  assert.match(html, /Company Priorities/);
+  assert.match(html, /Executive Decision Intelligence/);
+  assert.match(html, /Next Decision/);
+  assert.match(html, /CEO-ready decision summary/);
+  assert.match(html, /Business Priorities/);
+  assert.match(html, /Business Impact/);
+  assert.match(html, /Confidence/);
+  assert.match(html, /Highest Priority Risks/);
+  assert.match(html, /Opportunities/);
+  assert.match(html, /Recommended Decisions/);
+  assert.match(html, /Management decisions, not observations/);
+  assert.match(html, /Today/);
+  assert.match(html, /This Week/);
+  assert.match(html, /This Month/);
   assert.match(html, /Tomorrow/);
   assert.match(html, /Watchlist/);
   assert.match(html, /USDARS parallel rate pressure/);
-  assert.match(html, /Recommended Decisions/);
-  assert.match(html, /Demo mode ready/);
-  assert.match(html, /High/);
+  assert.match(html, /Decision Framework/);
+  assert.match(html, /Financial consequence/);
+  assert.match(html, /Demo decision engine ready/);
+  assert.match(html, /Executive decision/);
   assert.doesNotMatch(html, /codex-preview|SkeletonPreview|react-loading-skeleton/);
 });
 
@@ -58,9 +68,11 @@ test("keeps Build Week submission assets documented", async () => {
 
   assert.match(readme, /Architecture Overview/);
   assert.match(readme, /OPENAI_API_KEY/);
-  assert.match(demoScript, /What happened today/);
+  assert.match(demoScript, /What should I do next, and why/);
   assert.match(checklist, /OpenAI Build Week/);
-  assert.match(page, /Generate AI Brief/);
+  assert.match(page, /Generate Executive Brief/);
+  assert.match(page, /businessRelevance/);
+  assert.match(page, /recommendedDecisions/);
   assert.match(layout, /CFO Signal Desk/);
   assert.doesNotMatch(packageJson, /react-loading-skeleton/);
 });

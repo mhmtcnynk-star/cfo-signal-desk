@@ -2,19 +2,21 @@
 
 ## Product Layer
 
-CFO Signal Desk is a single-page executive cockpit optimized for a five-minute finance readout. The dashboard combines:
+CFO Signal Desk is a single-page Executive Decision Intelligence cockpit optimized for a five-minute CFO decision readout. The cockpit combines:
 
-- Today's Brief
-- Risk detection
+- Next recommended decision
+- Highest priority risks
 - Opportunity callouts
-- FX, inflation, interest-rate, liquidity, and supply-chain signals
+- Recommended management decisions
+- Today / This Week / This Month action timing
+- Tomorrow watchlist
+- Signal-level decision framework
+- FX, inflation, interest-rate, liquidity, and supply-chain inputs
 - Company priorities
-- Action items
-- Tomorrow's watchlist
 
 ## Application Layer
 
-- `app/page.tsx` renders the cockpit, stores selected company priorities, and calls the brief-generation endpoint.
+- `app/page.tsx` renders the decision cockpit, stores selected company priorities, and calls the brief-generation endpoint.
 - `app/globals.css` defines the responsive Bloomberg-meets-Linear visual system.
 - `app/api/brief/route.ts` owns brief generation and keeps the demo resilient.
 
@@ -23,10 +25,10 @@ CFO Signal Desk is a single-page executive cockpit optimized for a five-minute f
 The route uses the OpenAI Responses API when `OPENAI_API_KEY` is available. It requests strict JSON with:
 
 - `executiveSummary`
-- `keySignals`
-- `financialImpact`
-- `operationalImpact`
+- `highestPriorityRisks`
+- `opportunities`
 - `recommendedDecisions`
+- `immediateActions`
 - `tomorrowWatchlist`
 
 If the OpenAI request fails or no key is configured, the route returns a deterministic local brief. This keeps demos reliable for Build Week judging.

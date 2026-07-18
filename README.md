@@ -1,19 +1,19 @@
 # CFO Signal Desk
 
-OpenAI Build Week MVP: an AI-powered executive cockpit that transforms fragmented macroeconomic, FX, company, and market information into a five-minute CFO briefing.
+OpenAI Build Week MVP: an Executive Decision Intelligence cockpit that transforms fragmented macroeconomic, FX, company, and market information into concrete CFO decisions.
 
-The product answers: **What happened today, why does it matter, and what should I do tomorrow?**
+The product answers: **What should I do next, and why?**
 
 ## Product Overview
 
-CFO Signal Desk is built for CFOs, FP&A Directors, Finance Managers, Controllers, and SME CEOs who need fast, board-ready finance interpretation rather than a pile of disconnected headlines.
+CFO Signal Desk is built for CFOs, FP&A Directors, Finance Managers, Controllers, and SME CEOs who need fast, board-ready decision support rather than another dashboard of disconnected signals.
 
 The MVP includes:
 
-- Executive dashboard with Today's Brief, Risks, Opportunities, FX, Inflation, Interest Rates, Company Priorities, Watchlist, and Action Items.
-- AI brief generator structured as Executive Summary, Key Signals, Financial Impact, Operational Impact, Recommended Decisions, and Tomorrow's Watchlist.
+- Executive Decision Intelligence cockpit with Next Decision, Highest Priority Risks, Opportunities, Recommended Decisions, Immediate Actions, Tomorrow Watchlist, and a signal-level Decision Framework.
+- AI brief generator structured as Executive Summary, Highest Priority Risks, Opportunities, Recommended Decisions, Today / This Week / This Month actions, and Tomorrow Watchlist.
 - Risk detection for FX volatility, liquidity, inflation pressure, working capital, cost increases, and supply chain alerts.
-- Decision recommendations for each important signal.
+- Explainable decision recommendations for each important signal, including why, why now, ignored consequence, KPI affected, confidence, and priority level.
 - Priority selection for Cash Flow, Working Capital, Revenue Growth, Cost Optimization, FX Exposure, Treasury, Investments, and Procurement.
 - Demo mode with realistic sample data so judging and demos work without external APIs.
 
@@ -21,21 +21,21 @@ The MVP includes:
 
 ```mermaid
 flowchart LR
-  UI["Next.js Dashboard"] --> State["Client priorities and demo signals"]
+  UI["Next.js Decision Cockpit"] --> State["Company context, priorities, and demo signals"]
   State --> Route["/api/brief"]
   Route --> OpenAI["OpenAI Responses API"]
   Route --> Demo["Local demo brief fallback"]
-  OpenAI --> Brief["Structured CFO brief JSON"]
+  OpenAI --> Brief["Structured executive decision brief JSON"]
   Demo --> Brief
   Brief --> UI
 ```
 
 Key design choices:
 
-- `app/page.tsx` contains the interactive cockpit and deterministic demo data.
+- `app/page.tsx` contains the interactive decision cockpit and deterministic demo data.
 - `app/api/brief/route.ts` calls the OpenAI Responses API when `OPENAI_API_KEY` is present.
 - The API route falls back to local demo generation whenever credentials or upstream calls are unavailable.
-- The UI is responsive, finance-oriented, and optimized for a five-minute executive readout.
+- The UI is responsive, finance-oriented, and optimized for a 90-second executive decision readout.
 - No external market data API is required for the MVP.
 
 ## Tech Stack
@@ -77,7 +77,7 @@ app/
   api/brief/route.ts      AI brief generation endpoint with demo fallback
   globals.css             Product styling and responsive layout
   layout.tsx              Metadata and app shell
-  page.tsx                CFO Signal Desk dashboard
+  page.tsx                CFO Signal Desk decision cockpit
 docs/
   architecture.md         Technical and product architecture notes
   demo-script.md          Suggested demo video script
@@ -118,12 +118,13 @@ npm run build
 
 ## Demo Flow
 
-1. Open the dashboard and describe the target user: a CFO or finance leader under time pressure.
-2. Show Today's Brief and the market risk cards.
+1. Open the cockpit and describe the target user: a CFO or finance leader under time pressure.
+2. Show the Next Decision panel and explain that the product starts with action, not news.
 3. Toggle company priorities such as Cash Flow, Working Capital, FX Exposure, and Procurement.
-4. Click **Generate AI Brief**.
-5. Explain the structured output: executive summary, key signals, financial impact, operational impact, recommended decisions, and tomorrow's watchlist.
-6. Close with the value proposition: fewer fragmented signals, faster CFO decisions.
+4. Click **Generate Executive Brief**.
+5. Explain the structured output: risks, opportunities, recommended decisions, today / week / month actions, KPI impact, confidence, and tomorrow's watchlist.
+6. Show the signal-level Decision Framework: signal, business relevance, financial consequence, operational impact, strategic risk, recommendation, and expected outcome.
+7. Close with the value proposition: fewer fragmented signals, faster CFO decisions.
 
 ## Submission Assets
 

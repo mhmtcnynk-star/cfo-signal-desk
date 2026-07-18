@@ -1,13 +1,13 @@
 # OpenAI Build Week Submission Checklist
 
 - Product name: CFO Signal Desk
-- Category: AI executive cockpit / finance intelligence
+- Category: Executive Decision Intelligence / finance AI
 - Target users: CFOs, FP&A Directors, Finance Managers, Controllers, SME CEOs
-- Core question: What happened today, why does it matter, and what should I do tomorrow?
-- Working dashboard: complete
-- AI brief generator: complete with OpenAI route and demo fallback
+- Core question: What should I do next, and why?
+- Working decision cockpit: complete
+- Executive brief generator: complete with OpenAI route and demo fallback
 - Risk detection: complete with low, medium, and high severity
-- Decision recommendations: complete
+- Explainable decision recommendations: complete
 - Watchlist generation: complete
 - Company priorities: complete and interactive
 - Demo mode: complete and always available
@@ -22,14 +22,15 @@
 
 ## Judge-Facing Pitch
 
-CFO Signal Desk turns fragmented macroeconomic, FX, inflation, liquidity, supply-chain, and company-priority signals into a board-ready five-minute briefing for finance leaders.
+CFO Signal Desk turns fragmented macroeconomic, FX, inflation, liquidity, supply-chain, and company-priority signals into board-ready executive decisions for finance leaders.
 
 ## Feature List
 
-- Executive dashboard
-- AI-generated CFO brief
+- Executive decision cockpit
+- AI-generated CFO decision brief
 - Risk severity classification
-- Financial and operational impact summaries
+- Signal-to-decision reasoning chain
+- KPI, urgency, confidence, and ignored-consequence explainability
 - Recommended decisions
 - Tomorrow's watchlist
 - Company-priority controls
