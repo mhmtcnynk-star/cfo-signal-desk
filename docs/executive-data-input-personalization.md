@@ -2,7 +2,7 @@
 
 ## Product Intent
 
-CFO Signal Desk should evolve from a useful report insight engine into a deeply personalized Executive Advisor. The platform should learn the executive, the company, the operating environment, prior decisions, goals, working style, risk appetite, and strategic priorities without making the user feel like they are filling out software forms.
+CFO Signal Desk should evolve from useful report interpretation into a deeply personalized executive companion. The platform should learn the executive, the company, the operating environment, prior decisions, goals, working style, risk appetite, and strategic priorities without making the user feel like they are filling out software forms.
 
 Core principle:
 
@@ -28,11 +28,11 @@ CFO Signal Desk
     Items That Can Wait
     Upcoming Decisions
 
-  Report Insight Engine
+  Report Interpretation
     Upload / Sample Report
     KPI Variance Analysis
     Verified Insights
-    Recommended Decisions
+    Recommended Direction
     KPI Watchlist
 
   Executive Profile
@@ -60,7 +60,7 @@ CFO Signal Desk
     Strategy Decks
     Sales Reports
     Treasury Reports
-    KPI Dashboards
+    KPI Reports
     Org Charts
     Source Evidence
 
@@ -514,7 +514,7 @@ Integration roadmap:
 | Google Drive / SharePoint | Reports, board packs, source evidence. |
 | ERP | Financial actuals, transactions, operational data. |
 | CRM | Pipeline, customer signals, sales risk. |
-| Power BI | KPI dashboards and trends. |
+| Power BI | KPI reports and trends. |
 | Excel | Budgets, forecasts, analysis models. |
 | PDF | Board packs, reports, external documents. |
 | LinkedIn | Professional positioning, relationships, market signals. |
@@ -722,7 +722,7 @@ Output
 └─────────────────────────────────────────────────────────────┘
 ```
 
-### Report Insight Engine
+### Report Interpretation
 
 ```text
 ┌─────────────────────────────────────────────────────────────┐
@@ -753,7 +753,7 @@ Output
 
 ## Product Philosophy
 
-CFO Signal Desk is not a dashboard, not a chatbot, and not another generic AI assistant.
+CFO Signal Desk is not another reporting surface, not a chat window, and not another generic assistant.
 
 It is a Decision Intelligence Platform that becomes smarter as it learns the executive, the business, and the organization's unique context.
 

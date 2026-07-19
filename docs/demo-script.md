@@ -2,11 +2,11 @@
 
 ## 0:00 - Opening
 
-"This is CFO Signal Desk, the first module of an AI Management Reporting OS. It turns company reports and KPIs into verified insights, decisions, and actions."
+"This is CFO Signal Desk. It helps finance leaders turn reports, KPIs, and business context into perspective, judgment, and direction."
 
 ## 0:15 - Problem
 
-"Dashboards show performance, but executives still need to know what changed, why it changed, whether it matters, and what management should do next. Most reports stop before the decision."
+"Reports show performance, but executives still need to know what changed, why it matters, what deserves attention, and what can wait. Most reporting stops before judgment."
 
 ## 0:35 - Input
 
@@ -18,7 +18,7 @@
 
 ## 1:15 - Analysis
 
-"The engine reads the KPI set and compares actuals against budget and prior period. Revenue is 8 percent below budget, but that is not the full story. Average order value is down 11 percent, and gross margin is 3.2 points below budget."
+"The product reads the KPI set and compares actuals against budget and prior period. Revenue is 8 percent below budget, but that is not the full story. Average order value is down 11 percent, and gross margin is 3.2 points below budget."
 
 ## 1:40 - Insight Quality
 
@@ -30,8 +30,8 @@
 
 ## 2:30 - Management Workflow
 
-"The output includes management questions and a KPI watchlist: average order value by segment, gross margin bridge by product and customer, discount exceptions, and cash conversion cycle."
+"The output includes management questions and tomorrow's attention list: average order value by segment, gross margin bridge by product and customer, discount exceptions, and cash conversion cycle."
 
 ## 2:50 - Vision
 
-"This is not another dashboard. Dashboards show performance. CFO Signal Desk explains what it means and what to do next. The bigger vision is an AI operating system for management: Observe, Interpret, Decide, Act, and Learn."
+"This is not another reporting surface. CFO Signal Desk helps a leader understand what the numbers mean and what direction is available. The larger vision is a calm daily practice for judgment: Observe, Interpret, Judge, Act, and Learn."

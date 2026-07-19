@@ -1,18 +1,18 @@
 # CFO Signal Desk
 
-OpenAI Build Week MVP: an AI Management Reporting OS module that turns company reports, KPIs, and business context into verified insights, decisions, and actions.
+CFO Signal Desk is a Build Week MVP for turning company reports, KPIs, and business context into perspective, judgment, and direction.
 
-The product answers: **What changed, why did it change, what does it mean for management, and what should we do next?**
+The product answers: **What deserves attention, what does it mean, what can wait, and what should we do next?**
 
-Motto: **From Signal to Decision.**
+Motto: **From Signal to Meaning.**
 
 ## Product Overview
 
-CFO Signal Desk is built for CFOs, Finance Directors, FP&A Managers, Controllers, and finance teams who need management-ready insight rather than another KPI dashboard.
+CFO Signal Desk is built for CFOs, Finance Directors, FP&A Managers, Controllers, and finance teams who need context and judgment rather than another reporting surface.
 
-Simple promise: **Upload business data. Get decision-ready insights.**
+Simple promise: **Bring business data into context. Leave with clearer direction.**
 
-The product constitution is documented in `docs/product-constitution.md`. Every future feature should pass this filter: **Does this reduce executive uncertainty?**
+The product constitution is documented in `docs/product-constitution.md`. Every future feature should pass this filter: **Does this help leaders create better meaning before acting?**
 
 The executive data input and personalization architecture is documented in `docs/executive-data-input-personalization.md`. It defines Executive Onboarding, Company Context, Document Center, Executive Memory, Goals Engine, Decision History, Calendar Intelligence, Relationship Intelligence, Daily Check-in, and the feedback learning loop.
 
@@ -21,12 +21,12 @@ The MVP includes:
 - Report and KPI input flow with **Upload company report** and **Try sample report** options.
 - English / Spanish language switch for the complete demo workflow.
 - Sample management report dataset with revenue, average order value, gross margin, operating cost, and cash conversion cycle.
-- KPI variance analysis against budget and prior period.
-- Insight engine that classifies every output as verified finding, calculated result, hypothesis, or missing data.
-- Insight cards with observation, business impact, likely driver, confidence, recommended action, source evidence, and calculation.
-- Executive summary, management questions, KPI watchlist, recommended decisions, owners, and risk of inaction.
+- KPI variance interpretation against budget and prior period.
+- Report interpretation that classifies every output as verified finding, calculated result, hypothesis, or missing data.
+- Interpretation cards with what changed, what it changes, likely driver, confidence, suggested direction, source evidence, and calculation.
+- Executive summary, management questions, tomorrow's attention, recommended moves, owners, and risk of inaction.
 - Company priority selection for Revenue Growth, Margin Protection, Cash Preservation, Cost Control, Customer Retention, and Operational Efficiency.
-- AI OS loop: Observe -> Interpret -> Decide -> Act -> Learn.
+- Meaning loop: Observe -> Interpret -> Judge -> Act -> Learn.
 - Demo mode with realistic sample data so judging and demos work without external APIs.
 
 ## Architecture Overview
@@ -35,9 +35,9 @@ The MVP includes:
 flowchart LR
   UI["Next.js CFO Signal Desk"] --> Input["Upload report or sample KPI dataset"]
   Input --> Context["Company priorities and management context"]
-  Context --> Engine["KPI / Report Insight Engine"]
+  Context --> Engine["Report Interpretation"]
   Engine --> Evidence["Calculations, source evidence, confidence"]
-  Evidence --> Decisions["Recommended decisions, owners, actions, KPI watchlist"]
+  Evidence --> Decisions["Direction, owners, actions, tomorrow's attention"]
   Context --> Route["/api/brief"]
   Route --> OpenAI["OpenAI Responses API"]
   Route --> Demo["Local demo fallback"]
@@ -47,7 +47,7 @@ flowchart LR
 
 Key design choices:
 
-- `app/page.tsx` contains the bilingual report input flow, sample KPI dataset, insight engine UI, executive decisions, and AI OS loop.
+- `app/page.tsx` contains the bilingual report input flow, sample KPI dataset, report interpretation UI, executive judgment cards, and meaning loop.
 - `app/api/brief/route.ts` calls the OpenAI Responses API when `OPENAI_API_KEY` is present.
 - The API route falls back to local demo generation whenever credentials or upstream calls are unavailable.
 - The UI is responsive, finance-oriented, and optimized for a 90-second Build Week demo.
@@ -92,12 +92,14 @@ app/
   api/brief/route.ts      AI brief generation endpoint with demo fallback
   globals.css             Product styling and responsive layout
   layout.tsx              Metadata and app shell
-  page.tsx                CFO Signal Desk report insight engine
+  page.tsx                CFO Signal Desk report interpretation experience
 docs/
   architecture.md         Technical and product architecture notes
   demo-script.md          Suggested demo video script
   executive-data-input-personalization.md
                           Data acquisition, memory, and personalization design
+  first-principles-role.md
+                          Human role and first-principles product philosophy
   product-constitution.md Product principles and decision filter
   submission-checklist.md Build Week submission checklist
 screenshots/
@@ -137,15 +139,15 @@ npm run build
 
 ## Demo Flow
 
-1. Open CFO Signal Desk and state the problem: dashboards show KPI performance, but executives still need to know what changed, why, and what to do.
-2. Show the headline: **Turn company reports and KPIs into management decisions.**
+1. Open CFO Signal Desk and state the problem: reports show KPI performance, but executives still need context, meaning, and direction.
+2. Show the headline: **CFO Signal Desk helps leaders turn reports into perspective, judgment, and direction.**
 3. Use **Try sample report** or stage a report through **Upload company report**.
 4. Select company priorities such as Margin Protection, Cash Preservation, and Cost Control.
 5. Review KPI variances: Revenue, Average Order Value, Gross Margin, Operating Cost, and Cash Conversion Cycle.
 6. Open the top insight: revenue is 8% below budget, but the real issue is AOV decline and gross margin erosion.
-7. Show evidence, calculation, confidence, finding type, likely driver, and recommended action.
-8. Review recommended decisions, owners, risks of inaction, management questions, and KPI watchlist.
-9. Close with the vision: this is the first module of an AI Management Reporting OS.
+7. Show evidence, calculation, confidence, finding type, likely driver, and suggested direction.
+8. Review recommended moves, owners, risks of inaction, management questions, and tomorrow's attention.
+9. Close with the vision: this is a calm companion for executive judgment, not another reporting surface.
 
 ## Submission Assets
 

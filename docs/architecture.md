@@ -2,7 +2,7 @@
 
 ## Product Layer
 
-CFO Signal Desk is the first module of an **AI Management Reporting OS**. It turns company reports, KPIs, and business context into verified insights, management decisions, and follow-up actions.
+CFO Signal Desk turns company reports, KPIs, and business context into perspective, judgment, direction, and follow-up actions.
 
 Core transformation:
 
@@ -36,7 +36,7 @@ The MVP combines:
 
 ## Application Layer
 
-- `app/page.tsx` renders the full demo workflow: report input, sample KPI dataset, insight engine, decisions, questions, watchlist, founder advantage, and AI OS loop.
+- `app/page.tsx` renders the full demo workflow: report input, sample KPI dataset, report interpretation, direction, questions, tomorrow's attention, human advantage, and meaning loop.
 - `app/globals.css` defines the responsive Bloomberg-meets-Linear visual system.
 - `app/api/brief/route.ts` owns optional OpenAI generation and keeps the demo resilient with local fallback.
 
@@ -73,7 +73,7 @@ Future production data sources:
 - Excel, CSV, and PDF uploads
 - Budget and prior-period files
 - ERP and accounting exports
-- BI dashboards
+- BI reports
 - Sales and operations KPI feeds
 - Management presentations
 - Meeting notes and action logs

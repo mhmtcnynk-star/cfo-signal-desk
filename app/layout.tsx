@@ -15,11 +15,11 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "CFO Signal Desk",
   description:
-    "An AI management reporting OS module with English and Spanish support that turns company reports and KPIs into verified insights, decisions, and actions.",
+    "A calm executive companion that turns reports, KPIs, and business context into perspective, judgment, and direction.",
   openGraph: {
     title: "CFO Signal Desk",
     description:
-      "Upload a report or use sample KPI data to get bilingual management-ready insights and recommended actions.",
+      "Bring business data into context and clarify what deserves attention, what can wait, and what should happen next.",
     images: ["/og.png"],
   },
   icons: {

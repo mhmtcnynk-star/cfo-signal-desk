@@ -128,26 +128,26 @@ const copies: Record<Locale, Copy> = {
     localeName: "English",
     shortLocale: "EN",
     otherLocale: "ES",
-    heroEyebrow: "AI Management Reporting OS · First module",
+    heroEyebrow: "Meaning between information and action",
     heroText:
-      "From Signal to Decision. Turn company reports and KPIs into management decisions. Upload a report or use sample company data; the engine identifies performance drivers, risks, root-cause hypotheses and recommended management actions.",
-    executiveDecision: "Executive Decision",
+      "CFO Signal Desk helps finance leaders turn reports, KPIs, and business context into perspective, judgment, and direction. It does not try to impress; it helps you decide what deserves attention, what can wait, and what should happen next.",
+    executiveDecision: "Executive Judgment",
     executiveDecisionTitle: "Run a margin bridge before revising the revenue forecast.",
     executiveDecisionBody:
       "Revenue is below target, but the real issue is lower average order value combined with gross margin erosion. Management needs driver clarity before changing the commercial plan.",
     sampleReady: "Sample report ready",
     reportStaged: (fileName) => `Report staged: ${fileName}`,
-    reportAnalyzed: (fileName) => `Analyzed ${fileName} with demo KPI engine`,
-    sampleAnalyzed: "Sample management report analyzed",
+    reportAnalyzed: (fileName) => `Interpreted ${fileName} with the demo report context`,
+    sampleAnalyzed: "Sample management report interpreted",
     scoreBusinessImpact: "Business impact",
     scoreUrgency: "Urgency",
     scoreConfidence: "Confidence",
     inputEyebrow: "Input",
-    inputTitle: "Upload business data. Get decision-ready insights.",
+    inputTitle: "Bring business data into context.",
     uploadReport: "Upload company report",
     trySample: "Try sample report",
     inputNote:
-      "MVP demo uses a sample management report. Uploaded files are staged in the UI to show the intended workflow; live parsing is post-MVP.",
+      "MVP demo uses a sample management report. Uploaded files are staged to show the intended workflow; live parsing is post-MVP.",
     prioritiesEyebrow: "Company priorities",
     priorities: [
       "Revenue growth",
@@ -157,11 +157,11 @@ const copies: Record<Locale, Copy> = {
       "Customer retention",
       "Operational efficiency",
     ],
-    engineEyebrow: "KPI / Report Insight Engine",
-    engineTitle: "Dashboards show performance. We explain what it means.",
+    engineEyebrow: "Report Interpretation",
+    engineTitle: "Performance is visible. Meaning still has to be created.",
     metrics: {
       kpis: "KPIs",
-      findings: "Findings",
+      findings: "Meanings",
       mode: "Mode",
       demo: "Demo",
     },
@@ -173,17 +173,17 @@ const copies: Record<Locale, Copy> = {
       variance: "Variance",
     },
     insightLabels: {
-      observation: "Observation",
-      businessImpact: "Business impact",
+      observation: "What changed",
+      businessImpact: "What it changes",
       likelyDriver: "Likely driver",
-      recommendedAction: "Recommended action",
+      recommendedAction: "Suggested direction",
       calculation: "Calculation",
       evidence: "Source evidence",
     },
     actionPanel: {
       executiveSummary: "Executive Summary",
       managementQuestions: "Questions Management Should Ask",
-      kpiWatchlist: "KPI Watchlist",
+      kpiWatchlist: "Tomorrow's Attention",
     },
     summaries: [
       "Revenue is 8.0% below budget, but the stronger signal is an 11.0% decline in average order value.",
@@ -201,25 +201,25 @@ const copies: Record<Locale, Copy> = {
       "Discount exceptions and approval compliance",
       "Cash conversion cycle and overdue receivables",
     ],
-    topInsightsEyebrow: "Top Insights",
-    topInsightsTitle: "Verified insight, calculation, hypothesis, or missing data",
-    decisionsEyebrow: "Recommended Decisions",
-    decisionsTitle: "Insight must end in management action",
+    topInsightsEyebrow: "Key Meaning",
+    topInsightsTitle: "What deserves judgment, not just attention",
+    decisionsEyebrow: "Direction",
+    decisionsTitle: "Every interpretation should clarify the next management move",
     decisionLabels: {
       owner: "Owner",
       kpi: "KPI",
       risk: "Risk of inaction",
     },
-    aiOsEyebrow: "AI OS Loop",
-    aiOsTitle: "Observe -> Interpret -> Decide -> Act -> Learn",
-    founderEyebrow: "Founder Advantage",
-    founderTitle: "Finance-domain AI systems architect",
+    aiOsEyebrow: "Meaning Loop",
+    aiOsTitle: "Observe -> Interpret -> Judge -> Act -> Learn",
+    founderEyebrow: "Human Advantage",
+    founderTitle: "Finance judgment shaped by operating experience",
     founderBody:
-      "The defensible insight is not only the model. It is the finance judgment that decides which variance matters, which data needs verification, what should reach management, and which action changes performance.",
+      "The durable value is judgment: knowing which variance matters, which data needs verification, what deserves management attention, and which action would create lasting performance.",
     alignment: [
       "Finance experience",
       "Management reporting",
-      "Decision workflow design",
+      "Judgment workflow design",
       "Build Week readiness",
     ],
     severity: {
@@ -228,7 +228,7 @@ const copies: Record<Locale, Copy> = {
       Low: "Low",
     },
     priority: {
-      "Executive decision": "Executive decision",
+      "Executive decision": "Executive judgment",
       "Act today": "Act today",
       Monitor: "Monitor",
     },
@@ -287,7 +287,7 @@ const copies: Record<Locale, Copy> = {
         observation:
           "Revenue is 8.0% below budget, but the order count is broadly stable. The larger signal is an 11.0% decline in average order value.",
         businessImpact:
-          "Management should not respond with a generic sales push. The issue points to pricing discipline, product mix, and customer-level margin leakage.",
+          "Management should not respond with a generic commercial reaction. The issue points to pricing discipline, product mix, and customer-level margin leakage.",
         likelyDriver:
           "Lower-value orders increased in two customer segments while higher-margin product lines underperformed.",
         confidence: 86,
@@ -404,22 +404,22 @@ const copies: Record<Locale, Copy> = {
       {
         from: "Variance and KPI relationships",
         to: "Interpret",
-        body: "Calculate changes, identify anomalies, and classify evidence quality.",
+        body: "Calculate changes, notice tension, and classify evidence quality.",
       },
       {
         from: "Root-cause hypotheses",
-        to: "Decide",
-        body: "Generate management options and explain confidence.",
+        to: "Judge",
+        body: "Separate what matters from what is merely noisy, then explain confidence.",
       },
       {
         from: "Owners, dates, follow-up KPIs",
         to: "Act",
-        body: "Turn insights into accountable actions.",
+        body: "Turn interpretation into accountable actions.",
       },
       {
         from: "Prior decisions and outcomes",
         to: "Learn",
-        body: "Build company performance memory over time.",
+        body: "Build company memory over time.",
       },
     ],
   },
@@ -427,26 +427,26 @@ const copies: Record<Locale, Copy> = {
     localeName: "Español",
     shortLocale: "ES",
     otherLocale: "EN",
-    heroEyebrow: "AI Management Reporting OS · Primer módulo",
+    heroEyebrow: "Sentido entre información y acción",
     heroText:
-      "De la señal a la decisión. Convierte reportes de empresa y KPIs en decisiones de management. Sube un reporte o usa datos de ejemplo; el motor identifica drivers de performance, riesgos, hipótesis de causa raíz y acciones recomendadas.",
-    executiveDecision: "Decisión ejecutiva",
+      "CFO Signal Desk ayuda a líderes financieros a convertir reportes, KPIs y contexto de negocio en perspectiva, juicio y dirección. No intenta impresionar; ayuda a decidir qué merece atención, qué puede esperar y qué debería pasar después.",
+    executiveDecision: "Juicio ejecutivo",
     executiveDecisionTitle: "Construir un puente de margen antes de revisar el forecast de ingresos.",
     executiveDecisionBody:
       "Los ingresos están por debajo del objetivo, pero el problema real es la caída del ticket promedio junto con la erosión del margen bruto. Management necesita claridad sobre el driver antes de cambiar el plan comercial.",
     sampleReady: "Reporte de ejemplo listo",
     reportStaged: (fileName) => `Reporte preparado: ${fileName}`,
-    reportAnalyzed: (fileName) => `Analizado ${fileName} con el motor KPI demo`,
-    sampleAnalyzed: "Reporte de management de ejemplo analizado",
+    reportAnalyzed: (fileName) => `Interpretado ${fileName} con el contexto demo`,
+    sampleAnalyzed: "Reporte de management de ejemplo interpretado",
     scoreBusinessImpact: "Impacto de negocio",
     scoreUrgency: "Urgencia",
     scoreConfidence: "Confianza",
     inputEyebrow: "Entrada",
-    inputTitle: "Sube datos de negocio. Recibe insights listos para decidir.",
+    inputTitle: "Trae los datos de negocio a contexto.",
     uploadReport: "Subir reporte de empresa",
     trySample: "Probar reporte de ejemplo",
     inputNote:
-      "El MVP usa un reporte de management de ejemplo. Los archivos subidos se preparan en la interfaz para mostrar el flujo previsto; el parsing real queda para post-MVP.",
+      "El MVP usa un reporte de management de ejemplo. Los archivos subidos se preparan para mostrar el flujo previsto; el parsing real queda para post-MVP.",
     prioritiesEyebrow: "Prioridades de la empresa",
     priorities: [
       "Crecimiento de ingresos",
@@ -456,11 +456,11 @@ const copies: Record<Locale, Copy> = {
       "Retención de clientes",
       "Eficiencia operativa",
     ],
-    engineEyebrow: "Motor de insights KPI / Reporte",
-    engineTitle: "Los dashboards muestran performance. Nosotros explicamos qué significa.",
+    engineEyebrow: "Interpretación del reporte",
+    engineTitle: "La performance es visible. El sentido todavía debe crearse.",
     metrics: {
       kpis: "KPIs",
-      findings: "Hallazgos",
+      findings: "Sentidos",
       mode: "Modo",
       demo: "Demo",
     },
@@ -472,17 +472,17 @@ const copies: Record<Locale, Copy> = {
       variance: "Desvío",
     },
     insightLabels: {
-      observation: "Observación",
-      businessImpact: "Impacto de negocio",
+      observation: "Qué cambió",
+      businessImpact: "Qué cambia",
       likelyDriver: "Driver probable",
-      recommendedAction: "Acción recomendada",
+      recommendedAction: "Dirección sugerida",
       calculation: "Cálculo",
       evidence: "Evidencia fuente",
     },
     actionPanel: {
       executiveSummary: "Resumen ejecutivo",
       managementQuestions: "Preguntas que management debería hacer",
-      kpiWatchlist: "KPIs a monitorear",
+      kpiWatchlist: "Atención de mañana",
     },
     summaries: [
       "Los ingresos están 8,0% por debajo del budget, pero la señal más fuerte es una caída de 11,0% en el ticket promedio.",
@@ -500,25 +500,25 @@ const copies: Record<Locale, Copy> = {
       "Excepciones de descuento y cumplimiento de aprobaciones",
       "Ciclo de conversión de caja y cuentas vencidas",
     ],
-    topInsightsEyebrow: "Insights principales",
-    topInsightsTitle: "Insight verificado, cálculo, hipótesis o dato faltante",
-    decisionsEyebrow: "Decisiones recomendadas",
-    decisionsTitle: "Todo insight debe terminar en una acción de management",
+    topInsightsEyebrow: "Sentido clave",
+    topInsightsTitle: "Lo que merece juicio, no solo atención",
+    decisionsEyebrow: "Dirección",
+    decisionsTitle: "Cada interpretación debe aclarar el próximo movimiento de management",
     decisionLabels: {
       owner: "Responsable",
       kpi: "KPI",
       risk: "Riesgo de no actuar",
     },
-    aiOsEyebrow: "Ciclo AI OS",
-    aiOsTitle: "Observar -> Interpretar -> Decidir -> Actuar -> Aprender",
-    founderEyebrow: "Ventaja del fundador",
-    founderTitle: "Arquitecto de sistemas de AI con dominio financiero",
+    aiOsEyebrow: "Ciclo de sentido",
+    aiOsTitle: "Observar -> Interpretar -> Juzgar -> Actuar -> Aprender",
+    founderEyebrow: "Ventaja humana",
+    founderTitle: "Criterio financiero formado por experiencia operativa",
     founderBody:
-      "La ventaja defendible no es solo el modelo. Es el criterio financiero que decide qué desvío importa, qué dato necesita verificación, qué debe llegar a management y qué acción cambia la performance.",
+      "El valor duradero es el criterio: saber qué desvío importa, qué dato necesita verificación, qué merece atención de management y qué acción puede crear performance sostenible.",
     alignment: [
       "Experiencia financiera",
       "Reporting de management",
-      "Diseño de flujos de decisión",
+      "Diseño de flujos de juicio",
       "Preparación Build Week",
     ],
     severity: {
@@ -527,7 +527,7 @@ const copies: Record<Locale, Copy> = {
       Low: "Bajo",
     },
     priority: {
-      "Executive decision": "Decisión ejecutiva",
+      "Executive decision": "Juicio ejecutivo",
       "Act today": "Actuar hoy",
       Monitor: "Monitorear",
     },
@@ -704,22 +704,22 @@ const copies: Record<Locale, Copy> = {
       {
         from: "Desvíos y relaciones KPI",
         to: "Interpretar",
-        body: "Calcular cambios, identificar anomalías y clasificar la calidad de evidencia.",
+        body: "Calcular cambios, notar tensiones y clasificar la calidad de evidencia.",
       },
       {
         from: "Hipótesis de causa raíz",
-        to: "Decidir",
-        body: "Generar opciones de management y explicar confianza.",
+        to: "Juzgar",
+        body: "Separar lo importante del ruido y explicar el nivel de confianza.",
       },
       {
         from: "Responsables, fechas, KPIs de seguimiento",
         to: "Actuar",
-        body: "Convertir insights en acciones con accountability.",
+        body: "Convertir interpretación en acciones con accountability.",
       },
       {
         from: "Decisiones previas y resultados",
         to: "Aprender",
-        body: "Construir memoria de performance de la empresa en el tiempo.",
+        body: "Construir memoria de la empresa en el tiempo.",
       },
     ],
   },
@@ -818,7 +818,7 @@ export default function Home() {
 
   return (
     <main className="appShell">
-      <section className="decisionHero" aria-label="AI management reporting cockpit">
+      <section className="decisionHero" aria-label="Executive interpretation workspace">
         <div className="heroCopy">
           <div className="heroTopline">
             <p className="eyebrow">{copy.heroEyebrow}</p>
@@ -890,7 +890,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="decisionWorkspace" aria-label="Report insight engine">
+      <section className="decisionWorkspace" aria-label="Report interpretation">
         <article className="briefPanel">
           <div className="sectionHeader">
             <div>
@@ -990,7 +990,7 @@ export default function Home() {
         </aside>
       </section>
 
-      <section className="insightLibrary" aria-label="Top management insights">
+      <section className="insightLibrary" aria-label="Key management interpretations">
         <div className="sectionHeader">
           <div>
             <p className="eyebrow">{copy.topInsightsEyebrow}</p>
@@ -1019,7 +1019,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="graphAndLinkedIn" aria-label="Decisions and AI OS architecture">
+      <section className="graphAndLinkedIn" aria-label="Direction and meaning loop">
         <article className="frameworkPanel">
           <div className="frameworkHeader">
             <div>

@@ -1,22 +1,22 @@
 # OpenAI Build Week Submission Checklist
 
 - Product name: CFO Signal Desk
-- Category: AI Management Reporting OS / finance AI
+- Category: Executive finance workflow / decision support
 - Target users: CFOs, Finance Directors, FP&A Managers, Controllers, Finance Managers, management reporting teams
 - Core question: What changed, why did it change, and what should management do next?
 - Working report insight cockpit: complete
 - Upload company report UI: complete as MVP workflow demonstration
 - Reliable sample management report: complete
 - KPI variance table: complete
-- Insight classification: complete
+- Interpretation classification: complete
 - Source evidence and calculation display: complete
 - Confidence scoring: complete
 - Root-cause hypotheses: complete
 - Recommended management decisions: complete
 - Action owners and risk of inaction: complete
 - Management questions: complete
-- KPI watchlist: complete
-- AI OS loop: complete
+- Tomorrow's attention list: complete
+- Meaning loop: complete
 - Demo mode: complete and always available
 - README: complete
 - Architecture overview: complete
@@ -30,17 +30,17 @@
 
 ## Judge-Facing Pitch
 
-CFO Signal Desk turns company reports, KPIs, and business context into verified insights, management decisions, and accountable actions.
+CFO Signal Desk turns company reports, KPIs, and business context into perspective, judgment, direction, and accountable actions.
 
-Dashboards show performance. CFO Signal Desk explains what it means and what to do next.
+Reports show performance. CFO Signal Desk helps leaders interpret what it means, what deserves attention, and what should happen next.
 
 ## Problem
 
-Finance teams already have reports, spreadsheets, dashboards, and presentations. The bottleneck is converting them into management decisions quickly and consistently.
+Finance teams already have reports, spreadsheets, and presentations. The bottleneck is converting them into management judgment quickly and consistently.
 
 ## Product
 
-An AI performance analyst for CFOs and finance teams. Users upload a report or use sample data; the system identifies critical variances, KPI relationships, root-cause hypotheses, risks, opportunities, recommended decisions, action owners, management questions, and KPI watchlists.
+A calm executive companion for CFOs and finance teams. Users upload a report or use sample data; the product identifies critical variances, KPI relationships, root-cause hypotheses, risks, opportunities, recommended moves, action owners, management questions, and tomorrow's attention list.
 
 ## Why This Is Different
 
@@ -52,7 +52,7 @@ An AI performance analyst for CFOs and finance teams. Users upload a report or u
 
 ## Use of OpenAI
 
-OpenAI is used for structured executive reasoning over KPI and report context. The model is instructed to avoid generic summaries and produce management-ready insight: finding type, evidence, calculation, impact, likely driver, decision, action owner, risk of inaction, and KPI watchlist.
+OpenAI is used for structured executive reasoning over KPI and report context. The model is instructed to avoid generic summaries and produce management-ready interpretation: finding type, evidence, calculation, impact, likely driver, direction, action owner, risk of inaction, and tomorrow's attention list.
 
 The demo remains reliable without an API key through deterministic sample data.
 
@@ -64,9 +64,9 @@ The domain advantage is knowing which KPI matters, which variance deserves escal
 
 ## Future Vision
 
-The bigger vision is an AI Operating System for Management:
+The bigger vision is a daily meaning practice for management:
 
-Observe -> Interpret -> Decide -> Act -> Learn
+Observe -> Interpret -> Judge -> Act -> Learn
 
 Future modules:
 
