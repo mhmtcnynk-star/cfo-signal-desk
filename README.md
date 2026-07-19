@@ -14,9 +14,12 @@ Simple promise: **Upload business data. Get decision-ready insights.**
 
 The product constitution is documented in `docs/product-constitution.md`. Every future feature should pass this filter: **Does this reduce executive uncertainty?**
 
+The executive data input and personalization architecture is documented in `docs/executive-data-input-personalization.md`. It defines Executive Onboarding, Company Context, Document Center, Executive Memory, Goals Engine, Decision History, Calendar Intelligence, Relationship Intelligence, Daily Check-in, and the feedback learning loop.
+
 The MVP includes:
 
 - Report and KPI input flow with **Upload company report** and **Try sample report** options.
+- English / Spanish language switch for the complete demo workflow.
 - Sample management report dataset with revenue, average order value, gross margin, operating cost, and cash conversion cycle.
 - KPI variance analysis against budget and prior period.
 - Insight engine that classifies every output as verified finding, calculated result, hypothesis, or missing data.
@@ -44,7 +47,7 @@ flowchart LR
 
 Key design choices:
 
-- `app/page.tsx` contains the report input flow, sample KPI dataset, insight engine UI, executive decisions, and AI OS loop.
+- `app/page.tsx` contains the bilingual report input flow, sample KPI dataset, insight engine UI, executive decisions, and AI OS loop.
 - `app/api/brief/route.ts` calls the OpenAI Responses API when `OPENAI_API_KEY` is present.
 - The API route falls back to local demo generation whenever credentials or upstream calls are unavailable.
 - The UI is responsive, finance-oriented, and optimized for a 90-second Build Week demo.
@@ -93,6 +96,8 @@ app/
 docs/
   architecture.md         Technical and product architecture notes
   demo-script.md          Suggested demo video script
+  executive-data-input-personalization.md
+                          Data acquisition, memory, and personalization design
   product-constitution.md Product principles and decision filter
   submission-checklist.md Build Week submission checklist
 screenshots/

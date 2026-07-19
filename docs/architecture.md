@@ -16,10 +16,13 @@ Report / Data / KPI
 
 The product constitution in `docs/product-constitution.md` remains the governing filter. No workflow should stop before reaching an executive recommendation.
 
+The personalization architecture in `docs/executive-data-input-personalization.md` defines how the product grows from report analysis into a personalized Executive Advisor through onboarding, company context, document intelligence, executive memory, goals, decision history, calendar intelligence, relationship intelligence, daily check-ins, and feedback learning.
+
 The MVP combines:
 
 - Report upload entry point
 - Reliable sample management report
+- English / Spanish language support for the full demo experience
 - Company priority selection
 - KPI variance analysis
 - Source evidence and calculation display
@@ -74,6 +77,8 @@ Future production data sources:
 - Sales and operations KPI feeds
 - Management presentations
 - Meeting notes and action logs
+- Executive onboarding and daily check-ins
+- Email, calendar, Slack, Teams, Notion, Drive, SharePoint, CRM, LinkedIn, market data, macro data, voice notes, and meeting transcripts
 
 ## Product Architecture
 

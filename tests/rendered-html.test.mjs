@@ -35,6 +35,8 @@ test("server-renders the CFO Signal Desk MVP", async () => {
   assert.match(html, /AI Management Reporting OS/);
   assert.match(html, /From Signal to Decision/);
   assert.match(html, /Turn company reports and KPIs into management decisions/);
+  assert.match(html, /EN/);
+  assert.match(html, /ES/);
   assert.match(html, /Upload company report/);
   assert.match(html, /Try sample report/);
   assert.match(html, /Company priorities/);
@@ -69,10 +71,23 @@ test("server-renders the CFO Signal Desk MVP", async () => {
 });
 
 test("keeps Build Week submission assets documented", async () => {
-  const [readme, constitution, demoScript, checklist, page, layout, packageJson] =
+  const [
+    readme,
+    constitution,
+    personalization,
+    demoScript,
+    checklist,
+    page,
+    layout,
+    packageJson,
+  ] =
     await Promise.all([
       readFile(new URL("README.md", templateRoot), "utf8"),
       readFile(new URL("docs/product-constitution.md", templateRoot), "utf8"),
+      readFile(
+        new URL("docs/executive-data-input-personalization.md", templateRoot),
+        "utf8",
+      ),
       readFile(new URL("docs/demo-script.md", templateRoot), "utf8"),
       readFile(new URL("docs/submission-checklist.md", templateRoot), "utf8"),
       readFile(new URL("app/page.tsx", templateRoot), "utf8"),
@@ -83,11 +98,28 @@ test("keeps Build Week submission assets documented", async () => {
   assert.match(readme, /Architecture Overview/);
   assert.match(readme, /OPENAI_API_KEY/);
   assert.match(readme, /Does this reduce executive uncertainty/);
+  assert.match(readme, /English \/ Spanish language switch/);
+  assert.match(readme, /executive-data-input-personalization/);
   assert.match(constitution, /Turn Market Noise into Executive Clarity/);
   assert.match(constitution, /From Signal to Decision/);
+  assert.match(personalization, /Executive Onboarding/);
+  assert.match(personalization, /Company Context/);
+  assert.match(personalization, /Document Center/);
+  assert.match(personalization, /Executive Memory/);
+  assert.match(personalization, /Goals Engine/);
+  assert.match(personalization, /Decision History/);
+  assert.match(personalization, /Calendar Intelligence/);
+  assert.match(personalization, /Relationship Intelligence/);
+  assert.match(personalization, /Executive Memory Graph/);
+  assert.match(personalization, /Recommendation Engine Architecture/);
   assert.match(demoScript, /company reports and KPIs/);
   assert.match(checklist, /OpenAI Build Week/);
   assert.match(page, /Upload company report/);
+  assert.match(page, /Subir reporte de empresa/);
+  assert.match(page, /Decisión ejecutiva/);
+  assert.match(page, /Resumen ejecutivo/);
+  assert.match(page, /Preguntas que management debería hacer/);
+  assert.match(page, /Ciclo AI OS/);
   assert.match(page, /KPI \/ Report Insight Engine/);
   assert.match(page, /sourceTypeClass/);
   assert.match(page, /average order value/i);
