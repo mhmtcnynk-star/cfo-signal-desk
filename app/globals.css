@@ -254,6 +254,58 @@ h3 {
   padding: 18px;
 }
 
+.reportFlow {
+  display: grid;
+  grid-template-columns: minmax(320px, 0.85fr) minmax(0, 1.15fr);
+  gap: 18px;
+  margin-top: 18px;
+}
+
+.uploadPanel,
+.priorityPanel {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: rgba(15, 21, 29, 0.9);
+  padding: 18px;
+}
+
+.uploadActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 18px 0 12px;
+}
+
+.uploadButton,
+.secondaryButton {
+  min-height: 40px;
+  border: 1px solid rgba(57, 214, 180, 0.45);
+  border-radius: 8px;
+  background: rgba(57, 214, 180, 0.11);
+  color: #a8f2e1;
+  padding: 10px 14px;
+  font-weight: 820;
+}
+
+.uploadButton input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.secondaryButton {
+  background: var(--accent);
+  color: #06110f;
+}
+
+.inputNote {
+  margin-bottom: 0;
+  color: var(--muted);
+  line-height: 1.45;
+}
+
 .sourceGrid {
   display: grid;
   grid-template-columns: repeat(5, minmax(0, 1fr));
@@ -349,6 +401,92 @@ h3 {
   grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 12px;
   margin-bottom: 14px;
+}
+
+.kpiTable {
+  display: grid;
+  gap: 1px;
+  overflow: hidden;
+  border: 1px solid rgba(143, 154, 168, 0.22);
+  border-radius: 8px;
+  background: rgba(143, 154, 168, 0.22);
+}
+
+.kpiHeader,
+.kpiRow {
+  display: grid;
+  grid-template-columns: minmax(160px, 1.25fr) repeat(4, minmax(92px, 0.7fr));
+  gap: 10px;
+  align-items: center;
+  min-width: 0;
+  background: rgba(7, 9, 13, 0.54);
+  padding: 12px;
+}
+
+.kpiHeader span {
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 760;
+  text-transform: uppercase;
+}
+
+.kpiRow {
+  width: 100%;
+  border: 0;
+  color: #dce4ef;
+  text-align: left;
+}
+
+.kpiRow:hover,
+.objectCard.active {
+  background: rgba(57, 214, 180, 0.08);
+}
+
+.kpiRow span,
+.kpiRow strong {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.insightDetail {
+  margin-top: 16px;
+  border: 1px solid rgba(57, 214, 180, 0.28);
+  border-radius: 8px;
+  background: rgba(7, 9, 13, 0.36);
+  padding: 18px;
+}
+
+.insightDetail h2 {
+  margin: 14px 0 16px;
+  font-size: 28px;
+}
+
+.insightGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.evidenceStrip {
+  display: grid;
+  grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr) minmax(220px, 0.7fr);
+  gap: 14px;
+  margin-top: 14px;
+  border-top: 1px solid rgba(143, 154, 168, 0.22);
+  padding-top: 16px;
+}
+
+.evidenceStrip p,
+.evidenceStrip li {
+  color: #d5dde8;
+  line-height: 1.45;
+}
+
+.evidenceStrip ul {
+  display: grid;
+  gap: 8px;
+  margin: 0;
+  padding-left: 18px;
 }
 
 .briefCard,
@@ -717,6 +855,7 @@ h3 {
 }
 
 .intelligenceArea,
+.insightLibrary,
 .graphAndLinkedIn,
 .alignmentPanel {
   margin-top: 18px;
@@ -732,7 +871,10 @@ h3 {
   display: grid;
   gap: 12px;
   align-content: start;
+  width: 100%;
+  color: var(--foreground);
   padding: 16px;
+  text-align: left;
 }
 
 .objectCard h3,
@@ -864,6 +1006,7 @@ h3 {
   .decisionWorkspace,
   .signalDecisionArea,
   .sourceControl,
+  .reportFlow,
   .graphAndLinkedIn,
   .alignmentPanel {
     grid-template-columns: 1fr;
@@ -875,7 +1018,9 @@ h3 {
 
   .sourceGrid,
   .changeGrid,
-  .objectGrid {
+  .objectGrid,
+  .insightGrid,
+  .evidenceStrip {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
@@ -914,13 +1059,17 @@ h3 {
   .sourceGrid,
   .changeGrid,
   .briefColumns,
+  .insightGrid,
+  .evidenceStrip,
   .decisionDetail,
   .decisionDetail dl,
   .issueTabs,
   .objectGrid,
   .objectCard dl,
   .graphLink,
-  .alignmentGrid {
+  .alignmentGrid,
+  .kpiHeader,
+  .kpiRow {
     grid-template-columns: 1fr;
   }
 

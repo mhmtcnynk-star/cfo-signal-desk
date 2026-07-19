@@ -2,36 +2,36 @@
 
 ## 0:00 - Opening
 
-"This is CFO Signal Desk, a Personal Executive Decision Intelligence system for finance leaders. It answers the daily executive question: What is the best decision for me today, given what is happening externally, what I am trying to achieve, and what changed in my personal and professional context?"
+"This is CFO Signal Desk, the first module of an AI Management Reporting OS. It turns company reports and KPIs into verified insights, decisions, and actions."
 
 ## 0:15 - Problem
 
-"Finance leaders are flooded by market noise, career signals, professional network updates, commitments, family constraints, runway pressure, and product opportunities. The issue is not lack of information. The issue is knowing which decision deserves attention now."
+"Dashboards show performance, but executives still need to know what changed, why it changed, whether it matters, and what management should do next. Most reports stop before the decision."
 
-## 0:35 - Daily Decision Brief
+## 0:35 - Input
 
-"The product starts with the best decision today. It explains what changed, why it matters, which user objective is relevant, which constraints apply, and what action should happen now."
+"The workflow starts with business data. A user can upload a company report, spreadsheet, PDF, or use the sample management report. For this MVP, I will use sample data so the demo always works."
 
-## 0:55 - Source Control
+## 0:55 - Context
 
-"Every recommendation has visible sources. The user can disable a source, inspect evidence, approve an inference, edit it, mark it incorrect, or delete it. The system does not treat every statement as permanent truth."
+"The CFO selects company priorities: revenue growth, margin protection, cash preservation, cost control, customer retention, or operational efficiency. These priorities shape which variances deserve executive attention."
 
-## 1:15 - Personal Intelligence Model
+## 1:15 - Analysis
 
-"Raw inputs become structured intelligence objects: goals, constraints, decisions, risks, opportunities, relationships, actions, lessons, preferences, and strategic priorities. Each object has confidence, importance, urgency, horizon, source, evidence, and next action."
+"The engine reads the KPI set and compares actuals against budget and prior period. Revenue is 8 percent below budget, but that is not the full story. Average order value is down 11 percent, and gross margin is 3.2 points below budget."
 
-## 1:35 - Decision Graph
+## 1:40 - Insight Quality
 
-"The decision graph connects signals, goals, constraints, people, actions, and results. This is how the system detects conflicts, unresolved decisions, missed commitments, new risks, and actions that no longer support the user's strategy."
+"The product does not just say revenue declined. It explains that order volume is broadly stable, so the likely issue is price, product mix, or customer mix. Every insight shows observation, business impact, likely driver, recommended action, evidence, calculation, confidence, and classification."
 
-## 2:05 - LinkedIn Intelligence
+## 2:05 - Decisions
 
-"The LinkedIn Intelligence panel turns professional activity into career decisions: which narrative to strengthen, which role to prioritize, who to contact, what content theme to use, and which positioning gap needs action."
+"The recommended executive decision is to run a margin bridge before revising the revenue forecast. The owner is FP&A plus Sales. The risk of inaction is that management may chase revenue volume while accepting lower-quality revenue and further margin erosion."
 
-## 2:30 - Reliability
+## 2:30 - Management Workflow
 
-"The MVP includes demo mode, so it always works without external APIs. If an OpenAI API key is configured, the decision route can use the OpenAI Responses API, but the core demo experience does not depend on it."
+"The output includes management questions and a KPI watchlist: average order value by segment, gross margin bridge by product and customer, discount exceptions, and cash conversion cycle."
 
-## 2:50 - Close
+## 2:50 - Vision
 
-"CFO Signal Desk gives finance leaders a personal executive decision brief for the next operating cycle. It is built for practical usefulness: external context plus personal strategy converted into explainable action."
+"This is not another dashboard. Dashboards show performance. CFO Signal Desk explains what it means and what to do next. The bigger vision is an AI operating system for management: Observe, Interpret, Decide, Act, and Learn."

@@ -1,56 +1,54 @@
 # CFO Signal Desk
 
-OpenAI Build Week MVP: a Personal Executive Decision Intelligence system that transforms fragmented macroeconomic, FX, company, market, and personal professional context into concrete executive decisions.
+OpenAI Build Week MVP: an AI Management Reporting OS module that turns company reports, KPIs, and business context into verified insights, decisions, and actions.
 
-The product answers: **What is the best decision for me today, given what is happening externally, what I am trying to achieve, and what changed in my personal and professional context?**
+The product answers: **What changed, why did it change, what does it mean for management, and what should we do next?**
 
 Motto: **From Signal to Decision.**
 
 ## Product Overview
 
-CFO Signal Desk is built for finance leaders who need fast, board-ready decision support rather than another dashboard of disconnected signals. The current MVP combines CFO market intelligence with a personal decision layer for a finance leader managing job search, professional network, product building, and financial runway.
+CFO Signal Desk is built for CFOs, Finance Directors, FP&A Managers, Controllers, and finance teams who need management-ready insight rather than another KPI dashboard.
+
+Simple promise: **Upload business data. Get decision-ready insights.**
 
 The product constitution is documented in `docs/product-constitution.md`. Every future feature should pass this filter: **Does this reduce executive uncertainty?**
 
 The MVP includes:
 
-- Executive Decision Intelligence cockpit with Next Decision, Highest Priority Risks, Opportunities, Recommended Decisions, Immediate Actions, Tomorrow Watchlist, and a signal-level Decision Framework.
-- Daily Decision Brief primary experience covering what changed, top risks, top opportunities, decisions requiring attention, recommended priorities, three actions today, people to contact, items that can wait, strategic alignment, and tomorrow watchlist.
-- Personal Intelligence data model for goals, constraints, commitments, decisions, open decisions, opportunities, risks, actions, relationships, hypotheses, results, lessons, preferences, and strategic priorities.
-- Mock ingestion layer for daily notes, LinkedIn, career history, job pipeline, calendar, email, tasks, financial context, and market signals.
-- Decision Graph that connects signals, goals, constraints, people, decisions, actions, and results.
-- LinkedIn Intelligence panel for professional positioning, target role alignment, content themes, network opportunities, recruiter signals, and career narrative consistency.
-- Privacy and control controls to disable data sources, inspect evidence, approve inferences, mark them incorrect, edit them, or delete them.
-- AI brief generator structured as Executive Summary, Highest Priority Risks, Opportunities, Recommended Decisions, Today / This Week / This Month actions, and Tomorrow Watchlist.
-- Risk detection for FX volatility, liquidity, inflation pressure, working capital, cost increases, and supply chain alerts.
-- Explainable decision recommendations for each important signal, including why, why now, ignored consequence, KPI affected, confidence, and priority level.
-- Priority selection for Cash Flow, Working Capital, Revenue Growth, Cost Optimization, FX Exposure, Treasury, Investments, and Procurement.
+- Report and KPI input flow with **Upload company report** and **Try sample report** options.
+- Sample management report dataset with revenue, average order value, gross margin, operating cost, and cash conversion cycle.
+- KPI variance analysis against budget and prior period.
+- Insight engine that classifies every output as verified finding, calculated result, hypothesis, or missing data.
+- Insight cards with observation, business impact, likely driver, confidence, recommended action, source evidence, and calculation.
+- Executive summary, management questions, KPI watchlist, recommended decisions, owners, and risk of inaction.
+- Company priority selection for Revenue Growth, Margin Protection, Cash Preservation, Cost Control, Customer Retention, and Operational Efficiency.
+- AI OS loop: Observe -> Interpret -> Decide -> Act -> Learn.
 - Demo mode with realistic sample data so judging and demos work without external APIs.
 
 ## Architecture Overview
 
 ```mermaid
 flowchart LR
-  UI["Next.js Daily Decision Brief"] --> Model["Personal Intelligence Objects"]
-  UI --> Graph["Decision Graph"]
-  Model --> Context["Goals, constraints, people, actions, and evidence"]
-  Graph --> Context
+  UI["Next.js CFO Signal Desk"] --> Input["Upload report or sample KPI dataset"]
+  Input --> Context["Company priorities and management context"]
+  Context --> Engine["KPI / Report Insight Engine"]
+  Engine --> Evidence["Calculations, source evidence, confidence"]
+  Evidence --> Decisions["Recommended decisions, owners, actions, KPI watchlist"]
   Context --> Route["/api/brief"]
-  Market["Market and CFO signals"] --> Route
   Route --> OpenAI["OpenAI Responses API"]
-  Route --> Demo["Local demo brief fallback"]
-  OpenAI --> Brief["Structured executive and personal decision brief JSON"]
-  Demo --> Brief
-  Brief --> UI
+  Route --> Demo["Local demo fallback"]
+  OpenAI --> Decisions
+  Demo --> Decisions
 ```
 
 Key design choices:
 
-- `app/page.tsx` contains the Daily Decision Brief, Personal Intelligence model, mock ingestion controls, Decision Graph, LinkedIn Intelligence, and deterministic demo data.
+- `app/page.tsx` contains the report input flow, sample KPI dataset, insight engine UI, executive decisions, and AI OS loop.
 - `app/api/brief/route.ts` calls the OpenAI Responses API when `OPENAI_API_KEY` is present.
 - The API route falls back to local demo generation whenever credentials or upstream calls are unavailable.
-- The UI is responsive, finance-oriented, and optimized for a 60-second personal executive decision readout.
-- No external market data API is required for the MVP.
+- The UI is responsive, finance-oriented, and optimized for a 90-second Build Week demo.
+- File upload parsing is intentionally post-MVP; the current upload control demonstrates the workflow while the sample report powers the reliable demo.
 
 ## Tech Stack
 
@@ -91,7 +89,7 @@ app/
   api/brief/route.ts      AI brief generation endpoint with demo fallback
   globals.css             Product styling and responsive layout
   layout.tsx              Metadata and app shell
-  page.tsx                Daily Decision Brief and Personal Intelligence system
+  page.tsx                CFO Signal Desk report insight engine
 docs/
   architecture.md         Technical and product architecture notes
   demo-script.md          Suggested demo video script
@@ -108,6 +106,7 @@ tests/
 ## Local Validation
 
 ```bash
+npm run lint
 npm run build
 npm test
 ```
@@ -133,14 +132,15 @@ npm run build
 
 ## Demo Flow
 
-1. Open the cockpit and describe the target user: a CFO or finance leader under time pressure.
-2. Show the Best Decision Today panel and explain that the product starts with the decision, not raw data.
-3. Open the source controls and disable one source to show user control over context.
-4. Review the Daily Decision Brief: what changed, why it matters, objective, constraint, decision options, recommended decision, risk of inaction, success metric, and monitor next.
-5. Inspect Personal Intelligence objects and approve, edit, mark incorrect, or delete an inference.
-6. Show the Decision Graph connecting market signals, goals, constraints, people, actions, and results.
-7. Show LinkedIn Intelligence decisions for positioning, role prioritization, content themes, and network opportunities.
-8. Close with the value proposition: external context plus personal strategy becomes one executive action plan.
+1. Open CFO Signal Desk and state the problem: dashboards show KPI performance, but executives still need to know what changed, why, and what to do.
+2. Show the headline: **Turn company reports and KPIs into management decisions.**
+3. Use **Try sample report** or stage a report through **Upload company report**.
+4. Select company priorities such as Margin Protection, Cash Preservation, and Cost Control.
+5. Review KPI variances: Revenue, Average Order Value, Gross Margin, Operating Cost, and Cash Conversion Cycle.
+6. Open the top insight: revenue is 8% below budget, but the real issue is AOV decline and gross margin erosion.
+7. Show evidence, calculation, confidence, finding type, likely driver, and recommended action.
+8. Review recommended decisions, owners, risks of inaction, management questions, and KPI watchlist.
+9. Close with the vision: this is the first module of an AI Management Reporting OS.
 
 ## Submission Assets
 
@@ -151,11 +151,18 @@ npm run build
 - Screenshots folder: `screenshots/`.
 - Social preview image: `public/og.png`.
 
+## Founder Advantage
+
+The founder advantage is finance-domain judgment: 14 years across finance, accounting, reporting, budgeting, control, operational finance, multi-country work, business partnering, risk, control, and management decision processes.
+
+That experience helps define which KPI matters, which variance deserves management attention, which data must be verified before interpretation, and which output changes a real decision.
+
 ## Remaining Improvements
 
-- Add live data connectors for FX, inflation, central bank events, commodities, and company ERP data.
-- Add authenticated company workspaces.
-- Add persistent daily briefing history.
-- Add private memory storage with user-approved writeback.
-- Add export to PDF, email, Slack, or board-pack formats.
-- Add scenario modeling for FX and working capital shocks.
+- Parse uploaded Excel, CSV, and PDF files.
+- Add budget, prior-period, and forecast import templates.
+- Add persistent company memory and prior decision tracking.
+- Add live ERP, reporting, and BI connectors.
+- Add PDF and board-pack export.
+- Add management action tracker with owners, dates, and follow-up KPIs.
+- Extend later into Finance Signal Desk, Sales Signal Desk, Operations Signal Desk, and CEO Brief.

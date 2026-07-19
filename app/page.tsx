@@ -1,857 +1,592 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { ChangeEvent, useMemo, useState } from "react";
 
-type IntelligenceType =
-  | "Goal"
-  | "Constraint"
-  | "Commitment"
-  | "Decision"
-  | "Open Decision"
-  | "Opportunity"
-  | "Risk"
-  | "Action"
-  | "Relationship"
-  | "Hypothesis"
-  | "Result"
-  | "Lesson"
-  | "Preference"
-  | "Strategic Priority";
+type Priority =
+  | "Revenue growth"
+  | "Margin protection"
+  | "Cash preservation"
+  | "Cost control"
+  | "Customer retention"
+  | "Operational efficiency";
 
-type SourceName =
-  | "Daily Notes"
-  | "LinkedIn"
-  | "Career History"
-  | "Job Pipeline"
-  | "Calendar"
-  | "Email"
-  | "Tasks"
-  | "Financial Context"
-  | "Market Signals";
+type FindingType = "Verified finding" | "Calculated result" | "Hypothesis" | "Missing data";
+type Severity = "High" | "Medium" | "Low";
+type PriorityLevel = "Executive decision" | "Act today" | "Monitor";
 
-type Status = "Confirmed" | "Needs approval" | "AI inference" | "Marked incorrect";
-type Horizon = "Today" | "This week" | "This month" | "Quarter";
-type DecisionPriority = "Executive decision" | "Act today" | "Monitor" | "Can wait";
+type KpiRow = {
+  metric: string;
+  actual: string;
+  budget: string;
+  prior: string;
+  variance: string;
+  status: Severity;
+  driver: string;
+};
 
-type IntelligenceObject = {
+type Insight = {
   id: string;
-  type: IntelligenceType;
   title: string;
-  description: string;
-  category: string;
-  source: SourceName;
-  createdDate: string;
-  lastUpdatedDate: string;
+  observation: string;
+  businessImpact: string;
+  likelyDriver: string;
   confidence: number;
-  importance: number;
-  urgency: number;
-  timeHorizon: Horizon;
-  status: Status;
-  relatedPeople: string[];
-  relatedGoals: string[];
+  findingType: FindingType;
+  severity: Severity;
+  recommendedAction: string;
   evidence: string[];
-  possibleContradiction?: string;
-  recommendedNextAction: string;
+  calculation: string;
 };
 
-type BriefIssue = {
-  id: string;
-  whatChanged: string;
-  whyItMatters: string;
-  relevantObjective: string;
-  relevantConstraints: string[];
-  decisionOptions: string[];
-  recommendedDecision: string;
-  rationale: string;
+type Decision = {
+  recommendation: string;
+  why: string;
   riskOfInaction: string;
-  immediateNextAction: string;
-  successMetric: string;
-  confidence: number;
-  monitorNext: string;
-  priority: DecisionPriority;
-  sources: SourceName[];
+  owner: string;
+  kpi: string;
+  priority: PriorityLevel;
 };
 
-type GraphLink = {
-  from: string;
-  to: string;
-  relationship: string;
-};
-
-type LinkedInSignal = {
-  label: string;
-  assessment: string;
-  decision: string;
-  confidence: number;
-};
-
-const sourceOptions: SourceName[] = [
-  "Daily Notes",
-  "LinkedIn",
-  "Career History",
-  "Job Pipeline",
-  "Calendar",
-  "Email",
-  "Tasks",
-  "Financial Context",
-  "Market Signals",
+const priorityOptions: Priority[] = [
+  "Revenue growth",
+  "Margin protection",
+  "Cash preservation",
+  "Cost control",
+  "Customer retention",
+  "Operational efficiency",
 ];
 
-const baseIntelligence: IntelligenceObject[] = [
+const kpiRows: KpiRow[] = [
   {
-    id: "goal-income",
-    type: "Goal",
-    title: "Build a credible 30-90 day paid pipeline",
-    description:
-      "Prioritize opportunities that can create income, consulting pipeline, or executive employment momentum without sacrificing long-term optionality.",
-    category: "Career strategy",
-    source: "Career History",
-    createdDate: "2026-07-13",
-    lastUpdatedDate: "2026-07-18",
-    confidence: 92,
-    importance: 95,
-    urgency: 88,
-    timeHorizon: "This month",
-    status: "Confirmed",
-    relatedPeople: ["Mahmut Can Yanik", "Bilge", "Ela"],
-    relatedGoals: ["Financial runway", "Executive positioning"],
-    evidence: [
-      "User repeatedly prioritized income generation and family stability.",
-      "Career OS references 30-90 day paid pipeline as the operating filter.",
-    ],
-    recommendedNextAction:
-      "Rank all product, content, and networking actions by credible near-term revenue path.",
+    metric: "Revenue",
+    actual: "$4.6M",
+    budget: "$5.0M",
+    prior: "$4.9M",
+    variance: "-8.0% vs budget",
+    status: "High",
+    driver: "Average order value declined while order count stayed stable.",
   },
   {
-    id: "constraint-family",
-    type: "Constraint",
-    title: "Do not optimize salary alone",
-    description:
-      "Evaluate work choices against income, family stability, flexibility, stress, and 3-10 year optionality.",
-    category: "Life design",
-    source: "Daily Notes",
-    createdDate: "2026-07-13",
-    lastUpdatedDate: "2026-07-18",
-    confidence: 89,
-    importance: 91,
-    urgency: 72,
-    timeHorizon: "Quarter",
-    status: "Confirmed",
-    relatedPeople: ["Bilge", "Ela"],
-    relatedGoals: ["Sustainable workload", "Long-term optionality"],
-    evidence: [
-      "Opportunity filter includes family stability and sustainable workload.",
-      "User asked not to optimize only for next title or salary.",
-    ],
-    recommendedNextAction:
-      "Apply the family-aware opportunity filter before accepting any high-stress role or unpaid product sprint.",
+    metric: "Average order value",
+    actual: "$1,780",
+    budget: "$2,000",
+    prior: "$1,960",
+    variance: "-11.0% vs budget",
+    status: "High",
+    driver: "Two customer segments shifted toward lower-margin products.",
   },
   {
-    id: "priority-cfo-product",
-    type: "Strategic Priority",
-    title: "Position CFO Signal Desk as executive decision intelligence",
-    description:
-      "The product should prove decision quality, not the volume of market information.",
-    category: "Product",
-    source: "Daily Notes",
-    createdDate: "2026-07-17",
-    lastUpdatedDate: "2026-07-18",
-    confidence: 94,
-    importance: 90,
-    urgency: 76,
-    timeHorizon: "This week",
-    status: "Confirmed",
-    relatedPeople: ["Build Week judges", "Potential CFO users"],
-    relatedGoals: ["Product credibility", "Paid advisory path"],
-    evidence: [
-      "Product Constitution: Turn Market Noise into Executive Clarity.",
-      "User rejected generic dashboard framing.",
-    ],
-    recommendedNextAction:
-      "Use the MVP as a proof asset for CFO advisory conversations and Build Week judging.",
+    metric: "Gross margin",
+    actual: "31.8%",
+    budget: "35.0%",
+    prior: "34.6%",
+    variance: "-3.2 pts vs budget",
+    status: "High",
+    driver: "Discounting and product mix pressure concentrated in key accounts.",
   },
   {
-    id: "open-decision-linkedin",
-    type: "Open Decision",
-    title: "Which professional narrative should be strengthened this week?",
-    description:
-      "The user's LinkedIn positioning needs to connect FP&A leadership, CFO decision systems, and practical finance transformation.",
-    category: "LinkedIn positioning",
-    source: "LinkedIn",
-    createdDate: "2026-07-18",
-    lastUpdatedDate: "2026-07-18",
-    confidence: 78,
-    importance: 82,
-    urgency: 68,
-    timeHorizon: "This week",
-    status: "AI inference",
-    relatedPeople: ["Recruiters", "Finance executives", "Professional network"],
-    relatedGoals: ["Executive credibility", "Opportunity pipeline"],
-    evidence: [
-      "Recent skills repositioning favors FP&A, controlling, and strategic finance.",
-      "CFO Signal Desk creates a product proof point for executive finance judgment.",
-    ],
-    possibleContradiction:
-      "Product building can strengthen positioning, but it can also distract from direct applications if not tied to outreach.",
-    recommendedNextAction:
-      "Publish or prepare one concise post linking CFO Signal Desk to practical FP&A decision quality.",
+    metric: "Operating cost",
+    actual: "$1.42M",
+    budget: "$1.35M",
+    prior: "$1.31M",
+    variance: "+5.2% vs budget",
+    status: "Medium",
+    driver: "Freight and overtime costs exceeded plan.",
   },
   {
-    id: "risk-product-time",
-    type: "Risk",
-    title: "Product work may crowd out near-term income actions",
-    description:
-      "A polished MVP has strategic value only if it creates judging momentum, advisory conversations, or career leverage.",
-    category: "Execution risk",
-    source: "Tasks",
-    createdDate: "2026-07-18",
-    lastUpdatedDate: "2026-07-18",
-    confidence: 81,
-    importance: 86,
-    urgency: 79,
-    timeHorizon: "Today",
-    status: "Needs approval",
-    relatedPeople: ["Mahmut Can Yanik"],
-    relatedGoals: ["Financial runway", "Build Week submission"],
-    evidence: [
-      "Current work is product-heavy.",
-      "Income filter requires credible 30-90 day revenue path.",
-    ],
-    recommendedNextAction:
-      "Convert today's product progress into one outward-facing proof asset or outreach-ready demo narrative.",
-  },
-  {
-    id: "signal-fx",
-    type: "Risk",
-    title: "FX volatility increases relevance of CFO Signal Desk demo",
-    description:
-      "Argentina FX pressure creates a practical example for cash, procurement, pricing, and working capital decisions.",
-    category: "Market signal",
-    source: "Market Signals",
-    createdDate: "2026-07-18",
-    lastUpdatedDate: "2026-07-18",
-    confidence: 82,
-    importance: 80,
-    urgency: 73,
-    timeHorizon: "Today",
-    status: "AI inference",
-    relatedPeople: ["CFO users", "SME CEOs"],
-    relatedGoals: ["Product credibility"],
-    evidence: [
-      "Demo market inputs include USDARS pressure, inflation, funding rates, and supplier risk.",
-      "These signals map directly to CFO KPIs.",
-    ],
-    recommendedNextAction:
-      "Use the FX signal as the first demo case because it clearly links external noise to management action.",
-  },
-  {
-    id: "relationship-recruiters",
-    type: "Relationship",
-    title: "Recruiter conversations need tighter follow-up discipline",
-    description:
-      "Professional network interactions should be converted into explicit next actions, waiting-for items, or closed loops.",
-    category: "Network",
-    source: "Email",
-    createdDate: "2026-07-18",
-    lastUpdatedDate: "2026-07-18",
-    confidence: 74,
-    importance: 77,
-    urgency: 65,
-    timeHorizon: "This week",
-    status: "Needs approval",
-    relatedPeople: ["Recruiters", "Hiring managers"],
-    relatedGoals: ["Opportunity pipeline"],
-    evidence: [
-      "Job applications and recruiter conversations are listed as intended data sources.",
-      "The user wants decisions about who to contact and what role to prioritize.",
-    ],
-    recommendedNextAction:
-      "Create a daily contact queue from recruiter, LinkedIn, and application signals.",
+    metric: "Cash conversion cycle",
+    actual: "58 days",
+    budget: "49 days",
+    prior: "52 days",
+    variance: "+9 days vs budget",
+    status: "Medium",
+    driver: "Receivables aging worsened in two strategic customers.",
   },
 ];
 
-const briefIssues: BriefIssue[] = [
+const baseInsights: Insight[] = [
   {
-    id: "pipeline-focus",
-    whatChanged:
-      "The product has moved from CFO market brief to personal decision intelligence, increasing strategic value but also execution scope.",
-    whyItMatters:
-      "The user needs the product to support income, reputation, and long-term optionality, not become an isolated build project.",
-    relevantObjective: "Build a credible 30-90 day paid pipeline.",
-    relevantConstraints: [
-      "Family stability matters.",
-      "Product work must connect to opportunity creation.",
-      "No generic assistant or broad integrations in the MVP.",
-    ],
-    decisionOptions: [
-      "Keep polishing the product only.",
-      "Pause product work and focus only on applications.",
-      "Use the MVP as a proof asset for targeted finance conversations.",
-    ],
-    recommendedDecision:
-      "Turn today's MVP into a focused proof asset for CFO advisory and executive finance positioning.",
-    rationale:
-      "This keeps the product constitution intact while converting technical progress into career and revenue leverage.",
-    riskOfInaction:
-      "The MVP may impress as software but fail to create external momentum or financial runway options.",
-    immediateNextAction:
-      "Prepare one 90-second demo narrative and one outreach-ready LinkedIn angle around decision quality.",
-    successMetric:
-      "At least three high-quality conversations or applications can reference the product within seven days.",
-    confidence: 84,
-    monitorNext:
-      "New recruiter signals, Build Week judging feedback, product demo reactions, and consulting lead quality.",
-    priority: "Executive decision",
-    sources: ["Daily Notes", "Tasks", "LinkedIn"],
-  },
-  {
-    id: "linkedin-positioning",
-    whatChanged:
-      "CFO Signal Desk now provides a concrete example of the user's FP&A and finance transformation judgment.",
-    whyItMatters:
-      "A tangible product makes executive credibility easier to demonstrate than profile keywords alone.",
-    relevantObjective: "Strengthen executive finance positioning.",
-    relevantConstraints: [
-      "Claims must remain truthful and interview-defensible.",
-      "LinkedIn activity should create credibility, not vanity engagement.",
-    ],
-    decisionOptions: [
-      "Publish a technical Build Week update.",
-      "Publish a finance-leadership insight using CFO Signal Desk as proof.",
-      "Avoid public posting and use the demo only in private outreach.",
-    ],
-    recommendedDecision:
-      "Prioritize a finance-leadership narrative: market noise matters only when it changes a CFO decision.",
-    rationale:
-      "This connects FP&A, controlling, executive judgment, and product building in one recruiter-safe story.",
-    riskOfInaction:
-      "The product may look like a side project instead of evidence of executive finance capability.",
-    immediateNextAction:
-      "Draft one post and one recruiter message, but require explicit approval before publishing or sending.",
-    successMetric:
-      "Profile conversations reference CFO decision quality, FP&A leadership, or finance transformation.",
-    confidence: 79,
-    monitorNext:
-      "Inbound recruiter quality, profile views from finance leaders, and response rate to targeted messages.",
-    priority: "Act today",
-    sources: ["LinkedIn", "Career History"],
-  },
-  {
-    id: "focus-risk",
-    whatChanged:
-      "Multiple active priorities exist: job search, professional network, personal product, and financial runway.",
-    whyItMatters:
-      "Without a clear daily priority stack, action can drift away from the user's stated strategy.",
-    relevantObjective: "Protect focus and runway.",
-    relevantConstraints: [
-      "Do not optimize the next salary only.",
-      "Avoid work that creates no asset, relationship, or income path.",
-    ],
-    decisionOptions: [
-      "Treat everything as urgent.",
-      "Prioritize the task with the fastest dopamine loop.",
-      "Use a daily decision filter based on income path, optionality, and family impact.",
-    ],
-    recommendedDecision:
-      "Use the daily filter: revenue path first, then strategic asset, then maintenance.",
-    rationale:
-      "This keeps effort aligned with the user's explicit operating doctrine.",
-    riskOfInaction:
-      "High-effort product and content work may displace job pipeline actions that affect runway sooner.",
-    immediateNextAction:
-      "Select three actions for today: one pipeline action, one product proof action, one relationship action.",
-    successMetric:
-      "Each day closes with a visible pipeline, asset, or relationship advancement.",
+    id: "revenue-quality",
+    title: "Revenue miss is a price and mix issue, not a volume issue.",
+    observation:
+      "Revenue is 8.0% below budget, but the order count is broadly stable. The larger signal is an 11.0% decline in average order value.",
+    businessImpact:
+      "Management should not respond with a generic sales push. The issue points to pricing discipline, product mix, and customer-level margin leakage.",
+    likelyDriver:
+      "Lower-value orders increased in two customer segments while higher-margin product lines underperformed.",
     confidence: 86,
-    monitorNext:
-      "Unresolved applications, overdue replies, time spent on unpaid work, and stress level.",
-    priority: "Executive decision",
-    sources: ["Financial Context", "Tasks", "Daily Notes"],
-  },
-];
-
-const graphLinks: GraphLink[] = [
-  {
-    from: "FX and market volatility",
-    to: "CFO Signal Desk demo credibility",
-    relationship: "External signal creates a stronger proof case.",
+    findingType: "Calculated result",
+    severity: "High",
+    recommendedAction:
+      "Ask Sales and FP&A to review discount exceptions, customer mix, and low-margin product substitution before changing the revenue forecast.",
+    evidence: [
+      "Revenue actual $4.6M versus $5.0M budget.",
+      "Average order value $1,780 versus $2,000 budget.",
+      "Order count stable in the sample report.",
+    ],
+    calculation: "Revenue variance -8.0%; AOV variance -11.0%; volume variance not material.",
   },
   {
-    from: "CFO Signal Desk demo credibility",
-    to: "Executive finance positioning",
-    relationship: "Product proof supports the professional narrative.",
+    id: "margin-bridge",
+    title: "Gross margin erosion requires a margin bridge before price action.",
+    observation:
+      "Gross margin is 31.8%, which is 3.2 points below budget and 2.8 points below prior period.",
+    businessImpact:
+      "If this continues, EBITDA will deteriorate even if revenue recovers, because the company is selling lower-quality revenue.",
+    likelyDriver:
+      "The combined effect of discounting, customer mix, and product mix is more likely than a single cost shock.",
+    confidence: 82,
+    findingType: "Hypothesis",
+    severity: "High",
+    recommendedAction:
+      "Build a customer and product margin bridge, then freeze discretionary discount exceptions until the driver is confirmed.",
+    evidence: [
+      "Gross margin actual 31.8% versus 35.0% budget.",
+      "Average order value declined in the same period.",
+      "Operating cost pressure alone does not explain gross margin loss.",
+    ],
+    calculation: "Gross margin gap 35.0% - 31.8% = 3.2 percentage points.",
   },
   {
-    from: "Executive finance positioning",
-    to: "Recruiter and advisory conversations",
-    relationship: "Clearer positioning should improve conversation quality.",
-  },
-  {
-    from: "Financial runway",
-    to: "Daily priority filter",
-    relationship: "Runway pressure raises urgency for income-linked actions.",
-  },
-  {
-    from: "Family stability",
-    to: "Opportunity decision filter",
-    relationship: "Constraints shape acceptable career options.",
-  },
-  {
-    from: "Unpaid product work",
-    to: "Focus risk",
-    relationship: "A strategic asset can become a distraction if not commercialized.",
-  },
-];
-
-const linkedinSignals: LinkedInSignal[] = [
-  {
-    label: "Professional positioning",
-    assessment:
-      "Strongest when framed as FP&A leadership, decision quality, controlling discipline, and finance transformation.",
-    decision:
-      "Strengthen the narrative around executive finance judgment, not AI building for its own sake.",
-    confidence: 83,
-  },
-  {
-    label: "Target role alignment",
-    assessment:
-      "Best aligned with FP&A, Finance Business Partner, Controller, strategic finance, and fractional CFO conversations.",
-    decision:
-      "Prioritize roles where CFO Signal Desk is relevant proof of business partnering and decision systems.",
-    confidence: 80,
-  },
-  {
-    label: "Content themes",
-    assessment:
-      "The highest-value theme is converting market noise into practical CFO decisions.",
-    decision:
-      "Draft content around 'what changed, why it matters, and what decision follows.'",
+    id: "cash-cycle",
+    title: "Cash preservation risk is emerging from receivables, not only profit.",
+    observation:
+      "Cash conversion cycle is 58 days, 9 days above budget and 6 days worse than the prior period.",
+    businessImpact:
+      "The finance team may need additional short-term liquidity even if sales activity looks stable.",
+    likelyDriver:
+      "Receivables aging in strategic accounts is extending cash collection and reducing operating flexibility.",
     confidence: 78,
+    findingType: "Verified finding",
+    severity: "Medium",
+    recommendedAction:
+      "Escalate the two overdue strategic customers and refresh the 13-week cash forecast using the longer collection cycle.",
+    evidence: [
+      "Cash conversion cycle actual 58 days versus 49 day budget.",
+      "Prior period cash conversion cycle was 52 days.",
+      "Sample report flags two strategic overdue customers.",
+    ],
+    calculation: "CCC variance +9 days versus budget; +6 days versus prior period.",
   },
   {
-    label: "Network opportunities",
-    assessment:
-      "Recruiters, CFOs of SMEs, founders, and FP&A leaders are the most relevant audience for early conversations.",
-    decision:
-      "Contact a narrow list with a product-backed finance leadership angle.",
-    confidence: 74,
+    id: "data-gap",
+    title: "Management should not finalize the root cause without customer-level detail.",
+    observation:
+      "The sample report identifies segment concentration but does not include invoice-level discount, SKU, and customer profitability detail.",
+    businessImpact:
+      "A confident recommendation on price, mix, or customer action requires more granular evidence.",
+    likelyDriver:
+      "Missing customer and SKU-level margin bridge data limits diagnosis precision.",
+    confidence: 69,
+    findingType: "Missing data",
+    severity: "Low",
+    recommendedAction:
+      "Request customer, SKU, discount, and contribution margin detail before approving broad price changes.",
+    evidence: [
+      "Segment issue is visible.",
+      "Invoice-level profitability is not included.",
+      "Discount exception data is missing.",
+    ],
+    calculation: "Data completeness gap: segment insight available; invoice-level proof unavailable.",
   },
 ];
 
-function scoreClass(value: number) {
-  if (value >= 85) {
-    return "scoreHigh";
-  }
-  if (value >= 70) {
-    return "scoreMedium";
-  }
-  return "scoreLow";
+const baseDecisions: Decision[] = [
+  {
+    recommendation: "Run a margin bridge before revising the revenue forecast.",
+    why: "The revenue gap is connected to average order value and gross margin, so the company needs driver clarity before broad commercial action.",
+    riskOfInaction:
+      "Management may chase revenue volume while accepting lower-quality revenue and continued margin erosion.",
+    owner: "FP&A + Sales",
+    kpi: "Gross margin",
+    priority: "Executive decision",
+  },
+  {
+    recommendation: "Freeze non-standard discounts until customer-level profitability is reviewed.",
+    why: "Discounting is a plausible driver of both AOV decline and margin pressure.",
+    riskOfInaction:
+      "The company may normalize exceptions that convert revenue recovery into EBITDA loss.",
+    owner: "Commercial Director",
+    kpi: "Average order value",
+    priority: "Act today",
+  },
+  {
+    recommendation: "Refresh the 13-week cash forecast with the longer collection cycle.",
+    why: "Receivables deterioration can create liquidity stress even when order volume looks stable.",
+    riskOfInaction:
+      "Short-term funding needs may be discovered too late for disciplined treasury action.",
+    owner: "Treasury / Controller",
+    kpi: "Cash conversion cycle",
+    priority: "Act today",
+  },
+];
+
+function severityClass(severity: Severity) {
+  return {
+    High: "severityHigh",
+    Medium: "severityMedium",
+    Low: "severityLow",
+  }[severity];
 }
 
-function priorityClass(priority: DecisionPriority) {
+function priorityClass(priority: PriorityLevel) {
   return {
     "Executive decision": "priorityExecutive",
     "Act today": "priorityAct",
     Monitor: "priorityMonitor",
-    "Can wait": "priorityWait",
   }[priority];
 }
 
-function statusClass(status: Status) {
+function sourceTypeClass(type: FindingType) {
   return {
-    Confirmed: "statusConfirmed",
-    "Needs approval": "statusApproval",
-    "AI inference": "statusInference",
-    "Marked incorrect": "statusIncorrect",
-  }[status];
-}
-
-function sourceClass(enabled: boolean) {
-  return enabled ? "sourceToggle active" : "sourceToggle";
+    "Verified finding": "statusConfirmed",
+    "Calculated result": "statusInference",
+    Hypothesis: "statusApproval",
+    "Missing data": "statusIncorrect",
+  }[type];
 }
 
 export default function Home() {
-  const [objects, setObjects] = useState<IntelligenceObject[]>(baseIntelligence);
-  const [selectedIssueId, setSelectedIssueId] = useState(briefIssues[0].id);
-  const [disabledSources, setDisabledSources] = useState<SourceName[]>([]);
-  const [briefStatus, setBriefStatus] = useState("Demo intelligence ready");
+  const [selectedPriorities, setSelectedPriorities] = useState<Priority[]>([
+    "Margin protection",
+    "Cash preservation",
+    "Cost control",
+  ]);
+  const [uploadedFile, setUploadedFile] = useState("");
+  const [status, setStatus] = useState("Sample report ready");
+  const [activeInsightId, setActiveInsightId] = useState(baseInsights[0].id);
 
-  const visibleObjects = useMemo(
-    () => objects.filter((item) => !disabledSources.includes(item.source)),
-    [disabledSources, objects],
-  );
+  const activeInsight =
+    baseInsights.find((insight) => insight.id === activeInsightId) ?? baseInsights[0];
 
-  const activeIssue =
-    briefIssues.find((issue) => issue.id === selectedIssueId) ?? briefIssues[0];
+  const prioritizedInsights = useMemo(() => {
+    const marginWeight = selectedPriorities.includes("Margin protection") ? 12 : 0;
+    const cashWeight = selectedPriorities.includes("Cash preservation") ? 8 : 0;
 
-  const filteredIssues = briefIssues.filter((issue) =>
-    issue.sources.some((source) => !disabledSources.includes(source)),
-  );
+    return [...baseInsights].sort((a, b) => {
+      const scoreA =
+        a.confidence +
+        (a.id.includes("margin") || a.id.includes("revenue") ? marginWeight : 0) +
+        (a.id.includes("cash") ? cashWeight : 0);
+      const scoreB =
+        b.confidence +
+        (b.id.includes("margin") || b.id.includes("revenue") ? marginWeight : 0) +
+        (b.id.includes("cash") ? cashWeight : 0);
+      return scoreB - scoreA;
+    });
+  }, [selectedPriorities]);
 
-  const mostImportantActions = useMemo(
-    () =>
-      visibleObjects
-        .filter((item) => item.type === "Action" || item.urgency >= 72)
-        .sort((a, b) => b.importance + b.urgency - (a.importance + a.urgency))
-        .slice(0, 3)
-        .map((item) => item.recommendedNextAction),
-    [visibleObjects],
-  );
-
-  const needsApprovalCount = visibleObjects.filter(
-    (item) => item.status === "Needs approval" || item.status === "AI inference",
-  ).length;
-
-  function toggleSource(source: SourceName) {
-    setDisabledSources((current) =>
-      current.includes(source)
-        ? current.filter((item) => item !== source)
-        : [...current, source],
+  function togglePriority(priority: Priority) {
+    setSelectedPriorities((current) =>
+      current.includes(priority)
+        ? current.filter((item) => item !== priority)
+        : [...current, priority],
     );
   }
 
-  function updateStatus(id: string, status: Status) {
-    setObjects((current) =>
-      current.map((item) =>
-        item.id === id
-          ? {
-              ...item,
-              status,
-              lastUpdatedDate: "2026-07-18",
-              confidence: status === "Confirmed" ? Math.max(item.confidence, 86) : item.confidence,
-            }
-          : item,
-      ),
-    );
+  function handleUpload(event: ChangeEvent<HTMLInputElement>) {
+    const fileName = event.target.files?.[0]?.name;
+    if (!fileName) {
+      return;
+    }
+    setUploadedFile(fileName);
+    setStatus(`Report staged: ${fileName}`);
   }
 
-  function deleteObject(id: string) {
-    setObjects((current) => current.filter((item) => item.id !== id));
-  }
-
-  function editInference(id: string) {
-    setObjects((current) =>
-      current.map((item) =>
-        item.id === id
-          ? {
-              ...item,
-              title: `${item.title} (edited)`,
-              status: "Needs approval",
-              lastUpdatedDate: "2026-07-18",
-              recommendedNextAction:
-                "Review this inference manually before it influences future decisions.",
-            }
-          : item,
-      ),
+  function runAnalysis() {
+    setStatus(
+      uploadedFile
+        ? `Analyzed ${uploadedFile} with demo KPI engine`
+        : "Sample management report analyzed",
     );
-  }
-
-  function regenerateDemoBrief() {
-    const nextIssue =
-      filteredIssues.find((issue) => issue.id !== selectedIssueId) ??
-      briefIssues[0];
-    setSelectedIssueId(nextIssue.id);
-    setBriefStatus(
-      disabledSources.length > 0
-        ? "Brief regenerated with disabled sources excluded"
-        : "Daily decision brief regenerated from demo context",
-    );
+    setActiveInsightId(prioritizedInsights[0].id);
   }
 
   return (
     <main className="appShell">
-      <section className="decisionHero" aria-label="Personal executive decision intelligence">
+      <section className="decisionHero" aria-label="AI management reporting cockpit">
         <div className="heroCopy">
-          <p className="eyebrow">Personal Executive Decision Intelligence</p>
+          <p className="eyebrow">AI Management Reporting OS · First module</p>
           <h1>CFO Signal Desk</h1>
           <p className="heroText">
-            From Signal to Decision. Daily Decision Brief connects external market signals
-            with your goals, constraints, relationships, and runway so the product answers:
-            what changed, what matters, what to do today, and what can wait.
+            From Signal to Decision. Turn company reports and KPIs into
+            management decisions. Upload a report or use sample company data;
+            the engine identifies performance drivers, risks, root-cause
+            hypotheses and recommended management actions.
           </p>
         </div>
-        <aside className="nextDecision" aria-label="Best decision today">
-          <span className="statusPill">{briefStatus}</span>
-          <p className="eyebrow">Best Decision Today</p>
-          <h2>{activeIssue.recommendedDecision}</h2>
-          <p>{activeIssue.rationale}</p>
+        <aside className="nextDecision" aria-label="Executive decision from report">
+          <span className="statusPill">{status}</span>
+          <p className="eyebrow">Executive Decision</p>
+          <h2>Run a margin bridge before revising the revenue forecast.</h2>
+          <p>
+            Revenue is below target, but the real issue is lower average order
+            value combined with gross margin erosion. Management needs driver
+            clarity before changing the commercial plan.
+          </p>
           <div className="scoreRail">
-            <ScoreBar label="Importance" value={88} />
-            <ScoreBar label="Urgency" value={84} />
-            <ScoreBar label="Confidence" value={activeIssue.confidence} />
+            <ScoreBar label="Business impact" value={91} />
+            <ScoreBar label="Urgency" value={86} />
+            <ScoreBar label="Confidence" value={activeInsight.confidence} />
           </div>
         </aside>
       </section>
 
-      <section className="sourceControl" aria-label="Data source controls">
-        <div>
-          <p className="eyebrow">Privacy and Control</p>
-          <h2>Sources are explicit and removable</h2>
+      <section className="reportFlow" aria-label="Report input and context">
+        <div className="uploadPanel">
+          <p className="eyebrow">Input</p>
+          <h2>Upload business data. Get decision-ready insights.</h2>
+          <div className="uploadActions">
+            <label className="uploadButton">
+              Upload company report
+              <input
+                accept=".csv,.xlsx,.xls,.pdf"
+                onChange={handleUpload}
+                type="file"
+              />
+            </label>
+            <button className="secondaryButton" onClick={runAnalysis} type="button">
+              Try sample report
+            </button>
+          </div>
+          <p className="inputNote">
+            MVP demo uses a sample management report. Uploaded files are staged
+            in the UI to show the intended workflow; live parsing is post-MVP.
+          </p>
         </div>
-        <div className="sourceGrid">
-          {sourceOptions.map((source) => {
-            const enabled = !disabledSources.includes(source);
-            return (
+
+        <div className="priorityPanel">
+          <p className="eyebrow">Company priorities</p>
+          <div className="priorityGrid" role="group" aria-label="Company priorities">
+            {priorityOptions.map((priority) => (
               <button
-                className={sourceClass(enabled)}
-                key={source}
-                onClick={() => toggleSource(source)}
+                aria-pressed={selectedPriorities.includes(priority)}
+                className={
+                  selectedPriorities.includes(priority)
+                    ? "priorityButton active"
+                    : "priorityButton"
+                }
+                key={priority}
+                onClick={() => togglePriority(priority)}
                 type="button"
-                aria-pressed={enabled}
               >
-                <span>{enabled ? "Enabled" : "Disabled"}</span>
-                <strong>{source}</strong>
+                {priority}
               </button>
-            );
-          })}
+            ))}
+          </div>
         </div>
       </section>
 
-      <section className="decisionWorkspace" aria-label="Daily Decision Brief">
+      <section className="decisionWorkspace" aria-label="Report insight engine">
         <article className="briefPanel">
           <div className="sectionHeader">
             <div>
-              <p className="eyebrow">Daily Decision Brief</p>
-              <h2>What changed, what matters, what to do</h2>
+              <p className="eyebrow">KPI / Report Insight Engine</p>
+              <h2>Dashboards show performance. We explain what it means.</h2>
             </div>
-            <div className="metricCluster" aria-label="Decision metrics">
-              <MiniMetric label="Objects" value={visibleObjects.length.toString()} />
-              <MiniMetric label="Approvals" value={needsApprovalCount.toString()} />
-              <MiniMetric label="Window" value="24h" />
+            <div className="metricCluster" aria-label="Analysis metrics">
+              <MiniMetric label="KPIs" value={kpiRows.length.toString()} />
+              <MiniMetric label="Findings" value={baseInsights.length.toString()} />
+              <MiniMetric label="Mode" value="Demo" />
             </div>
           </div>
 
-          <div className="changeGrid">
-            <BriefCard title="What changed" body={activeIssue.whatChanged} />
-            <BriefCard title="Why it matters" body={activeIssue.whyItMatters} />
-            <BriefCard title="Relevant objective" body={activeIssue.relevantObjective} />
-            <BriefCard
-              title="Risk of inaction"
-              body={activeIssue.riskOfInaction}
-            />
-          </div>
-
-          <div className="briefColumns">
-            <BriefList
-              title="Top Personal and Professional Risks"
-              items={[
-                "Product work creates no near-term pipeline unless it becomes a proof asset.",
-                "LinkedIn positioning can become too technical if the finance decision story is not explicit.",
-                "Multiple active priorities can dilute focus without a daily revenue and optionality filter.",
-              ]}
-            />
-            <BriefList
-              title="Top Opportunities"
-              items={[
-                "Use CFO Signal Desk to demonstrate practical FP&A and CFO judgment.",
-                "Turn the Build Week demo into a recruiter-safe executive finance narrative.",
-                "Contact a narrow network with a clear decision-quality angle.",
-              ]}
-            />
-          </div>
-
-          <section className="decisionDetail" aria-label="Decision reasoning">
-            <div>
-              <strong className={priorityClass(activeIssue.priority)}>
-                {activeIssue.priority}
-              </strong>
-              <h3>{activeIssue.recommendedDecision}</h3>
-              <p>{activeIssue.rationale}</p>
+          <div className="kpiTable" role="table" aria-label="Sample KPI variance table">
+            <div className="kpiHeader" role="row">
+              <span>Metric</span>
+              <span>Actual</span>
+              <span>Budget</span>
+              <span>Prior</span>
+              <span>Variance</span>
             </div>
-            <dl>
-              <div>
-                <dt>Immediate next action</dt>
-                <dd>{activeIssue.immediateNextAction}</dd>
-              </div>
-              <div>
-                <dt>Success metric</dt>
-                <dd>{activeIssue.successMetric}</dd>
-              </div>
-              <div>
-                <dt>Monitor next</dt>
-                <dd>{activeIssue.monitorNext}</dd>
-              </div>
-              <div>
-                <dt>Sources</dt>
-                <dd>{activeIssue.sources.join(", ")}</dd>
-              </div>
-            </dl>
-          </section>
-
-          <div className="issueTabs" role="tablist" aria-label="Decisions requiring attention">
-            {briefIssues.map((issue) => (
+            {kpiRows.map((row) => (
               <button
-                className={issue.id === activeIssue.id ? "issueTab active" : "issueTab"}
-                key={issue.id}
-                onClick={() => setSelectedIssueId(issue.id)}
-                role="tab"
+                className="kpiRow"
+                key={row.metric}
+                onClick={() => {
+                  const match = baseInsights.find((insight) =>
+                    insight.evidence.some((item) => item.includes(row.metric)),
+                  );
+                  if (match) {
+                    setActiveInsightId(match.id);
+                  }
+                }}
+                role="row"
                 type="button"
-                aria-selected={issue.id === activeIssue.id}
               >
-                <span>{issue.priority}</span>
-                <strong>{issue.recommendedDecision}</strong>
+                <strong>{row.metric}</strong>
+                <span>{row.actual}</span>
+                <span>{row.budget}</span>
+                <span>{row.prior}</span>
+                <em className={severityClass(row.status)}>{row.variance}</em>
               </button>
             ))}
           </div>
 
-          <button className="primaryButton" onClick={regenerateDemoBrief} type="button">
-            Regenerate Daily Decision Brief
-          </button>
+          <section className="insightDetail" aria-label="Active management insight">
+            <div className="cardTopline">
+              <strong className={severityClass(activeInsight.severity)}>
+                {activeInsight.severity}
+              </strong>
+              <strong className={sourceTypeClass(activeInsight.findingType)}>
+                {activeInsight.findingType}
+              </strong>
+            </div>
+            <h2>{activeInsight.title}</h2>
+            <div className="insightGrid">
+              <InsightStep title="Observation" body={activeInsight.observation} />
+              <InsightStep title="Business impact" body={activeInsight.businessImpact} />
+              <InsightStep title="Likely driver" body={activeInsight.likelyDriver} />
+              <InsightStep title="Recommended action" body={activeInsight.recommendedAction} />
+            </div>
+            <div className="evidenceStrip">
+              <div>
+                <p className="eyebrow">Calculation</p>
+                <p>{activeInsight.calculation}</p>
+              </div>
+              <div>
+                <p className="eyebrow">Source evidence</p>
+                <ul>
+                  {activeInsight.evidence.map((item) => (
+                    <li key={item}>{item}</li>
+                  ))}
+                </ul>
+              </div>
+              <ScoreBar label="Confidence" value={activeInsight.confidence} />
+            </div>
+          </section>
         </article>
 
-        <aside className="actionPanel" aria-label="Priorities and watchlist">
-          <ActionGroup title="Three Most Important Actions Today" items={mostImportantActions} />
+        <aside className="actionPanel" aria-label="Management actions and watchlist">
           <ActionGroup
-            title="People to Contact"
+            title="Executive Summary"
             items={[
-              "Recruiters or hiring managers already connected to finance leadership roles.",
-              "Two CFO or SME founder contacts who would understand the Signal Desk use case.",
-              "One trusted reviewer for the Build Week demo narrative.",
+              "Revenue is 8.0% below budget, but the stronger signal is an 11.0% decline in average order value.",
+              "Gross margin is 3.2 points below budget, indicating lower-quality revenue.",
+              "Cash conversion cycle is 9 days above budget, creating emerging liquidity pressure.",
             ]}
           />
           <ActionGroup
-            title="Items That Can Wait"
+            title="Questions Management Should Ask"
             items={[
-              "Enterprise integrations before the decision model is trusted.",
-              "Authentication, user management, or persistent database work.",
-              "Broad content experiments without a clear executive finance narrative.",
+              "Which customers received discount exceptions this period?",
+              "Which products or segments drove the AOV decline?",
+              "Are overdue strategic customers also low-margin customers?",
             ]}
           />
           <div className="watchBox">
-            <p className="eyebrow">Tomorrow Watchlist</p>
+            <p className="eyebrow">KPI Watchlist</p>
             <ol>
-              <li>New recruiter or advisory conversations that change the pipeline.</li>
-              <li>Build Week feedback that changes the product proof story.</li>
-              <li>Runway, workload, or family constraints that shift decision urgency.</li>
-              <li>FX, inflation, or funding signals useful for the CFO demo case.</li>
+              <li>Average order value by customer segment</li>
+              <li>Gross margin bridge by product and customer</li>
+              <li>Discount exceptions and approval compliance</li>
+              <li>Cash conversion cycle and overdue receivables</li>
             </ol>
           </div>
         </aside>
       </section>
 
-      <section className="intelligenceArea" aria-label="Personal intelligence model">
-        <article className="briefPanel">
-          <div className="sectionHeader">
+      <section className="insightLibrary" aria-label="Top management insights">
+        <div className="sectionHeader">
+          <div>
+            <p className="eyebrow">Top Insights</p>
+            <h2>Verified insight, calculation, hypothesis, or missing data</h2>
+          </div>
+        </div>
+        <div className="objectGrid">
+          {prioritizedInsights.map((insight) => (
+            <button
+              className={
+                insight.id === activeInsight.id ? "objectCard active" : "objectCard"
+              }
+              key={insight.id}
+              onClick={() => setActiveInsightId(insight.id)}
+              type="button"
+            >
+              <div className="cardTopline">
+                <span>{insight.findingType}</span>
+                <strong className={severityClass(insight.severity)}>
+                  {insight.severity}
+                </strong>
+              </div>
+              <h3>{insight.title}</h3>
+              <p>{insight.observation}</p>
+              <p className="nextAction">{insight.recommendedAction}</p>
+            </button>
+          ))}
+        </div>
+      </section>
+
+      <section className="graphAndLinkedIn" aria-label="Decisions and AI OS architecture">
+        <article className="frameworkPanel">
+          <div className="frameworkHeader">
             <div>
-              <p className="eyebrow">Personal Intelligence Model</p>
-              <h2>Facts, inferences, confidence, and evidence</h2>
+              <p className="eyebrow">Recommended Decisions</p>
+              <h2>Insight must end in management action</h2>
             </div>
           </div>
-          <div className="objectGrid">
-            {visibleObjects.map((item) => (
-              <article className="objectCard" key={item.id}>
-                <div className="cardTopline">
-                  <span>{item.type}</span>
-                  <strong className={statusClass(item.status)}>{item.status}</strong>
+          <div className="decisionList">
+            {baseDecisions.map((decision) => (
+              <article className="decisionItem" key={decision.recommendation}>
+                <div>
+                  <strong className={priorityClass(decision.priority)}>
+                    {decision.priority}
+                  </strong>
+                  <h3>{decision.recommendation}</h3>
+                  <p>{decision.why}</p>
                 </div>
-                <h3>{item.title}</h3>
-                <p>{item.description}</p>
-                {item.possibleContradiction ? (
-                  <p className="contradiction">Possible contradiction: {item.possibleContradiction}</p>
-                ) : null}
                 <dl>
                   <div>
-                    <dt>Source</dt>
-                    <dd>{item.source}</dd>
+                    <dt>Owner</dt>
+                    <dd>{decision.owner}</dd>
                   </div>
                   <div>
-                    <dt>Horizon</dt>
-                    <dd>{item.timeHorizon}</dd>
+                    <dt>KPI</dt>
+                    <dd>{decision.kpi}</dd>
                   </div>
                   <div>
-                    <dt>Importance</dt>
-                    <dd>{item.importance}</dd>
-                  </div>
-                  <div>
-                    <dt>Urgency</dt>
-                    <dd>{item.urgency}</dd>
+                    <dt>Risk of inaction</dt>
+                    <dd>{decision.riskOfInaction}</dd>
                   </div>
                 </dl>
-                <div className="evidenceBox">
-                  <span>Evidence</span>
-                  <ul>
-                    {item.evidence.map((evidence) => (
-                      <li key={evidence}>{evidence}</li>
-                    ))}
-                  </ul>
-                </div>
-                <p className="nextAction">{item.recommendedNextAction}</p>
-                <div className="controlRow" aria-label={`Controls for ${item.title}`}>
-                  <button type="button" onClick={() => updateStatus(item.id, "Confirmed")}>
-                    Approve
-                  </button>
-                  <button type="button" onClick={() => editInference(item.id)}>
-                    Edit
-                  </button>
-                  <button type="button" onClick={() => updateStatus(item.id, "Marked incorrect")}>
-                    Incorrect
-                  </button>
-                  <button type="button" onClick={() => deleteObject(item.id)}>
-                    Delete
-                  </button>
-                </div>
               </article>
             ))}
           </div>
         </article>
-      </section>
 
-      <section className="graphAndLinkedIn" aria-label="Decision graph and LinkedIn intelligence">
         <article className="frameworkPanel">
           <div className="frameworkHeader">
             <div>
-              <p className="eyebrow">Decision Graph</p>
-              <h2>How signals connect to goals, people, actions, and results</h2>
+              <p className="eyebrow">AI OS Loop</p>
+              <h2>Observe → Interpret → Decide → Act → Learn</h2>
             </div>
           </div>
           <div className="graphList">
-            {graphLinks.map((link) => (
-              <div className="graphLink" key={`${link.from}-${link.to}`}>
-                <strong>{link.from}</strong>
-                <span>{link.relationship}</span>
-                <strong>{link.to}</strong>
-              </div>
-            ))}
-          </div>
-        </article>
-
-        <article className="frameworkPanel">
-          <div className="frameworkHeader">
-            <div>
-              <p className="eyebrow">LinkedIn Intelligence</p>
-              <h2>Positioning decisions for the professional pipeline</h2>
-            </div>
-          </div>
-          <div className="linkedinGrid">
-            {linkedinSignals.map((signal) => (
-              <section className="linkedinCard" key={signal.label}>
-                <div className="cardTopline">
-                  <span>{signal.label}</span>
-                  <strong className={scoreClass(signal.confidence)}>{signal.confidence}%</strong>
-                </div>
-                <p>{signal.assessment}</p>
-                <h3>{signal.decision}</h3>
-              </section>
-            ))}
+            <GraphLink from="Report / KPI data" to="Observe" body="Ingest financial, sales, operation and management reporting data." />
+            <GraphLink from="Variance and KPI relationships" to="Interpret" body="Calculate changes, identify anomalies, and classify evidence quality." />
+            <GraphLink from="Root-cause hypotheses" to="Decide" body="Generate management options and explain confidence." />
+            <GraphLink from="Owners, dates, follow-up KPIs" to="Act" body="Turn insights into accountable actions." />
+            <GraphLink from="Prior decisions and outcomes" to="Learn" body="Build company performance memory over time." />
           </div>
         </article>
       </section>
 
-      <section className="alignmentPanel" aria-label="Strategic alignment check">
+      <section className="alignmentPanel" aria-label="Founder advantage and product thesis">
         <div>
-          <p className="eyebrow">Strategic Alignment Check</p>
-          <h2>Do today actions match the user strategy?</h2>
+          <p className="eyebrow">Founder Advantage</p>
+          <h2>Finance-domain AI systems architect</h2>
         </div>
         <div className="alignmentGrid">
-          <AlignmentItem label="Revenue path first" score={86} />
-          <AlignmentItem label="Executive credibility" score={90} />
-          <AlignmentItem label="Family stability" score={78} />
-          <AlignmentItem label="Long-term optionality" score={84} />
+          <AlignmentItem label="Finance experience" score={94} />
+          <AlignmentItem label="Management reporting" score={92} />
+          <AlignmentItem label="Decision workflow design" score={90} />
+          <AlignmentItem label="Build Week readiness" score={86} />
         </div>
         <p>
-          Current read: product work is strategically aligned only if it becomes a proof
-          asset for paid pipeline, stronger recruiter conversations, or targeted CFO
-          advisory outreach.
+          The defensible insight is not only the model. It is the finance
+          judgment that decides which variance matters, which data needs
+          verification, what should reach management, and which action changes
+          performance.
         </p>
       </section>
     </main>
@@ -881,24 +616,11 @@ function MiniMetric({ label, value }: { label: string; value: string }) {
   );
 }
 
-function BriefCard({ title, body }: { title: string; body: string }) {
+function InsightStep({ title, body }: { title: string; body: string }) {
   return (
-    <section className="briefCard">
+    <section className="frameworkStep">
       <span>{title}</span>
       <p>{body}</p>
-    </section>
-  );
-}
-
-function BriefList({ title, items }: { title: string; items: string[] }) {
-  return (
-    <section className="briefList">
-      <h3>{title}</h3>
-      <ul>
-        {items.map((item) => (
-          <li key={item}>{item}</li>
-        ))}
-      </ul>
     </section>
   );
 }
@@ -913,6 +635,24 @@ function ActionGroup({ title, items }: { title: string; items: string[] }) {
         ))}
       </ul>
     </section>
+  );
+}
+
+function GraphLink({
+  from,
+  to,
+  body,
+}: {
+  from: string;
+  to: string;
+  body: string;
+}) {
+  return (
+    <div className="graphLink">
+      <strong>{from}</strong>
+      <span>{body}</span>
+      <strong>{to}</strong>
+    </div>
   );
 }
 

@@ -57,101 +57,101 @@ type Brief = {
 
 const fallbackBrief: Brief = {
   executiveSummary:
-    "Today requires a defensive CFO posture: FX pressure is the only signal that needs executive-level action, while inflation and funding costs require same-day operating follow-up. The next decision is whether to accelerate approved USD-linked procurement before supplier prices reset. Liquidity should be protected through collections discipline, not a broad spending freeze. Tomorrow's watchlist should focus only on FX intervention, supplier quote resets, and price pressure that changes cash or margin decisions.",
+    "The sample management report shows revenue 8.0% below budget, but the stronger management signal is an 11.0% decline in average order value combined with a 3.2 point gross margin gap. This points to pricing, discounting, customer mix, or product mix rather than a simple volume problem. Management should run a margin bridge before revising the revenue forecast or pushing broad sales volume. The next watchlist should focus on AOV by segment, discount exceptions, gross margin bridge, and cash conversion cycle.",
   highestPriorityRisks: [
     {
-      description: "USD-linked supplier exposure may reprice before procurement reacts.",
+      description: "Management may misdiagnose the revenue miss as a volume problem.",
       businessImpact:
-        "Imported inputs and open purchase orders can hit gross margin and cash planning.",
-      urgency: "Executive decision today",
+        "A generic sales push could recover revenue while lowering gross margin and EBITDA quality.",
+      urgency: "Executive decision before forecast revision",
     },
     {
-      description: "Input inflation is moving through logistics-heavy categories.",
+      description: "Gross margin is 3.2 points below budget.",
       businessImpact:
-        "Margin forecasts may be stale for high-volume SKUs with weak pass-through.",
-      urgency: "Finance and commercial review within 48 hours",
+        "The company is selling lower-quality revenue unless price, mix, and discount drivers are controlled.",
+      urgency: "Margin bridge this week",
     },
     {
-      description: "High short-term funding rates raise the cost of overdue receivables.",
+      description: "Cash conversion cycle is 9 days above budget.",
       businessImpact:
-        "Working capital delays can convert into avoidable financing cost.",
-      urgency: "Collections escalation today",
+        "Receivables pressure may create liquidity risk even if sales activity appears stable.",
+      urgency: "13-week cash forecast refresh today",
     },
   ],
   opportunities: [
     {
-      description: "Use the FX move as a decision window before suppliers reset terms.",
-      valueCreated: "Protects gross margin and reduces unpriced USD exposure.",
-      action: "Approve only purchases with margin cover and hedge visibility.",
+      description: "Use the AOV decline to identify where revenue quality is weakening.",
+      valueCreated: "Protects EBITDA by targeting the real commercial driver.",
+      action: "Analyze customer, SKU, and discount mix before changing sales targets.",
     },
     {
-      description: "Turn inflation pressure into a targeted pricing review.",
-      valueCreated: "Defends weak-margin SKUs without broad repricing.",
-      action: "Focus on top-volume SKUs and customers with pass-through capacity.",
+      description: "Turn gross margin variance into a management-ready bridge.",
+      valueCreated: "Separates price, volume, mix, and cost effects for faster decisions.",
+      action: "Build a margin bridge by customer segment and product line.",
     },
     {
-      description: "Use high rates to sharpen collection discipline.",
-      valueCreated: "Improves liquidity without cutting strategic spend.",
-      action: "Escalate overdue accounts before adding short-term debt.",
+      description: "Use cash cycle pressure to tighten working capital discipline.",
+      valueCreated: "Improves liquidity before short-term funding becomes necessary.",
+      action: "Escalate overdue strategic accounts and update the cash forecast.",
     },
   ],
   recommendedDecisions: [
     {
-      recommendation: "Review procurement timing for USD-linked inputs.",
-      why: "FX pressure can convert open supplier exposure into a margin hit.",
-      whyNow: "The rate moved 3.1% in 24 hours and supplier terms may reset tomorrow.",
+      recommendation: "Run a margin bridge before revising the revenue forecast.",
+      why: "Revenue, average order value, and gross margin moved together, so management needs driver clarity before broad commercial action.",
+      whyNow: "Revenue is 8.0% below budget while AOV is 11.0% below budget and gross margin is 3.2 points below plan.",
       ignoredConsequence:
-        "The company may pay more for the same inputs while losing pricing time.",
-      kpiAffected: "FX Exposure",
-      confidence: 82,
+        "The company may chase volume while accepting lower-quality revenue and continued margin erosion.",
+      kpiAffected: "Gross Margin",
+      confidence: 86,
       priorityLevel: "Executive decision",
     },
     {
-      recommendation: "Update the 13-week cash forecast with current FX and funding rates.",
-      why: "Liquidity decisions need the latest cost of cash and supplier exposure.",
+      recommendation: "Freeze non-standard discounts until customer profitability is reviewed.",
+      why: "Discounting is a plausible driver of both AOV decline and gross margin pressure.",
       whyNow:
-        "Short-term funding is expensive and overdue receivables carry a larger penalty.",
+        "The KPI pattern suggests the revenue miss is linked to price and mix, not only demand.",
       ignoredConsequence:
-        "Cash planning may understate financing needs and timing risk.",
-      kpiAffected: "Cash Flow",
-      confidence: 79,
+        "Discount exceptions may become normalized before the company understands their EBITDA impact.",
+      kpiAffected: "Average Order Value",
+      confidence: 78,
       priorityLevel: "Act today",
     },
     {
-      recommendation: "Start a targeted pricing review for exposed SKUs.",
-      why: "Input inflation is concentrated enough to require margin defense, not broad repricing.",
+      recommendation: "Refresh the 13-week cash forecast with the longer collection cycle.",
+      why: "Cash conversion cycle is 9 days above budget and receivables pressure can create liquidity risk.",
       whyNow:
-        "Weekly logistics and food pressure is visible before the next purchase cycle.",
+        "Working capital deterioration can move faster than monthly reporting cadence.",
       ignoredConsequence:
-        "Supplier cost increases may flow into EBITDA before pricing catches up.",
-      kpiAffected: "Gross Margin",
-      confidence: 74,
+        "Short-term funding needs may be discovered too late for disciplined treasury action.",
+      kpiAffected: "Cash Conversion Cycle",
+      confidence: 76,
       priorityLevel: "Act today",
     },
   ],
   immediateActions: {
     today: [
-      "Treasury: reconcile open USD supplier commitments against hedge coverage.",
-      "Procurement: identify purchase orders that will reset if FX moves again.",
-      "FP&A: refresh 13-week cash forecast with updated FX and funding assumptions.",
+      "FP&A: build a margin bridge by price, volume, mix, and cost.",
+      "Sales: list all non-standard discount exceptions by customer.",
+      "Treasury: update the 13-week cash forecast using the longer collection cycle.",
     ],
     thisWeek: [
-      "Commercial: run a margin bridge for top-volume SKUs.",
-      "Collections: escalate strategic overdue accounts with financing-cost impact.",
-      "Operations: prepare alternate supplier quotes for critical inputs.",
+      "Commercial: review customer and product mix behind the AOV decline.",
+      "Controller: verify invoice-level margin and discount data.",
+      "Collections: escalate overdue strategic customers.",
     ],
     thisMonth: [
-      "Define FX exposure thresholds that trigger CFO approval.",
-      "Build a recurring price-pass-through review by product and customer segment.",
-      "Review working capital policy for high-rate environments.",
+      "Create a recurring management pack with evidence, calculation, decision, owner, and KPI watchlist.",
+      "Track whether discount discipline improves AOV and margin.",
+      "Review prior actions against next-period performance outcomes.",
     ],
   },
   tomorrowWatchlist: [
-    "CCL and blue dollar gap versus supplier quote resets",
-    "Central bank FX intervention signals",
-    "Food, freight, and packaging price indicators",
-    "Overdue AR movement on strategic accounts",
-    "Short-term funding rate availability",
+    "Average order value by customer segment",
+    "Gross margin bridge by product and customer",
+    "Discount exceptions and approval compliance",
+    "Cash conversion cycle and overdue receivables",
+    "Invoice-level customer profitability data gaps",
   ],
 };
 
@@ -159,25 +159,25 @@ function jsonBrief(priorities: string[]): Brief {
   const selected =
     priorities.length > 0
       ? priorities.join(", ")
-      : "Cash Flow, Working Capital, FX Exposure";
+      : "Margin protection, Cash preservation, Cost control";
 
   return {
     ...fallbackBrief,
-    executiveSummary: `${fallbackBrief.executiveSummary} Because the selected priorities are ${selected}, the decision set is weighted toward the KPIs most likely to change management action.`,
+    executiveSummary: `${fallbackBrief.executiveSummary} Because the selected priorities are ${selected}, the decision set is weighted toward the performance drivers most likely to change management action.`,
     recommendedDecisions: [
       ...fallbackBrief.recommendedDecisions,
       {
-        recommendation: `Run a CFO decision standup focused on ${selected}.`,
-        why: "Selected company priorities should change the operating agenda, not just the wording of the brief.",
+        recommendation: `Run a management reporting review focused on ${selected}.`,
+        why: "Selected company priorities should change which variances are escalated and which actions are assigned.",
         whyNow:
-          "The current signal set affects supplier timing, liquidity, and margin decisions within the next operating day.",
+          "The current KPI pattern affects forecast quality, margin protection, and working capital decisions.",
         ignoredConsequence:
-          "Treasury, FP&A, Procurement, and Commercial may respond with conflicting priorities.",
-        kpiAffected: selected.includes("Revenue Growth")
+          "Management may review the same report but leave without a clear owner, action, or KPI follow-up.",
+        kpiAffected: selected.includes("Revenue growth")
           ? "Revenue"
-          : selected.includes("Cost Optimization")
+          : selected.includes("Cost control")
             ? "Operating Cost"
-            : "Cash Flow",
+            : "Gross Margin",
         confidence: 76,
         priorityLevel: "Act today",
       },
@@ -186,12 +186,12 @@ function jsonBrief(priorities: string[]): Brief {
       ...fallbackBrief.immediateActions,
       today: [
         ...fallbackBrief.immediateActions.today,
-        `CFO: align Treasury, FP&A, Procurement, and Commercial around ${selected}.`,
+        `CFO: align FP&A, Sales, Controller, and Treasury around ${selected}.`,
       ],
     },
     tomorrowWatchlist: [
       ...fallbackBrief.tomorrowWatchlist,
-      `Priority trigger review: ${selected}`,
+      `Priority-based variance review: ${selected}`,
     ],
   };
 }
@@ -271,12 +271,12 @@ export async function POST(request: NextRequest) {
           {
             role: "system",
             content:
-              "You are CFO Signal Desk, an Executive Decision Intelligence engine. Mission: Turn Market Noise into Executive Clarity. Motto: From Signal to Decision. Never produce generic summaries and never behave like a generic personal assistant. Combine external market intelligence with confirmed user goals, constraints, commitments, relationships, and professional context. For every signal, reason through business relevance, financial impact, operational impact, strategic risk, available decision options, recommended executive action, priority level, source evidence, confidence, and tomorrow monitoring. Distinguish facts from AI inference. No workflow should stop before reaching an executive recommendation. Return only valid JSON.",
+              "You are CFO Signal Desk, an AI Management Reporting OS module for CFOs and finance teams. Mission: turn company reports, KPIs, and business context into verified insights, decisions, and actions. Never produce generic summaries. For every insight, classify whether it is a verified finding, calculated result, hypothesis, missing data, or management question. Explain the source evidence, calculation, business impact, likely driver, confidence, recommended management decision, action owner, risk of inaction, and KPI watchlist. Dashboards show performance; you explain what it means and what to do next. Return only valid JSON.",
           },
           {
             role: "user",
             content: JSON.stringify({
-              task: "Generate a CFO executive decision brief.",
+              task: "Generate a management reporting decision brief from KPI and report context.",
               companyContext: payload.companyContext,
               priorities,
               signals: payload.signals,
