@@ -9,6 +9,16 @@
 - Reliable sample management report: complete
 - KPI variance table: complete
 - Interpretation classification: complete
+- Epistemic status for every material signal: complete
+- Confidence and decision readiness separation: complete
+- What We Still Don't Know section: complete
+- Assessment-changing evidence section: complete
+- Challenge Assessment flow: complete
+- User challenge and visible assessment revision: complete
+- Source and provenance drawer: complete
+- Trust and limitations panel: complete
+- Lightweight decision journal: complete
+- Decision discipline coaching: complete
 - Source evidence and calculation display: complete
 - Confidence scoring: complete
 - Root-cause hypotheses: complete
@@ -46,7 +56,9 @@ A calm executive companion for CFOs and finance teams. Users upload a report or 
 
 - Company context and priorities shape the analysis.
 - The system calculates and explains variances instead of only summarizing.
-- Every insight shows evidence, calculation, confidence, and classification.
+- Every interpretation shows evidence, calculation, confidence, epistemic status, and limitations.
+- Recommendations show readiness, reversibility, evidence quality, downside exposure, and assessment-changing conditions.
+- The product rewards correction through Challenge Assessment and visible assessment revision.
 - Outputs are standardized for management reporting.
 - The long-term product can learn from prior decisions and outcomes.
 

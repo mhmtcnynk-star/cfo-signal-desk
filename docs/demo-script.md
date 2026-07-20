@@ -22,15 +22,15 @@
 
 ## 1:40 - Insight Quality
 
-"The product does not just say revenue declined. It explains that order volume is broadly stable, so the likely issue is price, product mix, or customer mix. Every insight shows observation, business impact, likely driver, recommended action, evidence, calculation, confidence, and classification."
+"The product does not just say revenue declined. It shows what is verified, what is inferred, what is assumed, and what remains unknown. Every interpretation has source evidence, calculation, confidence, limitations, and a provenance drawer."
 
 ## 2:05 - Decisions
 
-"The recommended executive decision is to run a margin bridge before revising the revenue forecast. The owner is FP&A plus Sales. The risk of inaction is that management may chase revenue volume while accepting lower-quality revenue and further margin erosion."
+"The recommended executive move is to run a margin bridge before revising the revenue forecast. The product separates confidence from readiness: this action is ready because it is reversible and evidence-generating, while broader pricing or forecast decisions should wait."
 
 ## 2:30 - Management Workflow
 
-"The output includes management questions and tomorrow's attention list: average order value by segment, gross margin bridge by product and customer, discount exceptions, and cash conversion cycle."
+"The output includes what we still do not know, what would change the recommendation, a challenge case, action owners, a decision journal, and tomorrow's attention list."
 
 ## 2:50 - Vision
 

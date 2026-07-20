@@ -66,7 +66,21 @@ test("server-renders the CFO Signal Desk MVP", async () => {
   assert.match(html, /Human Advantage/);
   assert.match(html, /Sample report ready/);
   assert.match(html, /Executive judgment/);
+  assert.match(html, /Epistemic status/);
+  assert.match(html, /Verified fact/);
+  assert.match(html, /Model inference/);
+  assert.match(html, /Insufficient data/);
+  assert.match(html, /Why am I seeing this/);
+  assert.match(html, /What We Still Don&#x27;t Know/);
+  assert.match(html, /Confidence is not readiness/);
+  assert.match(html, /Decision readiness/);
+  assert.match(html, /What Would Change This Assessment/);
+  assert.match(html, /Challenge assessment/);
+  assert.match(html, /Decision Journal/);
+  assert.match(html, /Trust &amp; Limitations/);
+  assert.match(html, /Separate confidence from permission to act/);
   assert.doesNotMatch(html, /codex-preview|SkeletonPreview|react-loading-skeleton/);
+  assert.doesNotMatch(html, /Definitely|Without a doubt|I strongly believe/);
 });
 
 test("keeps Build Week submission assets documented", async () => {
@@ -122,6 +136,13 @@ test("keeps Build Week submission assets documented", async () => {
   assert.match(page, /Preguntas que management debería hacer/);
   assert.match(page, /Ciclo de sentido/);
   assert.match(page, /Report Interpretation/);
+  assert.match(page, /type EpistemicStatus/);
+  assert.match(page, /type DecisionReadiness/);
+  assert.match(page, /type ChallengeCase/);
+  assert.match(page, /type AssessmentRevision/);
+  assert.match(page, /type DecisionJournalEntry/);
+  assert.match(page, /createRevision/);
+  assert.match(page, /Trust & Limitations/);
   assert.match(page, /sourceTypeClass/);
   assert.match(page, /average order value/i);
   assert.match(layout, /CFO Signal Desk/);

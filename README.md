@@ -23,6 +23,13 @@ The MVP includes:
 - Sample management report dataset with revenue, average order value, gross margin, operating cost, and cash conversion cycle.
 - KPI variance interpretation against budget and prior period.
 - Report interpretation that classifies every output as verified finding, calculated result, hypothesis, or missing data.
+- Epistemic status badges that separate verified facts, model inference, working assumptions, stale signals, conflicting evidence, and insufficient data.
+- Decision readiness that separates confidence from permission to act.
+- What We Still Don't Know section with owner, speed, impact, and whether the current decision can proceed.
+- Challenge Assessment flow that shows the strongest opposing case, weak assumptions, cost if wrong, and a controlled experiment.
+- Natural-language challenge input that visibly revises, partially revises, or reverses the current assessment.
+- Source and provenance drawer for visible claims, clearly labeling demo data and model interpretation.
+- Lightweight decision journal for accept, reject, modify, or postpone actions.
 - Interpretation cards with what changed, what it changes, likely driver, confidence, suggested direction, source evidence, and calculation.
 - Executive summary, management questions, tomorrow's attention, recommended moves, owners, and risk of inaction.
 - Company priority selection for Revenue Growth, Margin Protection, Cash Preservation, Cost Control, Customer Retention, and Operational Efficiency.
@@ -101,6 +108,8 @@ docs/
   first-principles-role.md
                           Human role and first-principles product philosophy
   product-constitution.md Product principles and decision filter
+  trust-epistemic-layer.md
+                          Trust, provenance, challenge, readiness, and journal model
   submission-checklist.md Build Week submission checklist
 screenshots/
   README.md               Screenshot capture guide
@@ -145,9 +154,10 @@ npm run build
 4. Select company priorities such as Margin Protection, Cash Preservation, and Cost Control.
 5. Review KPI variances: Revenue, Average Order Value, Gross Margin, Operating Cost, and Cash Conversion Cycle.
 6. Open the top insight: revenue is 8% below budget, but the real issue is AOV decline and gross margin erosion.
-7. Show evidence, calculation, confidence, finding type, likely driver, and suggested direction.
-8. Review recommended moves, owners, risks of inaction, management questions, and tomorrow's attention.
-9. Close with the vision: this is a calm companion for executive judgment, not another reporting surface.
+7. Show epistemic status, evidence, calculation, confidence, finding type, likely driver, and suggested direction.
+8. Open **Why am I seeing this?** to show source, freshness, transformation, dependencies, and limitations.
+9. Review **What We Still Don't Know**, decision readiness, assessment-changing evidence, challenge case, decision journal, and tomorrow's attention.
+10. Close with the vision: this is a calm companion for executive judgment, not another reporting surface.
 
 ## Submission Assets
 

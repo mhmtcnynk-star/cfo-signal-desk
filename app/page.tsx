@@ -6,6 +6,21 @@ type Locale = "en" | "es";
 type Severity = "High" | "Medium" | "Low";
 type PriorityLevel = "Executive decision" | "Act today" | "Monitor";
 type FindingType = "Verified finding" | "Calculated result" | "Hypothesis" | "Missing data";
+type EpistemicStatus =
+  | "Verified fact"
+  | "User-provided information"
+  | "Model inference"
+  | "Working assumption"
+  | "Insufficient data"
+  | "Potentially stale"
+  | "Conflicting evidence";
+type ConfidenceLevel = "High" | "Medium" | "Low";
+type ReadinessLevel =
+  | "Ready to act"
+  | "Act with safeguards"
+  | "Gather more evidence"
+  | "Do not act yet";
+type RevisionStatus = "Unchanged" | "Partially revised" | "Fully reversed";
 
 type KpiRow = {
   metric: string;
@@ -28,15 +43,98 @@ type Insight = {
   recommendedAction: string;
   evidence: string[];
   calculation: string;
+  epistemicStatus?: EpistemicStatus;
+  source?: string;
+  lastUpdated?: string;
+  limitations?: string;
+  assumptionDependency?: string;
+  provenance?: Provenance;
+};
+
+type Evidence = {
+  label: string;
+  status: EpistemicStatus;
+  source: string;
+};
+
+type Assumption = {
+  statement: string;
+  dependsOn: string;
+};
+
+type Unknown = {
+  missing: string;
+  whyItMatters: string;
+  owner: string;
+  speed: string;
+  canProceed: string;
+};
+
+type Provenance = {
+  origin: string;
+  priority: string;
+  transformation: string;
+  freshness: string;
+  dependencies: string[];
+};
+
+type DecisionReadiness = {
+  level: ReadinessLevel;
+  confidence: ConfidenceLevel;
+  dimensions: {
+    financialMateriality: ConfidenceLevel;
+    urgency: ConfidenceLevel;
+    reversibility: ConfidenceLevel;
+    evidenceQuality: ConfidenceLevel;
+    downsideExposure: ConfidenceLevel;
+  };
+};
+
+type ChallengeCase = {
+  argument: string;
+  opposingEvidence: string[];
+  weakAssumptions: string[];
+  costIfWrong: string;
+  compromise: string;
+};
+
+type AssessmentRevision = {
+  status: RevisionStatus;
+  newInformation: string;
+  impact: string;
+  revisedRecommendation: string;
+  remainingUncertainty: string;
 };
 
 type Decision = {
+  id: string;
   recommendation: string;
   why: string;
   riskOfInaction: string;
   owner: string;
   kpi: string;
   priority: PriorityLevel;
+  readiness?: DecisionReadiness;
+  evidence?: Evidence[];
+  assumptions?: Assumption[];
+  unknowns?: Unknown[];
+  changeConditions?: string[];
+  challenge?: ChallengeCase;
+  revision?: AssessmentRevision;
+  expectedOutcome?: string;
+  reviewDate?: string;
+};
+
+type DecisionJournalEntry = {
+  id: string;
+  decision: string;
+  date: string;
+  responsiblePerson: string;
+  evidenceAtDecision: string;
+  unresolvedAssumptions: string;
+  expectedOutcome: string;
+  reviewDate: string;
+  actualOutcome: string;
 };
 
 type GraphLink = {
@@ -61,6 +159,65 @@ type Copy = {
   scoreBusinessImpact: string;
   scoreUrgency: string;
   scoreConfidence: string;
+  readinessTitle: string;
+  confidenceLabel: string;
+  readinessLabel: string;
+  dimensionsTitle: string;
+  epistemicLabel: string;
+  sourceLabel: string;
+  lastUpdatedLabel: string;
+  limitationsLabel: string;
+  assumptionLabel: string;
+  provenanceButton: string;
+  provenanceTitle: string;
+  dependenciesLabel: string;
+  unknownsEyebrow: string;
+  unknownsTitle: string;
+  unknownLabels: {
+    missing: string;
+    why: string;
+    owner: string;
+    speed: string;
+    proceed: string;
+  };
+  changeTitle: string;
+  challengeButton: string;
+  challengeTitle: string;
+  challengeLabels: {
+    opposing: string;
+    assumptions: string;
+    cost: string;
+    compromise: string;
+  };
+  userChallengeTitle: string;
+  challengePlaceholder: string;
+  applyChallenge: string;
+  revisionTitle: string;
+  revisionLabels: {
+    newInfo: string;
+    impact: string;
+    revised: string;
+    uncertainty: string;
+  };
+  journalTitle: string;
+  journalButtons: {
+    accept: string;
+    reject: string;
+    modify: string;
+    postpone: string;
+  };
+  journalLabels: {
+    evidence: string;
+    assumptions: string;
+    expected: string;
+    review: string;
+    actual: string;
+  };
+  disciplineEyebrow: string;
+  disciplineTitle: string;
+  disciplineBody: string;
+  trustTitle: string;
+  trustItems: string[];
   inputEyebrow: string;
   inputTitle: string;
   uploadReport: string;
@@ -117,9 +274,15 @@ type Copy = {
   severity: Record<Severity, string>;
   priority: Record<PriorityLevel, string>;
   findingType: Record<FindingType, string>;
+  epistemicStatus: Record<EpistemicStatus, string>;
+  readiness: Record<ReadinessLevel, string>;
+  confidenceLevel: Record<ConfidenceLevel, string>;
+  revisionStatus: Record<RevisionStatus, string>;
   kpiRows: KpiRow[];
   insights: Insight[];
+  unknowns: Unknown[];
   decisions: Decision[];
+  journal: DecisionJournalEntry[];
   graphLinks: GraphLink[];
 };
 
@@ -142,6 +305,71 @@ const copies: Record<Locale, Copy> = {
     scoreBusinessImpact: "Business impact",
     scoreUrgency: "Urgency",
     scoreConfidence: "Confidence",
+    readinessTitle: "Confidence is not readiness",
+    confidenceLabel: "Confidence",
+    readinessLabel: "Decision readiness",
+    dimensionsTitle: "Decision dimensions",
+    epistemicLabel: "Epistemic status",
+    sourceLabel: "Source",
+    lastUpdatedLabel: "Last updated",
+    limitationsLabel: "Known limitations",
+    assumptionLabel: "Depends on assumption",
+    provenanceButton: "Why am I seeing this?",
+    provenanceTitle: "Source and provenance",
+    dependenciesLabel: "Dependencies",
+    unknownsEyebrow: "What We Still Don't Know",
+    unknownsTitle: "Insufficient data is a useful result",
+    unknownLabels: {
+      missing: "Missing information",
+      why: "Why it matters",
+      owner: "Who can provide it",
+      speed: "How quickly",
+      proceed: "Can proceed?",
+    },
+    changeTitle: "What Would Change This Assessment?",
+    challengeButton: "Challenge assessment",
+    challengeTitle: "Challenge case",
+    challengeLabels: {
+      opposing: "Opposing evidence",
+      assumptions: "Assumptions that may be wrong",
+      cost: "Cost if wrong",
+      compromise: "Controlled experiment",
+    },
+    userChallengeTitle: "Add new information",
+    challengePlaceholder:
+      "Example: This ignores seasonality, the customer is strategically important, or we already signed the supplier agreement.",
+    applyChallenge: "Revise assessment",
+    revisionTitle: "Assessment revision",
+    revisionLabels: {
+      newInfo: "New information received",
+      impact: "Impact on assessment",
+      revised: "Revised recommendation",
+      uncertainty: "Remaining uncertainty",
+    },
+    journalTitle: "Decision Journal",
+    journalButtons: {
+      accept: "Accept",
+      reject: "Reject",
+      modify: "Modify",
+      postpone: "Postpone",
+    },
+    journalLabels: {
+      evidence: "Evidence available then",
+      assumptions: "Unresolved assumptions",
+      expected: "Expected outcome",
+      review: "Review date",
+      actual: "Actual outcome",
+    },
+    disciplineEyebrow: "Decision Discipline",
+    disciplineTitle: "Separate confidence from permission to act",
+    disciplineBody:
+      "A recommendation can be directionally sound and still not be ready for an irreversible move. Reversible actions require less evidence than commitments that cannot be undone.",
+    trustTitle: "Trust & Limitations",
+    trustItems: [
+      "This brief uses the visible demonstration dataset and selected company priorities.",
+      "It does not include live ERP cash balances, customer-level profitability, contracts, or real-time market feeds unless those inputs are entered or connected.",
+      "Recommendations are decision support, not automatic authorization. Material decisions should be validated against company records.",
+    ],
     inputEyebrow: "Input",
     inputTitle: "Bring business data into context.",
     uploadReport: "Upload company report",
@@ -238,6 +466,31 @@ const copies: Record<Locale, Copy> = {
       Hypothesis: "Hypothesis",
       "Missing data": "Missing data",
     },
+    epistemicStatus: {
+      "Verified fact": "Verified fact",
+      "User-provided information": "User-provided information",
+      "Model inference": "Model inference",
+      "Working assumption": "Working assumption",
+      "Insufficient data": "Insufficient data",
+      "Potentially stale": "Potentially stale",
+      "Conflicting evidence": "Conflicting evidence",
+    },
+    readiness: {
+      "Ready to act": "Ready to act",
+      "Act with safeguards": "Act with safeguards",
+      "Gather more evidence": "Gather more evidence",
+      "Do not act yet": "Do not act yet",
+    },
+    confidenceLevel: {
+      High: "High",
+      Medium: "Medium",
+      Low: "Low",
+    },
+    revisionStatus: {
+      Unchanged: "Unchanged",
+      "Partially revised": "Partially revised",
+      "Fully reversed": "Fully reversed",
+    },
     kpiRows: [
       {
         metric: "Revenue",
@@ -302,6 +555,18 @@ const copies: Record<Locale, Copy> = {
         ],
         calculation:
           "Revenue variance -8.0%; AOV variance -11.0%; volume variance not material.",
+        epistemicStatus: "Model inference",
+        source: "Demonstration dataset",
+        lastUpdated: "Today 08:40",
+        limitations: "Order count is available only at summary level; customer-level profitability is not included.",
+        assumptionDependency: "Assumes the stable order count in the sample report reflects current period demand.",
+        provenance: {
+          origin: "Demonstration dataset",
+          priority: "Margin protection",
+          transformation: "Compared revenue, average order value, and order volume variance.",
+          freshness: "Current demo period",
+          dependencies: ["Revenue", "Average order value", "Order count"],
+        },
       },
       {
         id: "margin-bridge",
@@ -323,6 +588,18 @@ const copies: Record<Locale, Copy> = {
           "Operating cost pressure alone does not explain gross margin loss.",
         ],
         calculation: "Gross margin gap 35.0% - 31.8% = 3.2 percentage points.",
+        epistemicStatus: "Working assumption",
+        source: "Model interpretation based on the listed inputs",
+        lastUpdated: "Today 08:40",
+        limitations: "The margin bridge is not yet available at customer, SKU, or discount exception level.",
+        assumptionDependency: "Assumes discounting and mix are more material than a single cost shock.",
+        provenance: {
+          origin: "Demonstration dataset",
+          priority: "Margin protection",
+          transformation: "Compared gross margin against budget and prior period, then linked it to AOV movement.",
+          freshness: "Current demo period",
+          dependencies: ["Gross margin", "Average order value", "Operating cost"],
+        },
       },
       {
         id: "cash-cycle",
@@ -344,6 +621,18 @@ const copies: Record<Locale, Copy> = {
           "Sample report flags two strategic overdue customers.",
         ],
         calculation: "CCC variance +9 days versus budget; +6 days versus prior period.",
+        epistemicStatus: "Verified fact",
+        source: "Demonstration dataset",
+        lastUpdated: "Today 08:40",
+        limitations: "The visible report does not include the ERP cash balance or customer payment promises.",
+        assumptionDependency: "Does not require a causal assumption; the CCC variance is directly visible.",
+        provenance: {
+          origin: "Demonstration dataset",
+          priority: "Cash preservation",
+          transformation: "Compared cash conversion cycle against budget and prior period.",
+          freshness: "Current demo period",
+          dependencies: ["Cash conversion cycle", "Receivables flag"],
+        },
       },
       {
         id: "data-gap",
@@ -364,10 +653,52 @@ const copies: Record<Locale, Copy> = {
           "Discount exception data is missing.",
         ],
         calculation: "Data completeness gap: segment insight available; invoice-level proof unavailable.",
+        epistemicStatus: "Insufficient data",
+        source: "Demonstration dataset",
+        lastUpdated: "Today 08:40",
+        limitations: "The current assessment cannot validate price, mix, or customer profitability at transaction level.",
+        assumptionDependency: "Any customer-level recommendation depends on details not yet visible.",
+        provenance: {
+          origin: "Demonstration dataset",
+          priority: "Margin protection",
+          transformation: "Compared available segment data with the evidence required for final root-cause attribution.",
+          freshness: "Current demo period",
+          dependencies: ["Customer profitability", "SKU margin", "Discount exceptions"],
+        },
+      },
+    ],
+    unknowns: [
+      {
+        missing: "Customer and SKU-level contribution margin",
+        whyItMatters:
+          "Without it, management may treat a mix problem as a volume problem and protect the wrong revenue.",
+        owner: "FP&A + Commercial Operations",
+        speed: "1-2 business days",
+        canProceed:
+          "A reversible margin bridge can start now; broad price or forecast changes should wait.",
+      },
+      {
+        missing: "Strategic customer churn risk",
+        whyItMatters:
+          "A low-margin customer may still deserve protection if it anchors a future enterprise relationship.",
+        owner: "Sales Director",
+        speed: "Same day through account review",
+        canProceed:
+          "Proceed with targeted review, not a blanket customer action.",
+      },
+      {
+        missing: "Supplier and contract commitments already signed",
+        whyItMatters:
+          "If commitments are irreversible, the recommendation should shift from delay to mitigation.",
+        owner: "Procurement + Controller",
+        speed: "Within 24 hours",
+        canProceed:
+          "Do not approve irreversible spending until commitments are verified.",
       },
     ],
     decisions: [
       {
+        id: "margin-bridge",
         recommendation: "Run a margin bridge before revising the revenue forecast.",
         why: "The revenue gap is connected to average order value and gross margin, so the company needs driver clarity before broad commercial action.",
         riskOfInaction:
@@ -375,8 +706,85 @@ const copies: Record<Locale, Copy> = {
         owner: "FP&A + Sales",
         kpi: "Gross margin",
         priority: "Executive decision",
+        readiness: {
+          level: "Ready to act",
+          confidence: "High",
+          dimensions: {
+            financialMateriality: "High",
+            urgency: "Medium",
+            reversibility: "High",
+            evidenceQuality: "Medium",
+            downsideExposure: "Medium",
+          },
+        },
+        evidence: [
+          {
+            label: "Revenue is 8.0% below budget.",
+            status: "Verified fact",
+            source: "Demonstration dataset",
+          },
+          {
+            label: "AOV decline is likely connected to margin erosion.",
+            status: "Model inference",
+            source: "Model interpretation based on the listed inputs",
+          },
+        ],
+        assumptions: [
+          {
+            statement: "The order count stability is directionally reliable.",
+            dependsOn: "Summary-level order count in the sample report",
+          },
+          {
+            statement: "Mix and discounting matter more than a single cost shock.",
+            dependsOn: "Customer and SKU margin bridge still missing",
+          },
+        ],
+        unknowns: [
+          {
+            missing: "Invoice-level discount and profitability detail",
+            whyItMatters: "It determines whether action belongs with pricing, product mix, or account management.",
+            owner: "FP&A",
+            speed: "1-2 business days",
+            canProceed: "Yes. The bridge itself is reversible and evidence-generating.",
+          },
+        ],
+        changeConditions: [
+          "Customer-level margin shows the gap is concentrated in one temporary contract.",
+          "Pipeline conversion confirms higher-margin orders will recover next period.",
+          "Supplier costs explain more than 70% of the gross margin gap.",
+        ],
+        challenge: {
+          argument:
+            "The current recommendation may over-focus on margin and underweight seasonality or strategic customer behavior.",
+          opposingEvidence: [
+            "Revenue softness could be seasonal if the same month historically shows lower AOV.",
+            "A strategic customer may accept lower margin now but protect future enterprise volume.",
+          ],
+          weakAssumptions: [
+            "Order count stability may hide segment-level demand changes.",
+            "The sample report does not prove discounting caused the gross margin gap.",
+          ],
+          costIfWrong:
+            "Management could slow commercial action while the real issue is a normal seasonal mix shift.",
+          compromise:
+            "Run the margin bridge in 48 hours while allowing reversible account-level actions for strategic customers.",
+        },
+        revision: {
+          status: "Partially revised",
+          newInformation: "The user adds that the customer is strategically important despite lower margin.",
+          impact:
+            "The recommendation shifts from blanket discount freeze to customer-segment review.",
+          revisedRecommendation:
+            "Run the margin bridge, but preserve strategic-customer exceptions until account-level value is reviewed.",
+          remainingUncertainty:
+            "Long-term customer value and churn risk still need account-owner validation.",
+        },
+        expectedOutcome:
+          "Management separates price, volume, mix, and cost effects before changing the forecast.",
+        reviewDate: "2026-07-24",
       },
       {
+        id: "discount-freeze",
         recommendation: "Freeze non-standard discounts until customer-level profitability is reviewed.",
         why: "Discounting is a plausible driver of both AOV decline and margin pressure.",
         riskOfInaction:
@@ -384,8 +792,43 @@ const copies: Record<Locale, Copy> = {
         owner: "Commercial Director",
         kpi: "Average order value",
         priority: "Act today",
+        readiness: {
+          level: "Act with safeguards",
+          confidence: "Medium",
+          dimensions: {
+            financialMateriality: "High",
+            urgency: "High",
+            reversibility: "Medium",
+            evidenceQuality: "Medium",
+            downsideExposure: "High",
+          },
+        },
+        changeConditions: [
+          "Strategic account review shows exceptions protect long-term customer value.",
+          "Signed commercial commitments make a blanket freeze impractical.",
+          "Discount exception data shows approvals are already compliant.",
+        ],
+        challenge: {
+          argument:
+            "A discount freeze may protect margin but damage strategic relationships if applied without account context.",
+          opposingEvidence: [
+            "Two low-margin customers may be strategically important.",
+            "Some discounts may be contractual rather than discretionary.",
+          ],
+          weakAssumptions: [
+            "The visible report does not separate contractual discounts from discretionary exceptions.",
+          ],
+          costIfWrong:
+            "The company could create avoidable customer friction while solving the wrong part of the margin issue.",
+          compromise:
+            "Freeze only new discretionary exceptions and review strategic accounts separately.",
+        },
+        expectedOutcome:
+          "Margin leakage slows while the team distinguishes strategic from discretionary discounts.",
+        reviewDate: "2026-07-23",
       },
       {
+        id: "cash-forecast",
         recommendation: "Refresh the 13-week cash forecast with the longer collection cycle.",
         why: "Receivables deterioration can create liquidity stress even when order volume looks stable.",
         riskOfInaction:
@@ -393,6 +836,53 @@ const copies: Record<Locale, Copy> = {
         owner: "Treasury / Controller",
         kpi: "Cash conversion cycle",
         priority: "Act today",
+        readiness: {
+          level: "Ready to act",
+          confidence: "High",
+          dimensions: {
+            financialMateriality: "High",
+            urgency: "High",
+            reversibility: "High",
+            evidenceQuality: "High",
+            downsideExposure: "Medium",
+          },
+        },
+        changeConditions: [
+          "ERP cash balance confirms liquidity headroom above policy threshold.",
+          "Overdue strategic customers confirm payment dates inside the forecast window.",
+          "Collections exceed forecast by 10% for two consecutive weeks.",
+        ],
+        challenge: {
+          argument:
+            "The cash forecast update may overstate risk if overdue balances are already covered by confirmed payment commitments.",
+          opposingEvidence: [
+            "The visible report does not include customer payment promises.",
+            "ERP cash balance is not connected in the MVP demo.",
+          ],
+          weakAssumptions: [
+            "The current receivables delay will persist across the forecast window.",
+          ],
+          costIfWrong:
+            "Treasury may create unnecessary caution and slow useful spending.",
+          compromise:
+            "Refresh the forecast now, but mark payment promises as a separate sensitivity rather than confirmed cash.",
+        },
+        expectedOutcome:
+          "Treasury sees liquidity exposure early enough to respond without overreacting.",
+        reviewDate: "2026-07-22",
+      },
+    ],
+    journal: [
+      {
+        id: "journal-001",
+        decision: "Postponed full revenue forecast revision until margin bridge is complete.",
+        date: "2026-07-20",
+        responsiblePerson: "FP&A Lead",
+        evidenceAtDecision: "Revenue -8.0% vs budget; AOV -11.0%; gross margin -3.2 pts.",
+        unresolvedAssumptions: "Customer-level profitability and discount exception detail unavailable.",
+        expectedOutcome: "Forecast revision reflects price, mix, and margin quality rather than only volume.",
+        reviewDate: "2026-07-24",
+        actualOutcome: "Pending",
       },
     ],
     graphLinks: [
@@ -441,6 +931,71 @@ const copies: Record<Locale, Copy> = {
     scoreBusinessImpact: "Impacto de negocio",
     scoreUrgency: "Urgencia",
     scoreConfidence: "Confianza",
+    readinessTitle: "Confianza no es preparación",
+    confidenceLabel: "Confianza",
+    readinessLabel: "Preparación de decisión",
+    dimensionsTitle: "Dimensiones de decisión",
+    epistemicLabel: "Estado epistémico",
+    sourceLabel: "Fuente",
+    lastUpdatedLabel: "Última actualización",
+    limitationsLabel: "Limitaciones conocidas",
+    assumptionLabel: "Depende de supuesto",
+    provenanceButton: "¿Por qué veo esto?",
+    provenanceTitle: "Fuente y procedencia",
+    dependenciesLabel: "Dependencias",
+    unknownsEyebrow: "Lo que aún no sabemos",
+    unknownsTitle: "Dato insuficiente también es un resultado útil",
+    unknownLabels: {
+      missing: "Información faltante",
+      why: "Por qué importa",
+      owner: "Quién puede aportarlo",
+      speed: "Qué tan rápido",
+      proceed: "¿Se puede avanzar?",
+    },
+    changeTitle: "¿Qué cambiaría esta evaluación?",
+    challengeButton: "Cuestionar evaluación",
+    challengeTitle: "Caso contrario",
+    challengeLabels: {
+      opposing: "Evidencia opuesta",
+      assumptions: "Supuestos que pueden estar equivocados",
+      cost: "Costo si está mal",
+      compromise: "Experimento controlado",
+    },
+    userChallengeTitle: "Agregar información nueva",
+    challengePlaceholder:
+      "Ejemplo: ignora la estacionalidad, el cliente es estratégico o ya firmamos el acuerdo con proveedor.",
+    applyChallenge: "Revisar evaluación",
+    revisionTitle: "Revisión de evaluación",
+    revisionLabels: {
+      newInfo: "Nueva información recibida",
+      impact: "Impacto en la evaluación",
+      revised: "Recomendación revisada",
+      uncertainty: "Incertidumbre restante",
+    },
+    journalTitle: "Registro de decisiones",
+    journalButtons: {
+      accept: "Aceptar",
+      reject: "Rechazar",
+      modify: "Modificar",
+      postpone: "Postergar",
+    },
+    journalLabels: {
+      evidence: "Evidencia disponible entonces",
+      assumptions: "Supuestos abiertos",
+      expected: "Resultado esperado",
+      review: "Fecha de revisión",
+      actual: "Resultado real",
+    },
+    disciplineEyebrow: "Disciplina de decisión",
+    disciplineTitle: "Separar confianza de permiso para actuar",
+    disciplineBody:
+      "Una recomendación puede ser correcta en dirección y aun así no estar lista para una decisión irreversible. Las acciones reversibles requieren menos evidencia que los compromisos difíciles de deshacer.",
+    trustTitle: "Confianza y limitaciones",
+    trustItems: [
+      "Este brief usa el dataset de demostración visible y las prioridades seleccionadas.",
+      "No incluye saldos ERP en vivo, rentabilidad por cliente, contratos ni feeds de mercado en tiempo real salvo que esos inputs se ingresen o conecten.",
+      "Las recomendaciones son apoyo a la decisión, no autorización automática. Las decisiones materiales deben validarse contra registros de la empresa.",
+    ],
     inputEyebrow: "Entrada",
     inputTitle: "Trae los datos de negocio a contexto.",
     uploadReport: "Subir reporte de empresa",
@@ -537,6 +1092,31 @@ const copies: Record<Locale, Copy> = {
       Hypothesis: "Hipótesis",
       "Missing data": "Dato faltante",
     },
+    epistemicStatus: {
+      "Verified fact": "Hecho verificado",
+      "User-provided information": "Información del usuario",
+      "Model inference": "Inferencia del modelo",
+      "Working assumption": "Supuesto de trabajo",
+      "Insufficient data": "Dato insuficiente",
+      "Potentially stale": "Potencialmente desactualizado",
+      "Conflicting evidence": "Evidencia conflictiva",
+    },
+    readiness: {
+      "Ready to act": "Listo para actuar",
+      "Act with safeguards": "Actuar con resguardos",
+      "Gather more evidence": "Reunir más evidencia",
+      "Do not act yet": "No actuar todavía",
+    },
+    confidenceLevel: {
+      High: "Alta",
+      Medium: "Media",
+      Low: "Baja",
+    },
+    revisionStatus: {
+      Unchanged: "Sin cambios",
+      "Partially revised": "Revisión parcial",
+      "Fully reversed": "Reversión completa",
+    },
     kpiRows: [
       {
         metric: "Ingresos",
@@ -601,6 +1181,18 @@ const copies: Record<Locale, Copy> = {
         ],
         calculation:
           "Desvío de ingresos -8,0%; desvío de ticket promedio -11,0%; desvío de volumen no material.",
+        epistemicStatus: "Model inference",
+        source: "Dataset de demostración",
+        lastUpdated: "Hoy 08:40",
+        limitations: "La cantidad de órdenes está solo a nivel resumen; no incluye rentabilidad por cliente.",
+        assumptionDependency: "Asume que la estabilidad de órdenes refleja demanda del periodo actual.",
+        provenance: {
+          origin: "Dataset de demostración",
+          priority: "Protección de margen",
+          transformation: "Comparación entre ingresos, ticket promedio y volumen de órdenes.",
+          freshness: "Periodo demo actual",
+          dependencies: ["Ingresos", "Ticket promedio", "Cantidad de órdenes"],
+        },
       },
       {
         id: "margin-bridge",
@@ -622,6 +1214,18 @@ const copies: Record<Locale, Copy> = {
           "La presión de costo operativo por sí sola no explica la pérdida de margen bruto.",
         ],
         calculation: "Gap de margen bruto 35,0% - 31,8% = 3,2 puntos porcentuales.",
+        epistemicStatus: "Working assumption",
+        source: "Interpretación del modelo basada en inputs listados",
+        lastUpdated: "Hoy 08:40",
+        limitations: "No existe aún puente de margen por cliente, SKU o excepción de descuento.",
+        assumptionDependency: "Asume que descuentos y mix pesan más que un shock único de costo.",
+        provenance: {
+          origin: "Dataset de demostración",
+          priority: "Protección de margen",
+          transformation: "Comparación de margen bruto contra budget y periodo anterior, vinculada al ticket promedio.",
+          freshness: "Periodo demo actual",
+          dependencies: ["Margen bruto", "Ticket promedio", "Costo operativo"],
+        },
       },
       {
         id: "cash-cycle",
@@ -643,6 +1247,18 @@ const copies: Record<Locale, Copy> = {
           "El reporte de ejemplo marca dos clientes estratégicos vencidos.",
         ],
         calculation: "Desvío CCC +9 días versus budget; +6 días versus periodo anterior.",
+        epistemicStatus: "Verified fact",
+        source: "Dataset de demostración",
+        lastUpdated: "Hoy 08:40",
+        limitations: "El reporte visible no incluye saldo de caja ERP ni promesas de pago de clientes.",
+        assumptionDependency: "No requiere supuesto causal; el desvío CCC es visible directamente.",
+        provenance: {
+          origin: "Dataset de demostración",
+          priority: "Preservación de caja",
+          transformation: "Comparación de ciclo de conversión de caja contra budget y periodo anterior.",
+          freshness: "Periodo demo actual",
+          dependencies: ["Ciclo de conversión de caja", "Flag de cuentas por cobrar"],
+        },
       },
       {
         id: "data-gap",
@@ -664,10 +1280,52 @@ const copies: Record<Locale, Copy> = {
           "Faltan datos de excepciones de descuento.",
         ],
         calculation: "Gap de completitud: insight por segmento disponible; prueba a nivel factura no disponible.",
+        epistemicStatus: "Insufficient data",
+        source: "Dataset de demostración",
+        lastUpdated: "Hoy 08:40",
+        limitations: "No puede validar precio, mix o rentabilidad de cliente a nivel transacción.",
+        assumptionDependency: "Toda recomendación por cliente depende de detalles todavía no visibles.",
+        provenance: {
+          origin: "Dataset de demostración",
+          priority: "Protección de margen",
+          transformation: "Comparación entre datos disponibles y evidencia necesaria para cerrar causa raíz.",
+          freshness: "Periodo demo actual",
+          dependencies: ["Rentabilidad por cliente", "Margen SKU", "Excepciones de descuento"],
+        },
+      },
+    ],
+    unknowns: [
+      {
+        missing: "Margen de contribución por cliente y SKU",
+        whyItMatters:
+          "Sin eso, management puede tratar un problema de mix como un problema de volumen.",
+        owner: "FP&A + Operaciones Comerciales",
+        speed: "1-2 días hábiles",
+        canProceed:
+          "El puente de margen puede empezar ahora; cambios amplios de precio o forecast deben esperar.",
+      },
+      {
+        missing: "Riesgo de churn en clientes estratégicos",
+        whyItMatters:
+          "Un cliente de bajo margen puede merecer protección si sostiene una relación enterprise futura.",
+        owner: "Director Comercial",
+        speed: "Mismo día con revisión de cuentas",
+        canProceed:
+          "Avanzar con revisión dirigida, no con acción amplia por cliente.",
+      },
+      {
+        missing: "Compromisos de proveedor y contratos ya firmados",
+        whyItMatters:
+          "Si los compromisos son irreversibles, la recomendación cambia de espera a mitigación.",
+        owner: "Procurement + Controller",
+        speed: "Dentro de 24 horas",
+        canProceed:
+          "No aprobar gasto irreversible hasta verificar compromisos.",
       },
     ],
     decisions: [
       {
+        id: "margin-bridge",
         recommendation: "Construir un puente de margen antes de revisar el forecast de ingresos.",
         why: "El gap de ingresos está conectado con ticket promedio y margen bruto, por lo que la empresa necesita claridad sobre drivers antes de una acción comercial amplia.",
         riskOfInaction:
@@ -675,8 +1333,80 @@ const copies: Record<Locale, Copy> = {
         owner: "FP&A + Sales",
         kpi: "Margen bruto",
         priority: "Executive decision",
+        readiness: {
+          level: "Ready to act",
+          confidence: "High",
+          dimensions: {
+            financialMateriality: "High",
+            urgency: "Medium",
+            reversibility: "High",
+            evidenceQuality: "Medium",
+            downsideExposure: "Medium",
+          },
+        },
+        evidence: [
+          {
+            label: "Ingresos 8,0% por debajo del budget.",
+            status: "Verified fact",
+            source: "Dataset de demostración",
+          },
+          {
+            label: "La caída del ticket probablemente está conectada con erosión de margen.",
+            status: "Model inference",
+            source: "Interpretación del modelo basada en inputs listados",
+          },
+        ],
+        assumptions: [
+          {
+            statement: "La estabilidad de órdenes es direccionalmente confiable.",
+            dependsOn: "Cantidad de órdenes a nivel resumen",
+          },
+        ],
+        unknowns: [
+          {
+            missing: "Detalle de descuento y rentabilidad a nivel factura",
+            whyItMatters: "Determina si la acción pertenece a pricing, mix o account management.",
+            owner: "FP&A",
+            speed: "1-2 días hábiles",
+            canProceed: "Sí. El puente es reversible y genera evidencia.",
+          },
+        ],
+        changeConditions: [
+          "El margen por cliente muestra que el gap se concentra en un contrato temporal.",
+          "La conversión de pipeline confirma recuperación de órdenes de mayor margen.",
+          "Costos de proveedor explican más del 70% del gap de margen bruto.",
+        ],
+        challenge: {
+          argument:
+            "La recomendación puede enfocarse demasiado en margen e ignorar estacionalidad o valor estratégico de clientes.",
+          opposingEvidence: [
+            "La baja de ingresos podría ser estacional.",
+            "Un cliente estratégico puede justificar menor margen ahora.",
+          ],
+          weakAssumptions: [
+            "La estabilidad de órdenes puede ocultar cambios por segmento.",
+          ],
+          costIfWrong:
+            "Management podría demorar acción comercial cuando el problema real es estacional.",
+          compromise:
+            "Construir el puente en 48 horas y permitir acciones reversibles por cuenta estratégica.",
+        },
+        revision: {
+          status: "Partially revised",
+          newInformation: "El usuario agrega que el cliente es estratégico pese al bajo margen.",
+          impact:
+            "La recomendación cambia de congelamiento amplio a revisión por segmento y cuenta.",
+          revisedRecommendation:
+            "Construir el puente de margen preservando excepciones de clientes estratégicos hasta revisar valor de cuenta.",
+          remainingUncertainty:
+            "Valor largo plazo y riesgo de churn aún requieren validación del account owner.",
+        },
+        expectedOutcome:
+          "Management separa precio, volumen, mix y costo antes de cambiar el forecast.",
+        reviewDate: "2026-07-24",
       },
       {
+        id: "discount-freeze",
         recommendation: "Congelar descuentos no estándar hasta revisar rentabilidad por cliente.",
         why: "Los descuentos son un driver plausible tanto de la caída del ticket promedio como de la presión sobre margen.",
         riskOfInaction:
@@ -684,8 +1414,43 @@ const copies: Record<Locale, Copy> = {
         owner: "Director Comercial",
         kpi: "Ticket promedio",
         priority: "Act today",
+        readiness: {
+          level: "Act with safeguards",
+          confidence: "Medium",
+          dimensions: {
+            financialMateriality: "High",
+            urgency: "High",
+            reversibility: "Medium",
+            evidenceQuality: "Medium",
+            downsideExposure: "High",
+          },
+        },
+        changeConditions: [
+          "La revisión de cuentas muestra que las excepciones protegen valor estratégico.",
+          "Compromisos firmados hacen impracticable un congelamiento amplio.",
+          "Los datos muestran que las aprobaciones ya cumplen política.",
+        ],
+        challenge: {
+          argument:
+            "Congelar descuentos puede proteger margen pero dañar relaciones estratégicas si se aplica sin contexto.",
+          opposingEvidence: [
+            "Dos clientes de bajo margen pueden ser estratégicos.",
+            "Algunos descuentos pueden ser contractuales.",
+          ],
+          weakAssumptions: [
+            "El reporte no separa descuentos contractuales de discrecionales.",
+          ],
+          costIfWrong:
+            "La empresa podría crear fricción evitable con clientes.",
+          compromise:
+            "Congelar solo nuevas excepciones discrecionales y revisar cuentas estratégicas por separado.",
+        },
+        expectedOutcome:
+          "Se reduce fuga de margen mientras se distingue descuento estratégico de discrecional.",
+        reviewDate: "2026-07-23",
       },
       {
+        id: "cash-forecast",
         recommendation: "Actualizar el forecast de caja de 13 semanas con el ciclo de cobranza más largo.",
         why: "El deterioro de cuentas por cobrar puede generar estrés de liquidez aunque el volumen de órdenes parezca estable.",
         riskOfInaction:
@@ -693,6 +1458,53 @@ const copies: Record<Locale, Copy> = {
         owner: "Tesorería / Controller",
         kpi: "Ciclo de conversión de caja",
         priority: "Act today",
+        readiness: {
+          level: "Ready to act",
+          confidence: "High",
+          dimensions: {
+            financialMateriality: "High",
+            urgency: "High",
+            reversibility: "High",
+            evidenceQuality: "High",
+            downsideExposure: "Medium",
+          },
+        },
+        changeConditions: [
+          "Saldo ERP confirma liquidez por encima del umbral de política.",
+          "Clientes vencidos confirman fechas de pago dentro del forecast.",
+          "Cobranzas superan forecast 10% por dos semanas consecutivas.",
+        ],
+        challenge: {
+          argument:
+            "El forecast puede sobreestimar riesgo si las cuentas vencidas ya tienen promesas de pago confirmadas.",
+          opposingEvidence: [
+            "El reporte visible no incluye promesas de pago.",
+            "El saldo ERP no está conectado en el demo.",
+          ],
+          weakAssumptions: [
+            "El retraso de cobranzas persistirá durante la ventana de forecast.",
+          ],
+          costIfWrong:
+            "Tesorería podría crear cautela innecesaria y frenar gasto útil.",
+          compromise:
+            "Actualizar forecast ahora, separando promesas de pago como sensibilidad no confirmada.",
+        },
+        expectedOutcome:
+          "Tesorería ve exposición de liquidez temprano sin sobrerreaccionar.",
+        reviewDate: "2026-07-22",
+      },
+    ],
+    journal: [
+      {
+        id: "journal-001",
+        decision: "Postergar revisión completa del forecast hasta terminar puente de margen.",
+        date: "2026-07-20",
+        responsiblePerson: "FP&A Lead",
+        evidenceAtDecision: "Ingresos -8,0%; ticket -11,0%; margen bruto -3,2 pts.",
+        unresolvedAssumptions: "Falta rentabilidad por cliente y detalle de descuentos.",
+        expectedOutcome: "Forecast refleja precio, mix y calidad de margen, no solo volumen.",
+        reviewDate: "2026-07-24",
+        actualOutcome: "Pendiente",
       },
     ],
     graphLinks: [
@@ -750,6 +1562,119 @@ function sourceTypeClass(type: FindingType) {
   }[type];
 }
 
+function epistemicForInsight(insight: Insight): EpistemicStatus {
+  if (insight.epistemicStatus) {
+    return insight.epistemicStatus;
+  }
+  return {
+    "Verified finding": "Verified fact",
+    "Calculated result": "Model inference",
+    Hypothesis: "Working assumption",
+    "Missing data": "Insufficient data",
+  }[insight.findingType] as EpistemicStatus;
+}
+
+function statusClass(status: EpistemicStatus | ReadinessLevel | ConfidenceLevel | RevisionStatus) {
+  if (
+    status === "Verified fact" ||
+    status === "User-provided information" ||
+    status === "Ready to act" ||
+    status === "High" ||
+    status === "Unchanged"
+  ) {
+    return "scoreHigh";
+  }
+  if (
+    status === "Model inference" ||
+    status === "Working assumption" ||
+    status === "Act with safeguards" ||
+    status === "Gather more evidence" ||
+    status === "Medium" ||
+    status === "Partially revised"
+  ) {
+    return "scoreMedium";
+  }
+  return "scoreLow";
+}
+
+function defaultReadiness(decision: Decision): DecisionReadiness {
+  return (
+    decision.readiness ?? {
+      level: decision.priority === "Monitor" ? "Gather more evidence" : "Act with safeguards",
+      confidence: "Medium",
+      dimensions: {
+        financialMateriality: "Medium",
+        urgency: decision.priority === "Act today" ? "High" : "Medium",
+        reversibility: "Medium",
+        evidenceQuality: "Medium",
+        downsideExposure: decision.priority === "Executive decision" ? "High" : "Medium",
+      },
+    }
+  );
+}
+
+function defaultChallenge(decision: Decision): ChallengeCase {
+  return (
+    decision.challenge ?? {
+      argument:
+        "The current direction may be correct, but the visible evidence may not fully represent customer, contract, or cash context.",
+      opposingEvidence: [
+        "The demo does not include ERP cash balances or signed commitments.",
+        "Customer-level profitability is not yet visible.",
+      ],
+      weakAssumptions: ["The visible KPI pattern reflects current operating reality."],
+      costIfWrong:
+        "Management could act on a plausible interpretation before validating the missing business context.",
+      compromise:
+        "Use a reversible next step while collecting the evidence needed for any irreversible commitment.",
+    }
+  );
+}
+
+function createRevision(input: string, decision: Decision): AssessmentRevision {
+  const normalized = input.toLowerCase();
+  if (normalized.includes("signed") || normalized.includes("supplier") || normalized.includes("firmamos")) {
+    return {
+      status: "Fully reversed",
+      newInformation: input,
+      impact:
+        "The new information changes reversibility. If a commitment is already signed, the responsible move shifts from delay to mitigation.",
+      revisedRecommendation:
+        "Do not treat this as an avoidable decision. Confirm the contract terms, update the cash forecast, and negotiate mitigation levers.",
+      remainingUncertainty:
+        "The desk still needs contract value, cancellation terms, payment dates, and operational obligations.",
+    };
+  }
+  if (
+    normalized.includes("season") ||
+    normalized.includes("strategic") ||
+    normalized.includes("estratég") ||
+    normalized.includes("liquidity") ||
+    normalized.includes("liquidez")
+  ) {
+    return {
+      status: "Partially revised",
+      newInformation: input,
+      impact:
+        "The new context weakens the broad version of the recommendation and increases the need for segmented treatment.",
+      revisedRecommendation:
+        decision.revision?.revisedRecommendation ??
+        "Keep the direction, but limit it to reversible actions until the new context is validated.",
+      remainingUncertainty:
+        "The desk still needs evidence showing whether this context applies broadly or only to one segment.",
+    };
+  }
+  return {
+    status: "Unchanged",
+    newInformation: input,
+    impact:
+      "The new information is relevant, but it does not yet change the visible evidence behind the current assessment.",
+    revisedRecommendation: decision.recommendation,
+    remainingUncertainty:
+      "The assessment would change if the user adds quantified evidence or confirmed contractual constraints.",
+  };
+}
+
 export default function Home() {
   const [locale, setLocale] = useState<Locale>("en");
   const copy = copies[locale];
@@ -761,9 +1686,26 @@ export default function Home() {
   const [uploadedFile, setUploadedFile] = useState("");
   const [status, setStatus] = useState(copy.sampleReady);
   const [activeInsightId, setActiveInsightId] = useState(copy.insights[0].id);
+  const [activeDecisionId, setActiveDecisionId] = useState(copy.decisions[0].id);
+  const [openProvenanceId, setOpenProvenanceId] = useState(copy.insights[0].id);
+  const [challengeOpen, setChallengeOpen] = useState(false);
+  const [challengeInput, setChallengeInput] = useState("");
+  const [revision, setRevision] = useState<AssessmentRevision | null>(null);
+  const [journalEntries, setJournalEntries] = useState<DecisionJournalEntry[]>(copy.journal);
 
   const activeInsight =
     copy.insights.find((insight) => insight.id === activeInsightId) ?? copy.insights[0];
+  const activeDecision =
+    copy.decisions.find((decision) => decision.id === activeDecisionId) ?? copy.decisions[0];
+  const activeReadiness = defaultReadiness(activeDecision);
+  const activeChallenge = defaultChallenge(activeDecision);
+  const activeProvenance = activeInsight.provenance ?? {
+    origin: activeInsight.source ?? "Demonstration dataset",
+    priority: selectedPriorities[0] ?? copy.priorities[0],
+    transformation: activeInsight.calculation,
+    freshness: activeInsight.lastUpdated ?? "Current demo period",
+    dependencies: activeInsight.evidence,
+  };
 
   const prioritizedInsights = useMemo(() => {
     const marginWeight = selectedPriorities.includes(copy.priorities[1]) ? 12 : 0;
@@ -792,6 +1734,12 @@ export default function Home() {
     ]);
     setStatus(uploadedFile ? nextCopy.reportStaged(uploadedFile) : nextCopy.sampleReady);
     setActiveInsightId(nextCopy.insights[0].id);
+    setActiveDecisionId(nextCopy.decisions[0].id);
+    setOpenProvenanceId(nextCopy.insights[0].id);
+    setChallengeOpen(false);
+    setChallengeInput("");
+    setRevision(null);
+    setJournalEntries(nextCopy.journal);
   }
 
   function togglePriority(priority: string) {
@@ -814,6 +1762,35 @@ export default function Home() {
   function runAnalysis() {
     setStatus(uploadedFile ? copy.reportAnalyzed(uploadedFile) : copy.sampleAnalyzed);
     setActiveInsightId(prioritizedInsights[0].id);
+  }
+
+  function reviseAssessment() {
+    const trimmed = challengeInput.trim();
+    if (!trimmed) {
+      return;
+    }
+    setRevision(createRevision(trimmed, activeDecision));
+  }
+
+  function recordDecision(action: keyof Copy["journalButtons"]) {
+    const now = new Date().toISOString().slice(0, 10);
+    const entry: DecisionJournalEntry = {
+      id: `${activeDecision.id}-${action}-${journalEntries.length}`,
+      decision: `${copy.journalButtons[action]}: ${activeDecision.recommendation}`,
+      date: now,
+      responsiblePerson: activeDecision.owner,
+      evidenceAtDecision:
+        activeDecision.evidence?.map((item) => item.label).join(" ") ??
+        activeInsight.evidence.join(" "),
+      unresolvedAssumptions:
+        activeDecision.assumptions?.map((item) => item.statement).join(" ") ??
+        activeDecision.riskOfInaction,
+      expectedOutcome:
+        activeDecision.expectedOutcome ?? "Outcome to be reviewed against the selected KPI.",
+      reviewDate: activeDecision.reviewDate ?? "Next management review",
+      actualOutcome: revision ? copy.revisionStatus[revision.status] : "Pending",
+    };
+    setJournalEntries((current) => [entry, ...current].slice(0, 4));
   }
 
   return (
@@ -946,6 +1923,23 @@ export default function Home() {
               </strong>
             </div>
             <h2>{activeInsight.title}</h2>
+            <div className="epistemicGrid">
+              <MetaPill
+                label={copy.epistemicLabel}
+                value={copy.epistemicStatus[epistemicForInsight(activeInsight)]}
+                tone={statusClass(epistemicForInsight(activeInsight))}
+              />
+              <MetaPill
+                label={copy.sourceLabel}
+                value={activeInsight.source ?? "Demonstration dataset"}
+                tone="statusInference"
+              />
+              <MetaPill
+                label={copy.lastUpdatedLabel}
+                value={activeInsight.lastUpdated ?? "Current demo period"}
+                tone="statusConfirmed"
+              />
+            </div>
             <div className="insightGrid">
               <InsightStep title={copy.insightLabels.observation} body={activeInsight.observation} />
               <InsightStep
@@ -973,6 +1967,54 @@ export default function Home() {
               </div>
               <ScoreBar label={copy.scoreConfidence} value={activeInsight.confidence} />
             </div>
+            <button
+              className="provenanceButton"
+              onClick={() =>
+                setOpenProvenanceId((current) =>
+                  current === activeInsight.id ? "" : activeInsight.id,
+                )
+              }
+              type="button"
+            >
+              {copy.provenanceButton}
+            </button>
+            {openProvenanceId === activeInsight.id ? (
+              <section className="provenanceDrawer" aria-label={copy.provenanceTitle}>
+                <div>
+                  <p className="eyebrow">{copy.provenanceTitle}</p>
+                  <dl>
+                    <div>
+                      <dt>{copy.sourceLabel}</dt>
+                      <dd>{activeProvenance.origin}</dd>
+                    </div>
+                    <div>
+                      <dt>{copy.prioritiesEyebrow}</dt>
+                      <dd>{activeProvenance.priority}</dd>
+                    </div>
+                    <div>
+                      <dt>{copy.lastUpdatedLabel}</dt>
+                      <dd>{activeProvenance.freshness}</dd>
+                    </div>
+                  </dl>
+                </div>
+                <div>
+                  <p className="eyebrow">{copy.insightLabels.calculation}</p>
+                  <p>{activeProvenance.transformation}</p>
+                  <p className="eyebrow">{copy.dependenciesLabel}</p>
+                  <ul>
+                    {activeProvenance.dependencies.map((item) => (
+                      <li key={item}>{item}</li>
+                    ))}
+                  </ul>
+                </div>
+                <div>
+                  <p className="eyebrow">{copy.limitationsLabel}</p>
+                  <p>{activeInsight.limitations ?? activeInsight.businessImpact}</p>
+                  <p className="eyebrow">{copy.assumptionLabel}</p>
+                  <p>{activeInsight.assumptionDependency ?? activeInsight.likelyDriver}</p>
+                </div>
+              </section>
+            ) : null}
           </section>
         </article>
 
@@ -988,6 +2030,40 @@ export default function Home() {
             </ol>
           </div>
         </aside>
+      </section>
+
+      <section className="unknownsPanel" aria-label={copy.unknownsEyebrow}>
+        <div className="sectionHeader">
+          <div>
+            <p className="eyebrow">{copy.unknownsEyebrow}</p>
+            <h2>{copy.unknownsTitle}</h2>
+          </div>
+        </div>
+        <div className="unknownGrid">
+          {copy.unknowns.map((unknown) => (
+            <article className="unknownCard" key={unknown.missing}>
+              <h3>{unknown.missing}</h3>
+              <dl>
+                <div>
+                  <dt>{copy.unknownLabels.why}</dt>
+                  <dd>{unknown.whyItMatters}</dd>
+                </div>
+                <div>
+                  <dt>{copy.unknownLabels.owner}</dt>
+                  <dd>{unknown.owner}</dd>
+                </div>
+                <div>
+                  <dt>{copy.unknownLabels.speed}</dt>
+                  <dd>{unknown.speed}</dd>
+                </div>
+                <div>
+                  <dt>{copy.unknownLabels.proceed}</dt>
+                  <dd>{unknown.canProceed}</dd>
+                </div>
+              </dl>
+            </article>
+          ))}
+        </div>
       </section>
 
       <section className="insightLibrary" aria-label="Key management interpretations">
@@ -1029,13 +2105,29 @@ export default function Home() {
           </div>
           <div className="decisionList">
             {copy.decisions.map((decision) => (
-              <article className="decisionItem" key={decision.recommendation}>
+              <article
+                className={
+                  decision.id === activeDecision.id ? "decisionItem active" : "decisionItem"
+                }
+                key={decision.recommendation}
+              >
                 <div>
                   <strong className={priorityClass(decision.priority)}>
                     {copy.priority[decision.priority]}
                   </strong>
                   <h3>{decision.recommendation}</h3>
                   <p>{decision.why}</p>
+                  <button
+                    className="textButton"
+                    onClick={() => {
+                      setActiveDecisionId(decision.id);
+                      setChallengeOpen(false);
+                      setRevision(null);
+                    }}
+                    type="button"
+                  >
+                    {copy.readinessTitle}
+                  </button>
                 </div>
                 <dl>
                   <div>
@@ -1049,6 +2141,10 @@ export default function Home() {
                   <div>
                     <dt>{copy.decisionLabels.risk}</dt>
                     <dd>{decision.riskOfInaction}</dd>
+                  </div>
+                  <div>
+                    <dt>{copy.readinessLabel}</dt>
+                    <dd>{copy.readiness[defaultReadiness(decision).level]}</dd>
                   </div>
                 </dl>
               </article>
@@ -1069,6 +2165,155 @@ export default function Home() {
             ))}
           </div>
         </article>
+      </section>
+
+      <section className="trustWorkspace" aria-label="Decision readiness and challenge mode">
+        <article className="frameworkPanel">
+          <div className="frameworkHeader">
+            <div>
+              <p className="eyebrow">{copy.readinessTitle}</p>
+              <h2>{activeDecision.recommendation}</h2>
+            </div>
+            <div className="statusStack">
+              <strong className={statusClass(activeReadiness.confidence)}>
+                {copy.confidenceLabel}: {copy.confidenceLevel[activeReadiness.confidence]}
+              </strong>
+              <strong className={statusClass(activeReadiness.level)}>
+                {copy.readiness[activeReadiness.level]}
+              </strong>
+            </div>
+          </div>
+          <div className="dimensionGrid">
+            {Object.entries(activeReadiness.dimensions).map(([key, value]) => (
+              <MetaPill
+                key={key}
+                label={dimensionLabel(key)}
+                value={copy.confidenceLevel[value]}
+                tone={statusClass(value)}
+              />
+            ))}
+          </div>
+          <div className="splitGrid">
+            <EvidenceList
+              assumptions={activeDecision.assumptions ?? []}
+              copy={copy}
+              evidence={activeDecision.evidence ?? []}
+            />
+            <ChangeConditions copy={copy} items={activeDecision.changeConditions ?? []} />
+          </div>
+        </article>
+
+        <article className="frameworkPanel">
+          <div className="frameworkHeader">
+            <div>
+              <p className="eyebrow">{copy.challengeTitle}</p>
+              <h2>{copy.challengeButton}</h2>
+            </div>
+            <button
+              className="secondaryButton"
+              onClick={() => setChallengeOpen((current) => !current)}
+              type="button"
+            >
+              {copy.challengeButton}
+            </button>
+          </div>
+          {challengeOpen ? (
+            <div className="challengeCase">
+              <p>{activeChallenge.argument}</p>
+              <ActionGroup
+                title={copy.challengeLabels.opposing}
+                items={activeChallenge.opposingEvidence}
+              />
+              <ActionGroup
+                title={copy.challengeLabels.assumptions}
+                items={activeChallenge.weakAssumptions}
+              />
+              <InsightStep title={copy.challengeLabels.cost} body={activeChallenge.costIfWrong} />
+              <InsightStep title={copy.challengeLabels.compromise} body={activeChallenge.compromise} />
+            </div>
+          ) : null}
+          <div className="challengeInput">
+            <p className="eyebrow">{copy.userChallengeTitle}</p>
+            <textarea
+              onChange={(event) => setChallengeInput(event.target.value)}
+              placeholder={copy.challengePlaceholder}
+              value={challengeInput}
+            />
+            <button className="primaryButton" onClick={reviseAssessment} type="button">
+              {copy.applyChallenge}
+            </button>
+          </div>
+          {revision ? <RevisionPanel copy={copy} revision={revision} /> : null}
+        </article>
+      </section>
+
+      <section className="journalAndTrust" aria-label="Decision journal and limitations">
+        <article className="frameworkPanel">
+          <div className="frameworkHeader">
+            <div>
+              <p className="eyebrow">{copy.journalTitle}</p>
+              <h2>{copy.journalTitle}</h2>
+            </div>
+            <div className="journalActions">
+              {(["accept", "reject", "modify", "postpone"] as Array<
+                keyof Copy["journalButtons"]
+              >).map((action) => (
+                <button key={action} onClick={() => recordDecision(action)} type="button">
+                  {copy.journalButtons[action]}
+                </button>
+              ))}
+            </div>
+          </div>
+          <div className="journalList">
+            {journalEntries.length ? (
+              journalEntries.map((entry) => (
+                <article className="journalEntry" key={entry.id}>
+                  <h3>{entry.decision}</h3>
+                  <dl>
+                    <div>
+                      <dt>{copy.journalLabels.evidence}</dt>
+                      <dd>{entry.evidenceAtDecision}</dd>
+                    </div>
+                    <div>
+                      <dt>{copy.journalLabels.assumptions}</dt>
+                      <dd>{entry.unresolvedAssumptions}</dd>
+                    </div>
+                    <div>
+                      <dt>{copy.journalLabels.expected}</dt>
+                      <dd>{entry.expectedOutcome}</dd>
+                    </div>
+                    <div>
+                      <dt>{copy.journalLabels.review}</dt>
+                      <dd>{entry.reviewDate}</dd>
+                    </div>
+                    <div>
+                      <dt>{copy.journalLabels.actual}</dt>
+                      <dd>{entry.actualOutcome}</dd>
+                    </div>
+                  </dl>
+                </article>
+              ))
+            ) : (
+              <p className="inputNote">No decision has been recorded yet.</p>
+            )}
+          </div>
+        </article>
+
+        <aside className="trustPanel">
+          <div>
+            <p className="eyebrow">{copy.disciplineEyebrow}</p>
+            <h2>{copy.disciplineTitle}</h2>
+            <p>{copy.disciplineBody}</p>
+          </div>
+          <div>
+            <p className="eyebrow">{copy.trustTitle}</p>
+            <ul>
+              {copy.trustItems.map((item) => (
+                <li key={item}>{item}</li>
+              ))}
+            </ul>
+          </div>
+        </aside>
       </section>
 
       <section className="alignmentPanel" aria-label="Founder advantage and product thesis">
@@ -1114,11 +2359,116 @@ function MiniMetric({ label, value }: { label: string; value: string }) {
   );
 }
 
+function MetaPill({ label, value, tone }: { label: string; value: string; tone: string }) {
+  return (
+    <div className="metaPill">
+      <span>{label}</span>
+      <strong className={tone}>{value}</strong>
+    </div>
+  );
+}
+
+function dimensionLabel(key: string) {
+  return key
+    .replace(/([A-Z])/g, " $1")
+    .replace(/^./, (letter) => letter.toUpperCase());
+}
+
 function InsightStep({ title, body }: { title: string; body: string }) {
   return (
     <section className="frameworkStep">
       <span>{title}</span>
       <p>{body}</p>
+    </section>
+  );
+}
+
+function EvidenceList({
+  assumptions,
+  copy,
+  evidence,
+}: {
+  assumptions: Assumption[];
+  copy: Copy;
+  evidence: Evidence[];
+}) {
+  return (
+    <section className="evidenceDecisionBlock">
+      <p className="eyebrow">{copy.insightLabels.evidence}</p>
+      {evidence.length ? (
+        <ul>
+          {evidence.map((item) => (
+            <li key={item.label}>
+              <strong className={statusClass(item.status)}>{copy.epistemicStatus[item.status]}</strong>
+              <span>{item.label}</span>
+              <em>{item.source}</em>
+            </li>
+          ))}
+        </ul>
+      ) : (
+        <p className="inputNote">No additional evidence has been attached to this recommendation.</p>
+      )}
+      <p className="eyebrow">{copy.assumptionLabel}</p>
+      {assumptions.length ? (
+        <ul>
+          {assumptions.map((item) => (
+            <li key={item.statement}>
+              <span>{item.statement}</span>
+              <em>{item.dependsOn}</em>
+            </li>
+          ))}
+        </ul>
+      ) : (
+        <p className="inputNote">No unresolved assumption has been recorded.</p>
+      )}
+    </section>
+  );
+}
+
+function ChangeConditions({ copy, items }: { copy: Copy; items: string[] }) {
+  return (
+    <section className="changeConditions">
+      <p className="eyebrow">{copy.changeTitle}</p>
+      {items.length ? (
+        <ol>
+          {items.map((item) => (
+            <li key={item}>{item}</li>
+          ))}
+        </ol>
+      ) : (
+        <p className="inputNote">No assessment-changing evidence has been attached yet.</p>
+      )}
+    </section>
+  );
+}
+
+function RevisionPanel({ copy, revision }: { copy: Copy; revision: AssessmentRevision }) {
+  return (
+    <section className="revisionPanel">
+      <div className="cardTopline">
+        <p className="eyebrow">{copy.revisionTitle}</p>
+        <strong className={statusClass(revision.status)}>
+          {copy.revisionStatus[revision.status]}
+        </strong>
+      </div>
+      <dl>
+        <div>
+          <dt>{copy.revisionLabels.newInfo}</dt>
+          <dd>{revision.newInformation}</dd>
+        </div>
+        <div>
+          <dt>{copy.revisionLabels.impact}</dt>
+          <dd>{revision.impact}</dd>
+        </div>
+        <div>
+          <dt>{copy.revisionLabels.revised}</dt>
+          <dd>{revision.revisedRecommendation}</dd>
+        </div>
+        <div>
+          <dt>{copy.revisionLabels.uncertainty}</dt>
+          <dd>{revision.remainingUncertainty}</dd>
+        </div>
+      </dl>
     </section>
   );
 }

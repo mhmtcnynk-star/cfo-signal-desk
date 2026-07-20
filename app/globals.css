@@ -501,6 +501,40 @@ h3 {
   gap: 12px;
 }
 
+.epistemicGrid,
+.dimensionGrid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+  margin-bottom: 14px;
+}
+
+.metaPill {
+  display: grid;
+  gap: 7px;
+  min-width: 0;
+  border: 1px solid rgba(143, 154, 168, 0.2);
+  border-radius: 8px;
+  background: rgba(20, 28, 37, 0.5);
+  padding: 10px;
+}
+
+.metaPill span,
+.provenanceDrawer dt,
+.unknownCard dt,
+.revisionPanel dt,
+.journalEntry dt {
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 760;
+  text-transform: uppercase;
+}
+
+.metaPill strong {
+  max-width: 100%;
+  overflow-wrap: anywhere;
+}
+
 .evidenceStrip {
   display: grid;
   grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr) minmax(220px, 0.7fr);
@@ -520,6 +554,62 @@ h3 {
   display: grid;
   gap: 8px;
   margin: 0;
+  padding-left: 18px;
+}
+
+.provenanceButton,
+.textButton {
+  width: fit-content;
+  min-height: 36px;
+  margin-top: 14px;
+  border: 1px solid rgba(57, 214, 180, 0.36);
+  border-radius: 8px;
+  background: rgba(57, 214, 180, 0.08);
+  color: #a8f2e1;
+  padding: 8px 11px;
+  font-size: 13px;
+  font-weight: 820;
+}
+
+.textButton {
+  margin-top: 10px;
+}
+
+.provenanceDrawer {
+  display: grid;
+  grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr) minmax(0, 1fr);
+  gap: 14px;
+  margin-top: 14px;
+  border: 1px solid rgba(143, 154, 168, 0.2);
+  border-radius: 8px;
+  background: rgba(15, 21, 29, 0.84);
+  padding: 14px;
+}
+
+.provenanceDrawer dl,
+.revisionPanel dl,
+.journalEntry dl,
+.unknownCard dl {
+  display: grid;
+  gap: 10px;
+  margin: 0;
+}
+
+.provenanceDrawer dd,
+.provenanceDrawer p,
+.provenanceDrawer li,
+.revisionPanel dd,
+.journalEntry dd,
+.unknownCard dd {
+  margin: 4px 0 0;
+  color: #d5dde8;
+  line-height: 1.42;
+}
+
+.provenanceDrawer ul {
+  display: grid;
+  gap: 8px;
+  margin: 8px 0 0;
   padding-left: 18px;
 }
 
@@ -733,6 +823,11 @@ h3 {
   padding: 16px;
 }
 
+.decisionItem.active {
+  border-color: rgba(57, 214, 180, 0.48);
+  background: rgba(57, 214, 180, 0.06);
+}
+
 .decisionItem h3 {
   margin-top: 10px;
   font-size: 18px;
@@ -756,6 +851,152 @@ h3 {
 .decisionItem dd {
   margin: 5px 0 0;
   font-size: 14px;
+}
+
+.unknownsPanel,
+.trustWorkspace,
+.journalAndTrust {
+  margin-top: 18px;
+}
+
+.unknownsPanel {
+  border: 1px solid rgba(245, 191, 100, 0.24);
+  border-radius: 8px;
+  background: rgba(15, 21, 29, 0.92);
+  padding: 22px;
+}
+
+.unknownGrid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.unknownCard,
+.trustPanel,
+.revisionPanel,
+.evidenceDecisionBlock,
+.changeConditions,
+.journalEntry {
+  border: 1px solid rgba(143, 154, 168, 0.2);
+  border-radius: 8px;
+  background: rgba(7, 9, 13, 0.32);
+  padding: 15px;
+}
+
+.unknownCard h3 {
+  color: #f6d99e;
+}
+
+.trustWorkspace,
+.journalAndTrust {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(360px, 0.82fr);
+  gap: 18px;
+}
+
+.statusStack,
+.journalActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: flex-end;
+}
+
+.splitGrid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 0.9fr);
+  gap: 14px;
+  margin-top: 14px;
+}
+
+.evidenceDecisionBlock ul,
+.changeConditions ol,
+.trustPanel ul {
+  display: grid;
+  gap: 10px;
+  margin: 0 0 14px;
+  padding-left: 18px;
+  color: #cbd3de;
+  line-height: 1.45;
+}
+
+.evidenceDecisionBlock li {
+  display: grid;
+  gap: 6px;
+}
+
+.evidenceDecisionBlock em {
+  color: var(--muted);
+  font-size: 13px;
+  font-style: normal;
+}
+
+.challengeCase {
+  display: grid;
+  gap: 12px;
+}
+
+.challengeCase > p,
+.challengeInput p,
+.trustPanel p {
+  color: #d5dde8;
+  line-height: 1.48;
+}
+
+.challengeInput {
+  display: grid;
+  gap: 10px;
+  margin-top: 14px;
+  border-top: 1px solid rgba(143, 154, 168, 0.18);
+  padding-top: 14px;
+}
+
+.challengeInput textarea {
+  min-height: 92px;
+  resize: vertical;
+  border: 1px solid rgba(143, 154, 168, 0.24);
+  border-radius: 8px;
+  background: rgba(7, 9, 13, 0.58);
+  color: var(--foreground);
+  padding: 12px;
+  line-height: 1.45;
+}
+
+.revisionPanel {
+  margin-top: 14px;
+  border-color: rgba(57, 214, 180, 0.3);
+}
+
+.journalActions button {
+  min-height: 34px;
+  border: 1px solid rgba(143, 154, 168, 0.25);
+  border-radius: 8px;
+  background: rgba(20, 28, 37, 0.7);
+  color: #dce4ef;
+  padding: 7px 10px;
+  font-size: 12px;
+  font-weight: 760;
+}
+
+.journalList {
+  display: grid;
+  gap: 12px;
+}
+
+.journalEntry h3 {
+  color: #a8f2e1;
+}
+
+.journalEntry dl {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.trustPanel {
+  display: grid;
+  gap: 18px;
+  align-content: start;
+  border-color: rgba(57, 214, 180, 0.22);
 }
 
 .priorityMonitor,
@@ -1038,6 +1279,8 @@ h3 {
 @media (max-width: 1180px) {
   .decisionHero,
   .decisionWorkspace,
+  .trustWorkspace,
+  .journalAndTrust,
   .signalDecisionArea,
   .sourceControl,
   .reportFlow,
@@ -1053,8 +1296,13 @@ h3 {
   .sourceGrid,
   .changeGrid,
   .objectGrid,
+  .unknownGrid,
   .insightGrid,
-  .evidenceStrip {
+  .evidenceStrip,
+  .epistemicGrid,
+  .dimensionGrid,
+  .provenanceDrawer,
+  .splitGrid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
@@ -1095,8 +1343,14 @@ h3 {
   .briefColumns,
   .insightGrid,
   .evidenceStrip,
+  .epistemicGrid,
+  .dimensionGrid,
+  .provenanceDrawer,
+  .unknownGrid,
+  .splitGrid,
   .decisionDetail,
   .decisionDetail dl,
+  .journalEntry dl,
   .issueTabs,
   .objectGrid,
   .objectCard dl,
