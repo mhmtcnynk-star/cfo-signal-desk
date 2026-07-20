@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { getChatGPTUser } from "../../chatgpt-auth";
 
 type PriorityLevel = "Monitor" | "Act today" | "Executive decision";
 
@@ -247,6 +248,11 @@ function validateBrief(value: unknown): Brief | null {
 }
 
 export async function POST(request: NextRequest) {
+  const user = await getChatGPTUser();
+  if (!user) {
+    return NextResponse.json({ error: "Authentication required" }, { status: 401 });
+  }
+
   const payload = (await request.json()) as {
     priorities?: string[];
     signals?: Signal[];

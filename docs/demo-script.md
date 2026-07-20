@@ -1,37 +1,39 @@
 # Suggested Demo Video Script
 
-## 0:00 - Opening
+## 0:00 - Private Morning Workspace
 
-"This is CFO Signal Desk. It helps finance leaders turn reports, KPIs, and business context into perspective, judgment, and direction."
+"CFO Signal Desk is a private morning finance brief. A CFO signs in and reaches the decision that deserves attention today, without navigating a reporting system."
 
-## 0:15 - Problem
+## 0:15 - Company Context
 
-"Reports show performance, but executives still need to know what changed, why it matters, what deserves attention, and what can wait. Most reporting stops before judgment."
+"The brief knows the company, its scale, geography, FX exposure, and current priorities. These priorities change which signals deserve executive attention."
 
-## 0:35 - Input
+Open **Company profile**, change one business priority, and save it.
 
-"The workflow starts with business data. A user can upload a company report, spreadsheet, PDF, or use the sample management report. For this MVP, I will use sample data so the demo always works."
+## 0:35 - The Recommended Decision
 
-## 0:55 - Context
+"The central recommendation is to run a margin bridge before revising the revenue forecast. The product explains why now, what happens if management ignores it, and which KPI is affected."
 
-"The CFO selects company priorities: revenue growth, margin protection, cash preservation, cost control, customer retention, or operational efficiency. These priorities shape which variances deserve executive attention."
+"Confidence and permission to act are separate. The assessment can be high confidence while the company still needs safeguards before execution."
 
-## 1:15 - Analysis
+## 1:00 - Facts and Interpretation
 
-"The product reads the KPI set and compares actuals against budget and prior period. Revenue is 8 percent below budget, but that is not the full story. Average order value is down 11 percent, and gross margin is 3.2 points below budget."
+"Three signals matter this morning: revenue, gross margin, and the cash conversion cycle. Every card separates what the report states from what management may infer."
 
-## 1:40 - Insight Quality
+Open one **Source** link to show the actual, budget, prior-period value, calculation, and limitation.
 
-"The product does not just say revenue declined. It shows what is verified, what is inferred, what is assumed, and what remains unknown. Every interpretation has source evidence, calculation, confidence, limitations, and a provenance drawer."
+## 1:20 - Brief and Actions
 
-## 2:05 - Decisions
+"The executive brief is short enough to read before the first meeting. It identifies priority risks, opportunities, actions for today, this week, and this month, plus tomorrow's watchlist."
 
-"The recommended executive move is to run a margin bridge before revising the revenue forecast. The product separates confidence from permission to act: the margin bridge can proceed because it is reversible and evidence-generating, while a full forecast reset should wait even though the assessment confidence is high."
+Refresh the brief. Point out that **Demo data** still produces the complete workflow without an OpenAI API key.
 
-## 2:30 - Management Workflow
+## 1:45 - Decision Journal
 
-"The output includes what we still do not know, what would change the recommendation, a challenge case, action owners, a decision journal, and tomorrow's attention list."
+Accept or modify the recommendation.
 
-## 2:50 - Vision
+"The decision is recorded with an owner and review date. This closes the loop between analysis, action, and accountability without adding a project-management system."
 
-"This is not another reporting surface. CFO Signal Desk helps a leader understand what the numbers mean and what direction is available. The larger vision is a calm daily practice for judgment: Observe, Interpret, Judge, Act, and Learn."
+## 2:00 - Close
+
+"CFO Signal Desk does not try to show everything. It helps a finance leader understand what happened, why it matters to this company, what deserves consideration today, and how confident the recommendation is."

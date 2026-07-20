@@ -1,0 +1,38 @@
+{
+  "report": "Northstar Manufacturing monthly management report",
+  "period": "Current month",
+  "updated_at": "07:30 local time",
+  "currency": "USD",
+  "data": {
+    "revenue": {
+      "actual": 4600000,
+      "budget": 5000000,
+      "prior_period": 4720000,
+      "variance_to_budget_pct": -8.0
+    },
+    "average_order_value": {
+      "actual": 1240,
+      "budget": 1393,
+      "prior_period": 1358,
+      "variance_to_budget_pct": -11.0
+    },
+    "gross_margin": {
+      "actual_pct": 29.8,
+      "budget_pct": 33.0,
+      "prior_period_pct": 31.6,
+      "variance_to_budget_points": -3.2
+    },
+    "cash_conversion_cycle": {
+      "actual_days": 61,
+      "budget_days": 52,
+      "prior_period_days": 55,
+      "variance_to_budget_days": 9
+    }
+  },
+  "methodology": {
+    "facts": "Values directly present in the demonstration management report.",
+    "calculations": "Variance equals actual minus budget, expressed in percentage or percentage points as appropriate.",
+    "inferences": "Possible business explanations that require management validation before action.",
+    "limitations": "Demonstration data only; invoice-level discount and customer profitability detail is not included."
+  }
+}

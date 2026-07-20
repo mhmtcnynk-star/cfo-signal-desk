@@ -15,11 +15,11 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "CFO Signal Desk",
   description:
-    "A calm executive companion that turns reports, KPIs, and business context into perspective, judgment, and direction.",
+    "A private morning finance brief that turns company signals into executive judgment and accountable action.",
   openGraph: {
     title: "CFO Signal Desk",
     description:
-      "Bring business data into context and clarify what deserves attention, what can wait, and what should happen next.",
+      "What happened, why it matters, and what deserves executive attention today.",
     images: ["/og.png"],
   },
   icons: {

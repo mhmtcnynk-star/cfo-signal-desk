@@ -4,156 +4,81 @@ import test from "node:test";
 
 const templateRoot = new URL("../", import.meta.url);
 
-async function render() {
+async function render(authenticated = true) {
   const workerUrl = new URL("../dist/server/index.js", import.meta.url);
   workerUrl.searchParams.set("test", `${process.pid}-${Date.now()}`);
   const { default: worker } = await import(workerUrl.href);
+  const headers = new Headers({ accept: "text/html" });
+  if (authenticated) {
+    headers.set("oai-authenticated-user-email", "cfo@example.com");
+    headers.set("oai-authenticated-user-full-name", "Alex Morgan");
+    headers.set(
+      "oai-authenticated-user-full-name-encoding",
+      "percent-encoded-utf-8",
+    );
+  }
 
   return worker.fetch(
-    new Request("http://localhost/", {
-      headers: { accept: "text/html" },
-    }),
-    {
-      ASSETS: {
-        fetch: async () => new Response("Not found", { status: 404 }),
-      },
-    },
-    {
-      waitUntil() {},
-      passThroughOnException() {},
-    },
+    new Request("http://localhost/", { headers }),
+    { ASSETS: { fetch: async () => new Response("Not found", { status: 404 }) } },
+    { waitUntil() {}, passThroughOnException() {} },
   );
 }
 
-test("server-renders the CFO Signal Desk MVP", async () => {
+test("server-renders the authenticated CFO morning workflow", async () => {
   const response = await render();
   assert.equal(response.status, 200);
-  assert.match(response.headers.get("content-type") ?? "", /^text\/html\b/i);
-
   const html = await response.text();
+
   assert.match(html, /<title>CFO Signal Desk<\/title>/i);
-  assert.match(html, /Meaning between information and action/);
-  assert.match(html, /perspective, judgment, and direction/);
+  assert.match(html, /Good morning/);
+  assert.match(html, /Daily Executive Brief/);
+  assert.match(html, /Company profile/);
+  assert.match(html, /Signals that matter/);
+  assert.match(html, /Fact/);
+  assert.match(html, /Interpretation/);
+  assert.match(html, /Recommended decision/);
+  assert.match(html, /Confidence/);
+  assert.match(html, /Permission to act/);
+  assert.match(html, /Decision journal/);
+  assert.match(html, /Source links/);
+  assert.match(html, /Demo data/);
   assert.match(html, /EN/);
   assert.match(html, /ES/);
-  assert.match(html, /Upload company report/);
-  assert.match(html, /Try sample report/);
-  assert.match(html, /Company priorities/);
-  assert.match(html, /Report Interpretation/);
-  assert.match(html, /Meaning still has to be created/);
-  assert.match(html, /Revenue/);
-  assert.match(html, /Average order value/);
-  assert.match(html, /Gross margin/);
-  assert.match(html, /What changed/);
-  assert.match(html, /What it changes/);
-  assert.match(html, /Likely driver/);
-  assert.match(html, /Suggested direction/);
-  assert.match(html, /Source evidence/);
-  assert.match(html, /Calculation/);
-  assert.match(html, /Verified finding/);
-  assert.match(html, /Calculated result/);
-  assert.match(html, /Hypothesis/);
-  assert.match(html, /Missing data/);
-  assert.match(html, /Confidence/);
-  assert.match(html, /Direction/);
-  assert.match(html, /Questions Management Should Ask/);
-  assert.match(html, /Tomorrow&#x27;s Attention/);
-  assert.match(html, /Observe/);
-  assert.match(html, /Interpret/);
-  assert.match(html, /Judge/);
-  assert.match(html, /Act/);
-  assert.match(html, /Learn/);
-  assert.match(html, /Human Advantage/);
-  assert.match(html, /Sample report ready/);
-  assert.match(html, /Executive judgment/);
-  assert.match(html, /Epistemic status/);
-  assert.match(html, /Verified fact/);
-  assert.match(html, /Model inference/);
-  assert.match(html, /Insufficient data/);
-  assert.match(html, /Why am I seeing this/);
-  assert.match(html, /What We Still Don&#x27;t Know/);
-  assert.match(html, /Decision Authorization Engine/);
-  assert.match(html, /Confidence vs Permission to Act/);
-  assert.match(html, /Permission to Act/);
-  assert.match(html, /Proceed with Safeguards/);
-  assert.match(html, /Wait/);
-  assert.match(html, /Confidence estimates whether the assessment is correct/);
-  assert.match(html, /Wait on a full revenue forecast reset/);
-  assert.match(html, /What Would Change This Assessment/);
-  assert.match(html, /Challenge assessment/);
-  assert.match(html, /Decision Journal/);
-  assert.match(html, /Trust &amp; Limitations/);
-  assert.match(html, /Separate confidence from permission to act/);
-  assert.doesNotMatch(html, /codex-preview|SkeletonPreview|react-loading-skeleton/);
-  assert.doesNotMatch(html, /Definitely|Without a doubt|I strongly believe/);
+  assert.doesNotMatch(html, /codex-preview|react-loading-skeleton/);
 });
 
-test("keeps Build Week submission assets documented", async () => {
-  const [
-    readme,
-    constitution,
-    personalization,
-    demoScript,
-    checklist,
-    page,
-    layout,
-    packageJson,
-  ] =
-    await Promise.all([
-      readFile(new URL("README.md", templateRoot), "utf8"),
-      readFile(new URL("docs/product-constitution.md", templateRoot), "utf8"),
-      readFile(
-        new URL("docs/executive-data-input-personalization.md", templateRoot),
-        "utf8",
-      ),
-      readFile(new URL("docs/demo-script.md", templateRoot), "utf8"),
-      readFile(new URL("docs/submission-checklist.md", templateRoot), "utf8"),
-      readFile(new URL("app/page.tsx", templateRoot), "utf8"),
-      readFile(new URL("app/layout.tsx", templateRoot), "utf8"),
-      readFile(new URL("package.json", templateRoot), "utf8"),
-    ]);
+test("shows a private sign-in surface to anonymous visitors", async () => {
+  const response = await render(false);
+  assert.equal(response.status, 200);
+  const html = await response.text();
+  assert.match(html, /Sign in with ChatGPT/);
+  assert.match(html, /visible only after sign-in/);
+  assert.doesNotMatch(html, /Northstar Manufacturing/);
+});
+
+test("keeps the production and demo contracts explicit", async () => {
+  const [readme, page, dashboard, auth, route, sample, layout] = await Promise.all([
+    readFile(new URL("README.md", templateRoot), "utf8"),
+    readFile(new URL("app/page.tsx", templateRoot), "utf8"),
+    readFile(new URL("app/dashboard-client.tsx", templateRoot), "utf8"),
+    readFile(new URL("app/chatgpt-auth.ts", templateRoot), "utf8"),
+    readFile(new URL("app/api/brief/route.ts", templateRoot), "utf8"),
+    readFile(new URL("public/sample-data/management-report.json", templateRoot), "utf8"),
+    readFile(new URL("app/layout.tsx", templateRoot), "utf8"),
+  ]);
 
   assert.match(readme, /Architecture Overview/);
   assert.match(readme, /OPENAI_API_KEY/);
-  assert.match(readme, /Does this help leaders create better meaning before acting/);
-  assert.match(readme, /English \/ Spanish language switch/);
-  assert.match(readme, /executive-data-input-personalization/);
-  assert.match(constitution, /Human Systems Constitution v2.0/);
-  assert.match(constitution, /From Signal to Meaning/);
-  assert.match(constitution, /Peak Moments Matter/);
-  assert.match(constitution, /Beauty Is a Strategic Asset/);
-  assert.match(personalization, /Executive Onboarding/);
-  assert.match(personalization, /Company Context/);
-  assert.match(personalization, /Document Center/);
-  assert.match(personalization, /Executive Memory/);
-  assert.match(personalization, /Goals Engine/);
-  assert.match(personalization, /Decision History/);
-  assert.match(personalization, /Calendar Intelligence/);
-  assert.match(personalization, /Relationship Intelligence/);
-  assert.match(personalization, /Executive Memory Graph/);
-  assert.match(personalization, /Recommendation Engine Architecture/);
-  assert.match(demoScript, /perspective, judgment, and direction/);
-  assert.match(checklist, /OpenAI Build Week/);
-  assert.match(page, /Upload company report/);
-  assert.match(page, /Subir reporte de empresa/);
-  assert.match(page, /Juicio ejecutivo/);
-  assert.match(page, /Resumen ejecutivo/);
-  assert.match(page, /Preguntas que management debería hacer/);
-  assert.match(page, /Ciclo de sentido/);
-  assert.match(page, /Report Interpretation/);
-  assert.match(page, /type EpistemicStatus/);
-  assert.match(page, /type PermissionState/);
-  assert.match(page, /type DecisionAuthorization/);
-  assert.match(page, /type PermissionToAct/);
-  assert.match(page, /The assessment is high confidence, but permission is low/);
-  assert.match(page, /type ChallengeCase/);
-  assert.match(page, /type AssessmentRevision/);
-  assert.match(page, /type DecisionJournalEntry/);
-  assert.match(page, /defaultAuthorization/);
-  assert.match(page, /createRevision/);
-  assert.match(page, /Trust & Limitations/);
-  assert.match(page, /sourceTypeClass/);
-  assert.match(page, /average order value/i);
-  assert.match(layout, /CFO Signal Desk/);
-  assert.doesNotMatch(packageJson, /react-loading-skeleton/);
+  assert.match(page, /getChatGPTUser/);
+  assert.match(page, /chatGPTSignInPath/);
+  assert.match(auth, /oai-authenticated-user-email/);
+  assert.match(route, /Authentication required/);
+  assert.match(route, /mode: "demo"/);
+  assert.match(dashboard, /cfo-signal-profile/);
+  assert.match(dashboard, /cfo-signal-journal/);
+  assert.match(dashboard, /Proceed with safeguards/);
+  assert.match(dashboard, /Buenos días/);
+  assert.match(sample, /gross_margin/);
+  assert.match(layout, /private morning finance brief/);
 });

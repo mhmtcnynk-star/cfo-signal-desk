@@ -1,98 +1,80 @@
 # Architecture Overview
 
-## Product Layer
+## Product Boundary
 
-CFO Signal Desk turns company reports, KPIs, and business context into perspective, judgment, direction, and follow-up actions.
-
-Core transformation:
+CFO Signal Desk is a five-minute morning decision brief. The production MVP contains only authentication, company context, the executive dashboard, the daily brief, signal cards, the decision journal, and source links.
 
 ```text
-Report / Data / KPI
-  -> Insight
-  -> Decision
-  -> Action
-  -> KPI Watchlist
+Company context + visible source data
+  -> Material signals
+  -> Facts separated from interpretation
+  -> Executive recommendation
+  -> Confidence and permission to act
+  -> Immediate actions
+  -> Decision journal and review date
 ```
 
-The product constitution in `docs/product-constitution.md` remains the governing filter. No workflow should stop before reaching an executive recommendation.
+## Application Layers
 
-The personalization architecture in `docs/executive-data-input-personalization.md` defines how the product grows from report analysis into a personalized Executive Advisor through onboarding, company context, document intelligence, executive memory, goals, decision history, calendar intelligence, relationship intelligence, daily check-ins, and feedback learning.
+### Identity
 
-The MVP combines:
+Sites owns the ChatGPT sign-in, callback, and sign-out routes. Server code reads trusted identity headers through `app/chatgpt-auth.ts`. Anonymous visitors see a private sign-in surface; the dashboard and brief endpoint require identity.
 
-- Report upload entry point
-- Reliable sample management report
-- English / Spanish language support for the full demo experience
-- Company priority selection
-- KPI variance analysis
-- Source evidence and calculation display
-- Insight classification
-- Root-cause hypotheses
-- Recommended decisions
-- Owners and risks of inaction
-- Management questions
-- KPI watchlist
-- AI OS loop: Observe -> Interpret -> Decide -> Act -> Learn
+### Experience
 
-## Application Layer
+`app/dashboard-client.tsx` renders one coherent morning flow:
 
-- `app/page.tsx` renders the full demo workflow: report input, sample KPI dataset, report interpretation, direction, questions, tomorrow's attention, human advantage, and meaning loop.
-- `app/globals.css` defines the responsive Bloomberg-meets-Linear visual system.
-- `app/api/brief/route.ts` owns optional OpenAI generation and keeps the demo resilient with local fallback.
+- company context strip
+- one primary recommended decision
+- three material signal cards
+- concise executive brief
+- immediate actions and tomorrow watchlist
+- decision journal
+- inspectable source links
 
-## AI Layer
+Company profile and journal entries persist only on the current device. This avoids a database and user-management layer in the MVP.
 
-The route uses the OpenAI Responses API when `OPENAI_API_KEY` is available. It asks the model to produce management reporting outputs, not generic summaries.
+### Brief Generation
 
-Expected AI behavior:
+`app/api/brief/route.ts` receives company context, selected priorities, and the visible signals. When `OPENAI_API_KEY` is configured, it requests a structured executive brief from the OpenAI Responses API. When credentials or upstream generation are unavailable, it returns the deterministic brief used by the same interface.
 
-- Classify each insight as verified finding, calculated result, hypothesis, missing data, or management question.
-- Explain source evidence and calculations.
-- Identify business impact and likely drivers.
-- Recommend management decisions and actions.
-- Assign owners where appropriate.
-- Explain risk of inaction.
-- Produce a KPI watchlist.
+The route does not equate confidence with permission to act. Confidence describes evidence quality; permission considers reversibility, downside, timing, and governance.
 
-If the OpenAI request fails or no key is configured, the route returns a deterministic local brief. This keeps demos reliable for Build Week judging.
+### Sources
 
-## Data Layer
+`public/sample-data/management-report.json` is the canonical demonstration source. Signal cards link directly to it and label facts separately from interpretations. The file also records calculations, limitations, and missing detail.
 
-The MVP uses a realistic sample management report with:
-
-- Revenue
-- Average order value
-- Gross margin
-- Operating cost
-- Cash conversion cycle
-
-The current upload control demonstrates the intended workflow, but file parsing is post-MVP. This keeps the Build Week scope focused on the core product thesis: report and KPI data should become decision-ready management insight.
-
-Future production data sources:
-
-- Excel, CSV, and PDF uploads
-- Budget and prior-period files
-- ERP and accounting exports
-- BI reports
-- Sales and operations KPI feeds
-- Management presentations
-- Meeting notes and action logs
-- Executive onboarding and daily check-ins
-- Email, calendar, Slack, Teams, Notion, Drive, SharePoint, CRM, LinkedIn, market data, macro data, voice notes, and meeting transcripts
-
-## Product Architecture
+## Runtime Flow
 
 ```mermaid
-flowchart TD
-  Reports["Company reports and KPI files"] --> Observe["Observe"]
-  Observe --> Interpret["Interpret: variances, anomalies, KPI relationships"]
-  Interpret --> Evidence["Evidence: calculation, source, confidence"]
-  Evidence --> Decide["Decide: options and recommendations"]
-  Decide --> Act["Act: owners, actions, dates, KPI watchlist"]
-  Act --> Learn["Learn: prior decisions and outcomes"]
-  Learn --> Interpret
+sequenceDiagram
+  participant U as CFO
+  participant S as Sites
+  participant D as Dashboard
+  participant B as Brief route
+  participant O as OpenAI
+
+  U->>S: Open CFO Signal Desk
+  S->>U: Authenticate when required
+  S->>D: Forward trusted identity
+  D->>U: Render demo brief immediately
+  U->>D: Update company context or refresh
+  D->>B: Context, priorities, visible signals
+  alt API key available
+    B->>O: Structured brief request
+    O->>B: Validated JSON brief
+  else no key or upstream failure
+    B->>B: Deterministic fallback
+  end
+  B->>D: Brief and mode
+  U->>D: Accept, modify, or postpone
+  D->>D: Store journal entry on device
 ```
 
-## Deployment Layer
+## Security Boundary
 
-The app is a TypeScript Next.js project and can be deployed to Vercel. The included Vinext setup also supports the local Sites build flow.
+- Authentication and authorization checks remain server-side.
+- The API endpoint rejects unauthenticated requests.
+- No API key is exposed to the browser.
+- User-provided profile and journal data remain device-local in the MVP.
+- Source links contain demonstration data only.
