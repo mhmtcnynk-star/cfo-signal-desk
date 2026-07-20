@@ -26,7 +26,7 @@
 
 ## 2:05 - Decisions
 
-"The recommended executive move is to run a margin bridge before revising the revenue forecast. The product separates confidence from readiness: this action is ready because it is reversible and evidence-generating, while broader pricing or forecast decisions should wait."
+"The recommended executive move is to run a margin bridge before revising the revenue forecast. The product separates confidence from permission to act: the margin bridge can proceed because it is reversible and evidence-generating, while a full forecast reset should wait even though the assessment confidence is high."
 
 ## 2:30 - Management Workflow
 

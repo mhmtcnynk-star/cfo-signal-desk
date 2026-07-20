@@ -10,7 +10,8 @@
 - KPI variance table: complete
 - Interpretation classification: complete
 - Epistemic status for every material signal: complete
-- Confidence and decision readiness separation: complete
+- Decision Authorization Engine: complete
+- Confidence and Permission to Act separation: complete
 - What We Still Don't Know section: complete
 - Assessment-changing evidence section: complete
 - Challenge Assessment flow: complete
@@ -57,7 +58,7 @@ A calm executive companion for CFOs and finance teams. Users upload a report or 
 - Company context and priorities shape the analysis.
 - The system calculates and explains variances instead of only summarizing.
 - Every interpretation shows evidence, calculation, confidence, epistemic status, and limitations.
-- Recommendations show readiness, reversibility, evidence quality, downside exposure, and assessment-changing conditions.
+- Recommendations show confidence, Permission to Act, reversibility, financial exposure, governance, operational risk, and assessment-changing conditions.
 - The product rewards correction through Challenge Assessment and visible assessment revision.
 - Outputs are standardized for management reporting.
 - The long-term product can learn from prior decisions and outcomes.

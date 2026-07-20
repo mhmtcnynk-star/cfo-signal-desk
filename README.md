@@ -24,7 +24,8 @@ The MVP includes:
 - KPI variance interpretation against budget and prior period.
 - Report interpretation that classifies every output as verified finding, calculated result, hypothesis, or missing data.
 - Epistemic status badges that separate verified facts, model inference, working assumptions, stale signals, conflicting evidence, and insufficient data.
-- Decision readiness that separates confidence from permission to act.
+- Decision Authorization Engine that separates Confidence from Permission to Act.
+- Permission to Act states: Proceed, Proceed with Safeguards, Run a Pilot First, Gather More Evidence, Escalate, Wait, and Do Not Proceed.
 - What We Still Don't Know section with owner, speed, impact, and whether the current decision can proceed.
 - Challenge Assessment flow that shows the strongest opposing case, weak assumptions, cost if wrong, and a controlled experiment.
 - Natural-language challenge input that visibly revises, partially revises, or reverses the current assessment.
@@ -109,7 +110,7 @@ docs/
                           Human role and first-principles product philosophy
   product-constitution.md Product principles and decision filter
   trust-epistemic-layer.md
-                          Trust, provenance, challenge, readiness, and journal model
+                          Trust, provenance, challenge, authorization, and journal model
   submission-checklist.md Build Week submission checklist
 screenshots/
   README.md               Screenshot capture guide
@@ -156,7 +157,7 @@ npm run build
 6. Open the top insight: revenue is 8% below budget, but the real issue is AOV decline and gross margin erosion.
 7. Show epistemic status, evidence, calculation, confidence, finding type, likely driver, and suggested direction.
 8. Open **Why am I seeing this?** to show source, freshness, transformation, dependencies, and limitations.
-9. Review **What We Still Don't Know**, decision readiness, assessment-changing evidence, challenge case, decision journal, and tomorrow's attention.
+9. Review **What We Still Don't Know**, Confidence vs Permission to Act, assessment-changing evidence, challenge case, decision journal, and tomorrow's attention.
 10. Close with the vision: this is a calm companion for executive judgment, not another reporting surface.
 
 ## Submission Assets

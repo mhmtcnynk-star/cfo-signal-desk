@@ -20,6 +20,14 @@ type ReadinessLevel =
   | "Act with safeguards"
   | "Gather more evidence"
   | "Do not act yet";
+type PermissionState =
+  | "Proceed"
+  | "Proceed with Safeguards"
+  | "Run a Pilot First"
+  | "Gather More Evidence"
+  | "Escalate"
+  | "Wait"
+  | "Do Not Proceed";
 type RevisionStatus = "Unchanged" | "Partially revised" | "Fully reversed";
 
 type KpiRow = {
@@ -90,6 +98,31 @@ type DecisionReadiness = {
   };
 };
 
+type ConfidenceAssessment = {
+  level: ConfidenceLevel;
+  reasons: string[];
+};
+
+type PermissionToAct = {
+  state: PermissionState;
+  explanation: string;
+  reasons: string[];
+  dimensions: {
+    reversibility: ConfidenceLevel;
+    financialExposure: ConfidenceLevel;
+    timePressure: ConfidenceLevel;
+    governance: ConfidenceLevel;
+    operationalRisk: ConfidenceLevel;
+    confidenceInfluence: ConfidenceLevel;
+  };
+};
+
+type DecisionAuthorization = {
+  confidence: ConfidenceAssessment;
+  permission: PermissionToAct;
+  distinction: string;
+};
+
 type ChallengeCase = {
   argument: string;
   opposingEvidence: string[];
@@ -115,6 +148,7 @@ type Decision = {
   kpi: string;
   priority: PriorityLevel;
   readiness?: DecisionReadiness;
+  authorization?: DecisionAuthorization;
   evidence?: Evidence[];
   assumptions?: Assumption[];
   unknowns?: Unknown[];
@@ -159,8 +193,15 @@ type Copy = {
   scoreBusinessImpact: string;
   scoreUrgency: string;
   scoreConfidence: string;
+  authorizationTitle: string;
+  authorizationSubtitle: string;
   readinessTitle: string;
   confidenceLabel: string;
+  confidenceReasonLabel: string;
+  permissionLabel: string;
+  permissionReasonLabel: string;
+  permissionDimensionsTitle: string;
+  permissionStates: Record<PermissionState, string>;
   readinessLabel: string;
   dimensionsTitle: string;
   epistemicLabel: string;
@@ -305,8 +346,24 @@ const copies: Record<Locale, Copy> = {
     scoreBusinessImpact: "Business impact",
     scoreUrgency: "Urgency",
     scoreConfidence: "Confidence",
-    readinessTitle: "Confidence is not readiness",
+    authorizationTitle: "Decision Authorization Engine",
+    authorizationSubtitle:
+      "Confidence estimates whether the assessment is correct. Permission to Act evaluates whether execution is justified now.",
+    readinessTitle: "Confidence vs Permission to Act",
     confidenceLabel: "Confidence",
+    confidenceReasonLabel: "Why this confidence",
+    permissionLabel: "Permission to Act",
+    permissionReasonLabel: "Why this permission",
+    permissionDimensionsTitle: "Permission dimensions",
+    permissionStates: {
+      Proceed: "Proceed",
+      "Proceed with Safeguards": "Proceed with Safeguards",
+      "Run a Pilot First": "Run a Pilot First",
+      "Gather More Evidence": "Gather More Evidence",
+      Escalate: "Escalate",
+      Wait: "Wait",
+      "Do Not Proceed": "Do Not Proceed",
+    },
     readinessLabel: "Decision readiness",
     dimensionsTitle: "Decision dimensions",
     epistemicLabel: "Epistemic status",
@@ -363,7 +420,7 @@ const copies: Record<Locale, Copy> = {
     disciplineEyebrow: "Decision Discipline",
     disciplineTitle: "Separate confidence from permission to act",
     disciplineBody:
-      "A recommendation can be directionally sound and still not be ready for an irreversible move. Reversible actions require less evidence than commitments that cannot be undone.",
+      "High confidence does not automatically justify action. Low confidence does not automatically justify inaction. The right move depends on reversibility, downside, governance, and timing.",
     trustTitle: "Trust & Limitations",
     trustItems: [
       "This brief uses the visible demonstration dataset and selected company priorities.",
@@ -717,6 +774,36 @@ const copies: Record<Locale, Copy> = {
             downsideExposure: "Medium",
           },
         },
+        authorization: {
+          confidence: {
+            level: "High",
+            reasons: [
+              "Evidence is recent and internally consistent.",
+              "Revenue, AOV, and gross margin all point to a quality-of-revenue issue.",
+              "No conflicting information invalidates the margin bridge step.",
+            ],
+          },
+          permission: {
+            state: "Proceed",
+            explanation:
+              "The margin bridge is reversible, evidence-generating, and does not require board approval.",
+            reasons: [
+              "The action clarifies the real decision before execution.",
+              "Financial exposure is low because this is analysis, not capital commitment.",
+              "Waiting slows forecast clarity and management alignment.",
+            ],
+            dimensions: {
+              reversibility: "High",
+              financialExposure: "Low",
+              timePressure: "Medium",
+              governance: "Low",
+              operationalRisk: "Low",
+              confidenceInfluence: "High",
+            },
+          },
+          distinction:
+            "Confidence supports the assessment; permission is granted because the next step is reversible and clarifies the real decision.",
+        },
         evidence: [
           {
             label: "Revenue is 8.0% below budget.",
@@ -803,6 +890,35 @@ const copies: Record<Locale, Copy> = {
             downsideExposure: "High",
           },
         },
+        authorization: {
+          confidence: {
+            level: "Medium",
+            reasons: [
+              "AOV and margin both deteriorated, but discount exception data is incomplete.",
+              "Strategic customer context may change the recommended treatment.",
+            ],
+          },
+          permission: {
+            state: "Proceed with Safeguards",
+            explanation:
+              "Proceed only for new discretionary exceptions; do not apply a blanket freeze to strategic or contractual accounts.",
+            reasons: [
+              "The action can protect margin quickly.",
+              "Execution risk exists if strategic customers are included without review.",
+              "Safeguards keep the move reversible and relationship-aware.",
+            ],
+            dimensions: {
+              reversibility: "Medium",
+              financialExposure: "Medium",
+              timePressure: "High",
+              governance: "Medium",
+              operationalRisk: "Medium",
+              confidenceInfluence: "Medium",
+            },
+          },
+          distinction:
+            "Confidence is not high enough for a blanket policy, but permission exists for a narrower reversible control.",
+        },
         changeConditions: [
           "Strategic account review shows exceptions protect long-term customer value.",
           "Signed commercial commitments make a blanket freeze impractical.",
@@ -847,6 +963,35 @@ const copies: Record<Locale, Copy> = {
             downsideExposure: "Medium",
           },
         },
+        authorization: {
+          confidence: {
+            level: "High",
+            reasons: [
+              "Cash conversion cycle variance is directly visible in the demo report.",
+              "The data is recent and consistent with receivables pressure.",
+            ],
+          },
+          permission: {
+            state: "Proceed",
+            explanation:
+              "Refreshing the cash forecast is reversible and improves decision quality without committing capital.",
+            reasons: [
+              "Waiting may hide liquidity pressure until the next reporting cycle.",
+              "No board approval is required to update the forecast.",
+              "Operational risk is low because the action is analytical.",
+            ],
+            dimensions: {
+              reversibility: "High",
+              financialExposure: "Low",
+              timePressure: "High",
+              governance: "Low",
+              operationalRisk: "Low",
+              confidenceInfluence: "High",
+            },
+          },
+          distinction:
+            "High confidence and permission align here because the action is low-risk and time-sensitive.",
+        },
         changeConditions: [
           "ERP cash balance confirms liquidity headroom above policy threshold.",
           "Overdue strategic customers confirm payment dates inside the forecast window.",
@@ -870,6 +1015,79 @@ const copies: Record<Locale, Copy> = {
         expectedOutcome:
           "Treasury sees liquidity exposure early enough to respond without overreacting.",
         reviewDate: "2026-07-22",
+      },
+      {
+        id: "forecast-reset",
+        recommendation: "Wait on a full revenue forecast reset until customer profitability is validated.",
+        why: "The evidence strongly suggests a revenue-quality issue, but a full forecast reset is harder to reverse and affects management expectations.",
+        riskOfInaction:
+          "Waiting may delay planning, but acting now could lock management into a forecast narrative before the cause is proven.",
+        owner: "CFO + FP&A Lead",
+        kpi: "Revenue forecast accuracy",
+        priority: "Executive decision",
+        readiness: {
+          level: "Do not act yet",
+          confidence: "High",
+          dimensions: {
+            financialMateriality: "High",
+            urgency: "Medium",
+            reversibility: "Low",
+            evidenceQuality: "Medium",
+            downsideExposure: "High",
+          },
+        },
+        authorization: {
+          confidence: {
+            level: "High",
+            reasons: [
+              "The KPI pattern reliably shows revenue quality pressure.",
+              "AOV and margin deterioration are consistent with the assessment.",
+            ],
+          },
+          permission: {
+            state: "Wait",
+            explanation:
+              "The broader forecast reset is difficult to reverse, financially material, and should wait for margin bridge evidence.",
+            reasons: [
+              "The decision affects management expectations and may require CFO/CEO alignment.",
+              "Customer profitability data remains unavailable.",
+              "The cost of error is higher than the cost of waiting a few days.",
+            ],
+            dimensions: {
+              reversibility: "Low",
+              financialExposure: "High",
+              timePressure: "Medium",
+              governance: "High",
+              operationalRisk: "Medium",
+              confidenceInfluence: "High",
+            },
+          },
+          distinction:
+            "The assessment is high confidence, but permission is low because the action is material and difficult to reverse.",
+        },
+        changeConditions: [
+          "Customer profitability confirms persistent margin leakage across major segments.",
+          "CEO and commercial leadership approve the revised forecast narrative.",
+          "The margin bridge shows the shortfall is not temporary or seasonal.",
+        ],
+        challenge: {
+          argument:
+            "Waiting may create planning drift if commercial teams need a revised target immediately.",
+          opposingEvidence: [
+            "AOV and margin deterioration are already visible.",
+            "Forecast discipline may suffer if management delays acknowledging the miss.",
+          ],
+          weakAssumptions: [
+            "The team can complete the margin bridge quickly enough to avoid planning delay.",
+          ],
+          costIfWrong:
+            "If the forecast reset is truly needed now, waiting could reduce credibility with management.",
+          compromise:
+            "Prepare a provisional forecast scenario, but do not approve the official reset until the margin bridge is complete.",
+        },
+        expectedOutcome:
+          "Management avoids locking in a forecast decision before validating the underlying driver.",
+        reviewDate: "2026-07-24",
       },
     ],
     journal: [
@@ -931,8 +1149,24 @@ const copies: Record<Locale, Copy> = {
     scoreBusinessImpact: "Impacto de negocio",
     scoreUrgency: "Urgencia",
     scoreConfidence: "Confianza",
-    readinessTitle: "Confianza no es preparación",
+    authorizationTitle: "Motor de autorización de decisión",
+    authorizationSubtitle:
+      "La confianza estima si la evaluación es correcta. El permiso para actuar evalúa si ejecutar ahora está justificado.",
+    readinessTitle: "Confianza vs permiso para actuar",
     confidenceLabel: "Confianza",
+    confidenceReasonLabel: "Por qué esta confianza",
+    permissionLabel: "Permiso para actuar",
+    permissionReasonLabel: "Por qué este permiso",
+    permissionDimensionsTitle: "Dimensiones de permiso",
+    permissionStates: {
+      Proceed: "Proceder",
+      "Proceed with Safeguards": "Proceder con resguardos",
+      "Run a Pilot First": "Ejecutar piloto primero",
+      "Gather More Evidence": "Reunir más evidencia",
+      Escalate: "Escalar",
+      Wait: "Esperar",
+      "Do Not Proceed": "No proceder",
+    },
     readinessLabel: "Preparación de decisión",
     dimensionsTitle: "Dimensiones de decisión",
     epistemicLabel: "Estado epistémico",
@@ -989,7 +1223,7 @@ const copies: Record<Locale, Copy> = {
     disciplineEyebrow: "Disciplina de decisión",
     disciplineTitle: "Separar confianza de permiso para actuar",
     disciplineBody:
-      "Una recomendación puede ser correcta en dirección y aun así no estar lista para una decisión irreversible. Las acciones reversibles requieren menos evidencia que los compromisos difíciles de deshacer.",
+      "Alta confianza no justifica acción automáticamente. Baja confianza no justifica inacción automáticamente. La decisión correcta depende de reversibilidad, downside, gobernanza y timing.",
     trustTitle: "Confianza y limitaciones",
     trustItems: [
       "Este brief usa el dataset de demostración visible y las prioridades seleccionadas.",
@@ -1574,11 +1808,14 @@ function epistemicForInsight(insight: Insight): EpistemicStatus {
   }[insight.findingType] as EpistemicStatus;
 }
 
-function statusClass(status: EpistemicStatus | ReadinessLevel | ConfidenceLevel | RevisionStatus) {
+function statusClass(
+  status: EpistemicStatus | ReadinessLevel | ConfidenceLevel | PermissionState | RevisionStatus,
+) {
   if (
     status === "Verified fact" ||
     status === "User-provided information" ||
     status === "Ready to act" ||
+    status === "Proceed" ||
     status === "High" ||
     status === "Unchanged"
   ) {
@@ -1589,6 +1826,10 @@ function statusClass(status: EpistemicStatus | ReadinessLevel | ConfidenceLevel 
     status === "Working assumption" ||
     status === "Act with safeguards" ||
     status === "Gather more evidence" ||
+    status === "Proceed with Safeguards" ||
+    status === "Run a Pilot First" ||
+    status === "Gather More Evidence" ||
+    status === "Escalate" ||
     status === "Medium" ||
     status === "Partially revised"
   ) {
@@ -1611,6 +1852,49 @@ function defaultReadiness(decision: Decision): DecisionReadiness {
       },
     }
   );
+}
+
+function defaultAuthorization(decision: Decision): DecisionAuthorization {
+  if (decision.authorization) {
+    return decision.authorization;
+  }
+  const readiness = defaultReadiness(decision);
+  const permissionState: PermissionState =
+    readiness.level === "Ready to act"
+      ? "Proceed"
+      : readiness.level === "Act with safeguards"
+        ? "Proceed with Safeguards"
+        : readiness.level === "Gather more evidence"
+          ? "Gather More Evidence"
+          : "Wait";
+
+  return {
+    confidence: {
+      level: readiness.confidence,
+      reasons: [
+        "Evidence quality, freshness, missing information, and conflicting signals are evaluated separately from execution risk.",
+      ],
+    },
+    permission: {
+      state: permissionState,
+      explanation:
+        "Permission is based on reversibility, financial exposure, time pressure, governance, operational risk, and confidence influence.",
+      reasons: [
+        "Confidence informs permission, but it does not determine permission by itself.",
+        "The organization should act only when the business context justifies execution now.",
+      ],
+      dimensions: {
+        reversibility: readiness.dimensions.reversibility,
+        financialExposure: readiness.dimensions.downsideExposure,
+        timePressure: readiness.dimensions.urgency,
+        governance: readiness.dimensions.financialMateriality,
+        operationalRisk: readiness.dimensions.downsideExposure,
+        confidenceInfluence: readiness.confidence,
+      },
+    },
+    distinction:
+      "Confidence estimates how likely the assessment is to be correct. Permission to Act evaluates whether acting now is justified despite uncertainty.",
+  };
 }
 
 function defaultChallenge(decision: Decision): ChallengeCase {
@@ -1697,7 +1981,7 @@ export default function Home() {
     copy.insights.find((insight) => insight.id === activeInsightId) ?? copy.insights[0];
   const activeDecision =
     copy.decisions.find((decision) => decision.id === activeDecisionId) ?? copy.decisions[0];
-  const activeReadiness = defaultReadiness(activeDecision);
+  const activeAuthorization = defaultAuthorization(activeDecision);
   const activeChallenge = defaultChallenge(activeDecision);
   const activeProvenance = activeInsight.provenance ?? {
     origin: activeInsight.source ?? "Demonstration dataset",
@@ -2143,8 +2427,10 @@ export default function Home() {
                     <dd>{decision.riskOfInaction}</dd>
                   </div>
                   <div>
-                    <dt>{copy.readinessLabel}</dt>
-                    <dd>{copy.readiness[defaultReadiness(decision).level]}</dd>
+                    <dt>{copy.permissionLabel}</dt>
+                    <dd>
+                      {copy.permissionStates[defaultAuthorization(decision).permission.state]}
+                    </dd>
                   </div>
                 </dl>
               </article>
@@ -2167,24 +2453,52 @@ export default function Home() {
         </article>
       </section>
 
-      <section className="trustWorkspace" aria-label="Decision readiness and challenge mode">
+      <section className="trustWorkspace" aria-label="Decision authorization and challenge mode">
         <article className="frameworkPanel">
           <div className="frameworkHeader">
             <div>
-              <p className="eyebrow">{copy.readinessTitle}</p>
+              <p className="eyebrow">{copy.authorizationTitle}</p>
               <h2>{activeDecision.recommendation}</h2>
-            </div>
-            <div className="statusStack">
-              <strong className={statusClass(activeReadiness.confidence)}>
-                {copy.confidenceLabel}: {copy.confidenceLevel[activeReadiness.confidence]}
-              </strong>
-              <strong className={statusClass(activeReadiness.level)}>
-                {copy.readiness[activeReadiness.level]}
-              </strong>
+              <p className="inputNote">{copy.authorizationSubtitle}</p>
             </div>
           </div>
+          <div className="authorizationCards">
+            <article className="authorizationCard">
+              <div className="cardTopline">
+                <p className="eyebrow">{copy.confidenceLabel}</p>
+                <strong className={statusClass(activeAuthorization.confidence.level)}>
+                  {copy.confidenceLevel[activeAuthorization.confidence.level]}
+                </strong>
+              </div>
+              <p>{copy.confidenceReasonLabel}</p>
+              <ul>
+                {activeAuthorization.confidence.reasons.map((reason) => (
+                  <li key={reason}>{reason}</li>
+                ))}
+              </ul>
+            </article>
+            <article className="authorizationCard permissionCard">
+              <div className="cardTopline">
+                <p className="eyebrow">{copy.permissionLabel}</p>
+                <strong className={statusClass(activeAuthorization.permission.state)}>
+                  {copy.permissionStates[activeAuthorization.permission.state]}
+                </strong>
+              </div>
+              <p>{activeAuthorization.permission.explanation}</p>
+              <ul>
+                {activeAuthorization.permission.reasons.map((reason) => (
+                  <li key={reason}>{reason}</li>
+                ))}
+              </ul>
+            </article>
+          </div>
+          <div className="distinctionLine">
+            <strong>{copy.readinessTitle}</strong>
+            <span>{activeAuthorization.distinction}</span>
+          </div>
+          <p className="eyebrow">{copy.permissionDimensionsTitle}</p>
           <div className="dimensionGrid">
-            {Object.entries(activeReadiness.dimensions).map(([key, value]) => (
+            {Object.entries(activeAuthorization.permission.dimensions).map(([key, value]) => (
               <MetaPill
                 key={key}
                 label={dimensionLabel(key)}

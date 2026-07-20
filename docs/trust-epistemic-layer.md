@@ -37,19 +37,49 @@ Every material signal can be shown as:
 
 The UI never asks the user to trust a conclusion blindly. It shows source, freshness, limitations, dependencies, and assumption dependency through the provenance drawer.
 
-## Decision Readiness
+## Decision Authorization Engine
 
-Confidence and decision readiness are separated.
+Confidence and Permission to Act are separated.
 
-A recommendation can be high confidence but low urgency, low confidence but high urgency, sufficient for a reversible action, or insufficient for an irreversible commitment.
+Confidence answers: "How confident are we that this assessment is correct?"
+
+Permission to Act answers: "Should the organization execute this decision now?"
+
+A recommendation can be high confidence but low permission to act, or low confidence with enough permission to run a small reversible pilot. The product never communicates: "The system is confident, therefore act."
+
+Allowed Permission to Act states:
+
+- Proceed
+- Proceed with Safeguards
+- Run a Pilot First
+- Gather More Evidence
+- Escalate
+- Wait
+- Do Not Proceed
 
 Displayed dimensions:
 
-- Financial materiality
-- Urgency
 - Reversibility
-- Evidence quality
-- Downside exposure
+- Financial exposure
+- Time pressure
+- Governance
+- Operational risk
+- Confidence influence
+
+Older readiness language has been replaced in the user experience by authorization language:
+
+- Confidence is the epistemic assessment.
+- Permission to Act is the executive execution judgment.
+- Confidence influences permission, but never determines it alone.
+
+The exposed business explanation is intentionally not a formula. Internally, Permission to Act considers:
+
+- Confidence
+- Reversibility
+- Cost of error
+- Time pressure
+- Governance
+- Operational risk
 
 ## Challenge And Revision
 
