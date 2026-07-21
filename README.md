@@ -1,13 +1,28 @@
 # CFO Signal Desk
 
-CFO Signal Desk is a private morning finance brief for CFOs and finance leaders. It turns a small set of material company signals into executive context, a recommended decision, immediate actions, and a reviewable decision record.
+**A private five-minute morning finance brief that turns company signals into executive judgment and accountable action.**
 
-The product answers four questions in less than five minutes:
+Built by Mahmut Can Yanik for OpenAI Build Week.
 
-1. What happened?
-2. Why does it matter to this company?
-3. What deserves consideration today?
-4. How confident is the recommendation?
+[Live Demo](https://cfo-signal-desk.mhmtcnynk.chatgpt.site/) ·
+[Devpost Submission](https://devpost.com/software/cfo-signal-desk) ·
+[2-Minute Demo](https://youtu.be/l6Nn9GuI-Is)
+
+![CFO Signal Desk executive dashboard](screenshots/dashboard-desktop.png)
+
+## Why it matters
+
+Finance leaders do not need more information. They need to understand what changed, why it matters to their company, what deserves attention now, and what can wait.
+
+CFO Signal Desk explores how company context, financial signals, evidence quality, reversibility, and governance can be translated into clearer executive judgment and accountable next actions.
+
+## Project status
+
+- Submitted to OpenAI Build Week
+- Working public MVP
+- English and Spanish interface
+- Source-linked demonstration data
+- Deterministic fallback for reliable evaluation
 
 ## MVP Scope
 
