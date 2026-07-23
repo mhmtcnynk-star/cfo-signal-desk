@@ -132,6 +132,7 @@ h3 { margin: 0; font-size: 16px; letter-spacing: 0; }
 .authorizationMetric strong { display: block; margin: 7px 0; font-size: 24px; }
 .authorizationMetric p { margin: 8px 0 0; color: var(--muted); font-size: 13px; line-height: 1.5; }
 .authorizationMetric.permission strong { color: var(--mint); font-size: 18px; }
+.authorizationMetric.focus strong { color: var(--soft); font-size: 15px; }
 .confidenceTrack { height: 5px; overflow: hidden; background: var(--line); }
 .confidenceTrack i { display: block; height: 100%; background: var(--mint); }
 .decisionButtons { display: grid; grid-template-columns: repeat(3, 1fr); gap: 7px; margin-top: auto; }
@@ -170,6 +171,36 @@ h3 { margin: 0; font-size: 16px; letter-spacing: 0; }
 .briefColumns li strong { display: block; font-size: 14px; }
 .briefColumns li p { margin: 6px 0; color: var(--muted); font-size: 13px; line-height: 1.45; }
 .briefColumns li small { color: var(--amber); }
+
+.connectionSection { border-top: 1px solid var(--line-strong); }
+.connectionPrompt { max-width: 570px !important; border-left: 2px solid var(--mint); padding-left: 14px; color: var(--soft) !important; font-weight: 650; }
+.connectionDiagnosis { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); border: 1px solid var(--line); background: var(--line); gap: 1px; }
+.connectionDiagnosis > div { min-width: 0; background: var(--surface); padding: 16px 18px; }
+.connectionDiagnosis span { display: block; margin-bottom: 8px; color: var(--muted); font-size: 10px; font-weight: 760; text-transform: uppercase; }
+.connectionDiagnosis strong { color: var(--mint); font-size: 14px; }
+.connectionDiagnosis strong.partial { color: var(--amber); }
+.connectionDiagnosis strong.broken { color: var(--red); }
+.connectionGrid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); border-bottom: 1px solid var(--line); }
+.connectionGrid article { min-width: 0; padding: 22px 18px; }
+.connectionGrid article + article { border-left: 1px solid var(--line); }
+.connectionGrid article:nth-child(n + 4) { border-top: 1px solid var(--line); }
+.connectionGrid article:nth-child(4) { border-left: 0; }
+.connectionGrid h3 { color: var(--mint); font-size: 13px; line-height: 1.4; }
+.connectionGrid p, .connectionGrid li { color: var(--soft); font-size: 13px; line-height: 1.55; }
+.connectionGrid p { margin: 14px 0 0; }
+.connectionGrid ul { display: grid; gap: 8px; margin: 14px 0 0; padding: 0; list-style: none; }
+.connectionGrid li { position: relative; padding-left: 14px; }
+.connectionGrid li::before { position: absolute; left: 0; content: "·"; color: var(--mint); font-weight: 900; }
+
+.hazardSection { border-top: 1px solid var(--line-strong); }
+.hazardPrompt { border-left: 2px solid var(--amber); padding-left: 14px; color: var(--soft) !important; font-weight: 650; }
+.hazardGrid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+.hazardGrid article { min-width: 0; padding: 22px; }
+.hazardGrid article + article { border-left: 1px solid var(--line); }
+.hazardGrid h3 { min-height: 38px; color: var(--amber); font-size: 13px; line-height: 1.4; }
+.hazardGrid ul { margin: 16px 0 0; padding: 0; list-style: none; }
+.hazardGrid li { color: var(--soft); font-size: 13px; line-height: 1.55; }
+.resilienceSafeguard { grid-column: 1 / -1; border-top: 1px solid var(--line); padding-top: 18px; }
 
 .actionGrid { display: grid; grid-template-columns: repeat(3, 1fr); border: 1px solid var(--line); background: var(--line); gap: 1px; }
 .actionGrid article { background: var(--surface); padding: 22px; }
@@ -212,9 +243,11 @@ h3 { margin: 0; font-size: 16px; letter-spacing: 0; }
 .profileModal input:focus, .profileModal textarea:focus { border-color: var(--mint); }
 .formRow { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
 .profileModal fieldset { border: 0; margin: 2px 0; padding: 0; }
+.fieldHint { margin: 7px 0 0; color: var(--muted); font-size: 12px; line-height: 1.45; }
 .priorityPicker { display: flex; flex-wrap: wrap; gap: 7px; margin-top: 9px; }
 .priorityPicker label { border: 1px solid var(--line); border-radius: 999px; padding: 8px 10px; color: var(--soft); cursor: pointer; }
 .priorityPicker label.selected { border-color: rgba(89,217,186,.48); background: var(--mint-soft); color: var(--mint); }
+.priorityPicker label.disabled { cursor: not-allowed; opacity: .42; }
 .priorityPicker input { position: absolute; width: 1px; height: 1px; opacity: 0; }
 .profileModal .primaryButton { justify-self: end; margin-top: 6px; }
 .toast { position: fixed; right: 24px; bottom: 24px; z-index: 60; border: 1px solid rgba(89,217,186,.4); border-radius: 5px; background: var(--surface-raised); padding: 13px 16px; color: var(--mint); font-size: 13px; box-shadow: 0 15px 50px rgba(0,0,0,.45); }
@@ -236,6 +269,12 @@ h3 { margin: 0; font-size: 16px; letter-spacing: 0; }
   .signalGrid { grid-template-columns: 1fr; }
   .signalCard { display: grid; grid-template-columns: 1fr 1fr; gap: 0 24px; }
   .signalCard .cardTopline, .signalCard h3, .signalCard .signalValue { grid-column: 1 / -1; }
+  .hazardGrid { grid-template-columns: 1fr 1fr; }
+  .hazardGrid article:nth-child(3) { border-left: 0; }
+  .hazardGrid article:nth-child(n + 3) { border-top: 1px solid var(--line); }
+  .connectionGrid { grid-template-columns: 1fr 1fr; }
+  .connectionGrid article:nth-child(odd) { border-left: 0; }
+  .connectionGrid article:nth-child(n + 3) { border-top: 1px solid var(--line); }
 }
 
 @media (max-width: 760px) {
@@ -256,5 +295,10 @@ h3 { margin: 0; font-size: 16px; letter-spacing: 0; }
   .summaryBlock p { font-size: 17px; }
   .journalEntry { grid-template-columns: 1fr; }
   .formRow { grid-template-columns: 1fr; }
+  .connectionDiagnosis, .connectionGrid { grid-template-columns: 1fr; }
+  .connectionDiagnosis > div + div, .connectionGrid article + article { border-top: 1px solid var(--line); border-left: 0; }
+  .connectionGrid article:nth-child(n + 3) { border-top: 1px solid var(--line); }
+  .hazardGrid { grid-template-columns: 1fr; }
+  .hazardGrid article + article { border-top: 1px solid var(--line); border-left: 0; }
   .siteFooter { display: grid; gap: 6px; }
 }

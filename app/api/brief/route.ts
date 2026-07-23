@@ -36,9 +36,36 @@ type Decision = {
   why: string;
   whyNow: string;
   ignoredConsequence: string;
+  businessConnections: string[];
+  tradeoff: string;
+  resilienceSafeguard: string;
   kpiAffected: string;
   confidence: number;
   priorityLevel: PriorityLevel;
+};
+
+type ConnectionState = "Established" | "Partial" | "Broken";
+
+type PerformanceConnections = {
+  visiblePerformance: string;
+  economicOutcome: string;
+  brokenConnections: string[];
+  productiveConnections: string[];
+  managementDecision: string;
+  indicators: string[];
+  diagnosis: {
+    possession: ConnectionState;
+    circulation: ConnectionState;
+    meaningfulConnection: ConnectionState;
+    outcomeConversion: ConnectionState;
+  };
+};
+
+type CriticalHazards = {
+  hiddenAssumptions: string[];
+  underestimatedRisks: string[];
+  missingControls: string[];
+  strategyInvalidators: string[];
 };
 
 type ImmediateActions = {
@@ -51,6 +78,8 @@ type Brief = {
   executiveSummary: string;
   highestPriorityRisks: ExecutiveRisk[];
   opportunities: Opportunity[];
+  performanceConnections: PerformanceConnections;
+  criticalHazards: CriticalHazards;
   recommendedDecisions: Decision[];
   immediateActions: ImmediateActions;
   tomorrowWatchlist: string[];
@@ -96,6 +125,49 @@ const fallbackBrief: Brief = {
       action: "Escalate overdue strategic accounts and update the cash forecast.",
     },
   ],
+  performanceConnections: {
+    visiblePerformance:
+      "Revenue activity remains material, but revenue is 8.0% below budget and average order value is declining.",
+    economicOutcome:
+      "Commercial activity is not converting into planned EBITDA quality because average order value and gross margin are weakening together.",
+    brokenConnections: [
+      "Sales activity is not consistently connected to customer-level margin evidence.",
+      "Discount approvals are not visibly connected to realized profitability.",
+      "Receivables deterioration reaches treasury after the commercial decision.",
+    ],
+    productiveConnections: [
+      "A price-volume-mix bridge can connect customer behavior to gross margin.",
+      "Account-level collection ownership can connect customer relationships to liquidity.",
+    ],
+    managementDecision:
+      "Do not pursue blanket volume recovery. First connect price, mix, discount, and cash evidence into one commercial response.",
+    indicators: [
+      "Customer and product margin",
+      "Discount approval compliance",
+      "Average order value",
+      "Overdue receivables",
+    ],
+    diagnosis: {
+      possession: "Established",
+      circulation: "Established",
+      meaningfulConnection: "Partial",
+      outcomeConversion: "Broken",
+    },
+  },
+  criticalHazards: {
+    hiddenAssumptions: [
+      "Management is treating the revenue shortfall as a volume issue before price and mix are separated.",
+    ],
+    underestimatedRisks: [
+      "Discount exceptions may be concentrated in a small number of customers or products.",
+    ],
+    missingControls: [
+      "No visible invoice-level control links discount approval to realized customer margin.",
+    ],
+    strategyInvalidators: [
+      "A sharp supplier-cost increase or customer concentration loss would invalidate the current margin recovery plan.",
+    ],
+  },
   recommendedDecisions: [
     {
       recommendation: "Run a margin bridge before revising the revenue forecast.",
@@ -103,6 +175,16 @@ const fallbackBrief: Brief = {
       whyNow: "Revenue is 8.0% below budget while AOV is 11.0% below budget and gross margin is 3.2 points below plan.",
       ignoredConsequence:
         "The company may chase volume while accepting lower-quality revenue and continued margin erosion.",
+      businessConnections: [
+        "Sales behavior",
+        "Customer and product mix",
+        "Gross margin",
+        "Forecast",
+      ],
+      tradeoff:
+        "A short diagnostic delay protects decision quality, but waiting too long would slow commercial response.",
+      resilienceSafeguard:
+        "Require price, volume, mix, and cost evidence before changing the forecast or sales response.",
       kpiAffected: "Gross Margin",
       confidence: 86,
       priorityLevel: "Executive decision",
@@ -114,6 +196,16 @@ const fallbackBrief: Brief = {
         "The KPI pattern suggests the revenue miss is linked to price and mix, not only demand.",
       ignoredConsequence:
         "Discount exceptions may become normalized before the company understands their EBITDA impact.",
+      businessConnections: [
+        "Discount authority",
+        "Customer profitability",
+        "Gross margin",
+        "Commercial incentives",
+      ],
+      tradeoff:
+        "Tighter discount control protects margin but may reduce sales flexibility for strategically justified exceptions.",
+      resilienceSafeguard:
+        "Require named approval, expiry, and realized-margin review for every non-standard discount.",
       kpiAffected: "Average Order Value",
       confidence: 78,
       priorityLevel: "Act today",
@@ -125,6 +217,16 @@ const fallbackBrief: Brief = {
         "Working capital deterioration can move faster than monthly reporting cadence.",
       ignoredConsequence:
         "Short-term funding needs may be discovered too late for disciplined treasury action.",
+      businessConnections: [
+        "Customer collections",
+        "Working capital",
+        "Treasury capacity",
+        "Liquidity",
+      ],
+      tradeoff:
+        "Tighter collections may create customer friction, but unmanaged delay transfers commercial risk into treasury.",
+      resilienceSafeguard:
+        "Add downside collection scenarios and named escalation owners to the 13-week cash forecast.",
       kpiAffected: "Cash Conversion Cycle",
       confidence: 76,
       priorityLevel: "Act today",
@@ -157,32 +259,16 @@ const fallbackBrief: Brief = {
 };
 
 function jsonBrief(priorities: string[]): Brief {
+  const activePriorities = priorities.slice(0, 3);
   const selected =
-    priorities.length > 0
-      ? priorities.join(", ")
+    activePriorities.length > 0
+      ? activePriorities.join(", ")
       : "Margin protection, Cash preservation, Cost control";
 
   return {
     ...fallbackBrief,
     executiveSummary: `${fallbackBrief.executiveSummary} Because the selected priorities are ${selected}, the decision set is weighted toward the performance drivers most likely to change management action.`,
-    recommendedDecisions: [
-      ...fallbackBrief.recommendedDecisions,
-      {
-        recommendation: `Run a management reporting review focused on ${selected}.`,
-        why: "Selected company priorities should change which variances are escalated and which actions are assigned.",
-        whyNow:
-          "The current KPI pattern affects forecast quality, margin protection, and working capital decisions.",
-        ignoredConsequence:
-          "Management may review the same report but leave without a clear owner, action, or KPI follow-up.",
-        kpiAffected: selected.includes("Revenue growth")
-          ? "Revenue"
-          : selected.includes("Cost control")
-            ? "Operating Cost"
-            : "Gross Margin",
-        confidence: 76,
-        priorityLevel: "Act today",
-      },
-    ],
+    recommendedDecisions: fallbackBrief.recommendedDecisions.slice(0, 3),
     immediateActions: {
       ...fallbackBrief.immediateActions,
       today: [
@@ -211,11 +297,37 @@ function validateDecision(value: unknown): value is Decision {
     typeof candidate.why === "string" &&
     typeof candidate.whyNow === "string" &&
     typeof candidate.ignoredConsequence === "string" &&
+    isStringArray(candidate.businessConnections) &&
+    typeof candidate.tradeoff === "string" &&
+    typeof candidate.resilienceSafeguard === "string" &&
     typeof candidate.kpiAffected === "string" &&
     typeof candidate.confidence === "number" &&
     ["Monitor", "Act today", "Executive decision"].includes(
       String(candidate.priorityLevel),
     )
+  );
+}
+
+function validatePerformanceConnections(value: unknown): value is PerformanceConnections {
+  if (!value || typeof value !== "object") {
+    return false;
+  }
+  const candidate = value as Record<string, unknown>;
+  const diagnosis = candidate.diagnosis as Record<string, unknown> | undefined;
+  const states = ["Established", "Partial", "Broken"];
+
+  return (
+    typeof candidate.visiblePerformance === "string" &&
+    typeof candidate.economicOutcome === "string" &&
+    isStringArray(candidate.brokenConnections) &&
+    isStringArray(candidate.productiveConnections) &&
+    typeof candidate.managementDecision === "string" &&
+    isStringArray(candidate.indicators) &&
+    !!diagnosis &&
+    states.includes(String(diagnosis.possession)) &&
+    states.includes(String(diagnosis.circulation)) &&
+    states.includes(String(diagnosis.meaningfulConnection)) &&
+    states.includes(String(diagnosis.outcomeConversion))
   );
 }
 
@@ -233,8 +345,17 @@ function validateBrief(value: unknown): Brief | null {
     typeof candidate.executiveSummary !== "string" ||
     !Array.isArray(candidate.highestPriorityRisks) ||
     !Array.isArray(candidate.opportunities) ||
+    !validatePerformanceConnections(candidate.performanceConnections) ||
+    !candidate.criticalHazards ||
+    typeof candidate.criticalHazards !== "object" ||
     !Array.isArray(candidate.recommendedDecisions) ||
+    candidate.recommendedDecisions.length === 0 ||
+    candidate.recommendedDecisions.length > 3 ||
     !candidate.recommendedDecisions.every(validateDecision) ||
+    !isStringArray((candidate.criticalHazards as Record<string, unknown>).hiddenAssumptions) ||
+    !isStringArray((candidate.criticalHazards as Record<string, unknown>).underestimatedRisks) ||
+    !isStringArray((candidate.criticalHazards as Record<string, unknown>).missingControls) ||
+    !isStringArray((candidate.criticalHazards as Record<string, unknown>).strategyInvalidators) ||
     !actions ||
     !isStringArray(actions.today) ||
     !isStringArray(actions.thisWeek) ||
@@ -258,7 +379,7 @@ export async function POST(request: NextRequest) {
     signals?: Signal[];
     companyContext?: Record<string, string>;
   };
-  const priorities = payload.priorities ?? [];
+  const priorities = (payload.priorities ?? []).slice(0, 3);
 
   if (!process.env.OPENAI_API_KEY) {
     return NextResponse.json({ brief: jsonBrief(priorities), mode: "demo" });
@@ -277,7 +398,7 @@ export async function POST(request: NextRequest) {
           {
             role: "system",
             content:
-              "You are CFO Signal Desk, a calm executive finance companion for CFOs and finance teams. Mission: turn company reports, KPIs, and business context into perspective, judgment, direction, and accountable actions. Trust is created by showing the boundaries of confidence. Never produce generic summaries or hidden reasoning. Distinguish verified facts, user-provided information, model inference, working assumptions, insufficient data, stale signals, and conflicting evidence. Separate Confidence from Permission to Act. Confidence estimates whether the assessment is correct; Permission to Act evaluates whether execution is justified now based on reversibility, financial exposure, time pressure, governance, operational risk, and confidence influence. Never imply that high confidence automatically means act or low confidence automatically means wait. Explain source evidence, calculation, business impact, likely driver, suggested management direction, action owner, risk of inaction, what remains unknown, and what evidence would change the assessment. Reports show performance; you explain what it means, what deserves attention, what can wait, and what should happen next. Return only valid JSON.",
+              "You are CFO Signal Desk, a calm executive finance companion for CFOs and finance teams. Mission: turn company reports, KPIs, and business context into perspective, judgment, direction, and accountable actions. Trust is created by showing the boundaries of confidence. Never produce generic summaries or hidden reasoning. Distinguish verified facts, user-provided information, model inference, working assumptions, insufficient data, stale signals, and conflicting evidence. Analyze performance as a connection-to-outcome system. Ask whether resources and activity are connected through commercial behavior, pricing, cost, operations, cash flow, customer behavior, and management decisions into real economic outcomes. Separate visible activity from value creation, margin percentage from total contribution, budget compliance from economic correctness, departmental success from company success, and data ownership from decision production. Identify where information stalls, functions optimize locally, decisions arrive late, or activity circulates without producing outcomes. Every decision must state its cross-functional business connections and material trade-off. Separate Confidence from Permission to Act. Confidence estimates whether the assessment is correct; Permission to Act evaluates whether execution is justified now based on reversibility, financial exposure, time pressure, governance, operational risk, and confidence influence. Never imply that high confidence automatically means act or low confidence automatically means wait. Before recommending any decision, ask: What critical hazard has not yet been identified? Evaluate critical hazards, hidden operational risks, control weaknesses, concentration and dependency risks, tail exposure, and single points of failure. Think like an aviation safety investigator: avoid blame and identify system weaknesses, missing controls, risk concentration, and process failures. Every recommendation must include a concrete resilience safeguard. Explore options broadly, but recommend no more than three simultaneous strategic initiatives. A fourth initiative must identify which active priority it replaces or remain in exploration. Reports show performance; you explain what it means, what deserves attention, what can wait, and what should happen next. Return only valid JSON.",
           },
           {
             role: "user",
@@ -290,8 +411,12 @@ export async function POST(request: NextRequest) {
                 executiveSummary: "Maximum four concise CFO-to-CEO sentences.",
                 highestPriorityRisks: "Maximum three.",
                 opportunities: "Maximum three, focused on value creation.",
+                performanceConnections:
+                  "State visible performance, real economic outcome, broken and productive cross-functional connections, the management decision, indicators, and a four-part possession-to-outcome diagnosis.",
+                criticalHazards:
+                  "Identify hidden assumptions, underestimated risks, missing controls, and events that could invalidate the strategy. Focus on systems, not blame.",
                 recommendedDecisions:
-                  "Concrete management decisions with confidence boundaries, not observations.",
+                  "Two or three concrete management decisions with confidence boundaries, not observations. Never exceed three active initiatives; a fourth must replace one or remain exploratory.",
                 tomorrowWatchlist:
                   "Only signals that deserve executive attention tomorrow.",
               },
@@ -309,6 +434,8 @@ export async function POST(request: NextRequest) {
                 "executiveSummary",
                 "highestPriorityRisks",
                 "opportunities",
+                "performanceConnections",
+                "criticalHazards",
                 "recommendedDecisions",
                 "immediateActions",
                 "tomorrowWatchlist",
@@ -343,8 +470,63 @@ export async function POST(request: NextRequest) {
                     },
                   },
                 },
+                performanceConnections: {
+                  type: "object",
+                  additionalProperties: false,
+                  required: [
+                    "visiblePerformance",
+                    "economicOutcome",
+                    "brokenConnections",
+                    "productiveConnections",
+                    "managementDecision",
+                    "indicators",
+                    "diagnosis",
+                  ],
+                  properties: {
+                    visiblePerformance: { type: "string" },
+                    economicOutcome: { type: "string" },
+                    brokenConnections: { type: "array", minItems: 1, maxItems: 4, items: { type: "string" } },
+                    productiveConnections: { type: "array", minItems: 1, maxItems: 4, items: { type: "string" } },
+                    managementDecision: { type: "string" },
+                    indicators: { type: "array", minItems: 1, maxItems: 6, items: { type: "string" } },
+                    diagnosis: {
+                      type: "object",
+                      additionalProperties: false,
+                      required: [
+                        "possession",
+                        "circulation",
+                        "meaningfulConnection",
+                        "outcomeConversion",
+                      ],
+                      properties: {
+                        possession: { type: "string", enum: ["Established", "Partial", "Broken"] },
+                        circulation: { type: "string", enum: ["Established", "Partial", "Broken"] },
+                        meaningfulConnection: { type: "string", enum: ["Established", "Partial", "Broken"] },
+                        outcomeConversion: { type: "string", enum: ["Established", "Partial", "Broken"] },
+                      },
+                    },
+                  },
+                },
+                criticalHazards: {
+                  type: "object",
+                  additionalProperties: false,
+                  required: [
+                    "hiddenAssumptions",
+                    "underestimatedRisks",
+                    "missingControls",
+                    "strategyInvalidators",
+                  ],
+                  properties: {
+                    hiddenAssumptions: { type: "array", minItems: 1, maxItems: 3, items: { type: "string" } },
+                    underestimatedRisks: { type: "array", minItems: 1, maxItems: 3, items: { type: "string" } },
+                    missingControls: { type: "array", minItems: 1, maxItems: 3, items: { type: "string" } },
+                    strategyInvalidators: { type: "array", minItems: 1, maxItems: 3, items: { type: "string" } },
+                  },
+                },
                 recommendedDecisions: {
                   type: "array",
+                  minItems: 1,
+                  maxItems: 3,
                   items: {
                     type: "object",
                     additionalProperties: false,
@@ -353,6 +535,9 @@ export async function POST(request: NextRequest) {
                       "why",
                       "whyNow",
                       "ignoredConsequence",
+                      "businessConnections",
+                      "tradeoff",
+                      "resilienceSafeguard",
                       "kpiAffected",
                       "confidence",
                       "priorityLevel",
@@ -362,6 +547,9 @@ export async function POST(request: NextRequest) {
                       why: { type: "string" },
                       whyNow: { type: "string" },
                       ignoredConsequence: { type: "string" },
+                      businessConnections: { type: "array", minItems: 1, maxItems: 5, items: { type: "string" } },
+                      tradeoff: { type: "string" },
+                      resilienceSafeguard: { type: "string" },
                       kpiAffected: { type: "string" },
                       confidence: { type: "number", minimum: 0, maximum: 100 },
                       priorityLevel: {

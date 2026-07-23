@@ -40,6 +40,15 @@ test("server-renders the authenticated CFO morning workflow", async () => {
   assert.match(html, /Recommended decision/);
   assert.match(html, /Confidence/);
   assert.match(html, /Permission to act/);
+  assert.match(html, /Execution focus/);
+  assert.match(html, /active strategic slots/);
+  assert.match(html, /Performance connections/);
+  assert.match(html, /Real economic outcome/);
+  assert.match(html, /Outcome-producing connections/);
+  assert.match(html, /Risk and trade-off/);
+  assert.match(html, /Critical hazards/);
+  assert.match(html, /What critical hazard has not yet been identified/);
+  assert.match(html, /Resilience safeguard/);
   assert.match(html, /Decision journal/);
   assert.match(html, /Source links/);
   assert.match(html, /Demo data/);
@@ -55,6 +64,43 @@ test("shows a private sign-in surface to anonymous visitors", async () => {
   assert.match(html, /Sign in with ChatGPT/);
   assert.match(html, /visible only after sign-in/);
   assert.doesNotMatch(html, /Northstar Manufacturing/);
+});
+
+test("returns structured critical hazards in deterministic demo mode", async () => {
+  const workerUrl = new URL("../dist/server/index.js", import.meta.url);
+  workerUrl.searchParams.set("test", `api-${process.pid}-${Date.now()}`);
+  const { default: worker } = await import(workerUrl.href);
+  const response = await worker.fetch(
+    new Request("http://localhost/api/brief", {
+      method: "POST",
+      headers: {
+        "content-type": "application/json",
+        "oai-authenticated-user-email": "cfo@example.com",
+        "oai-authenticated-user-full-name": "Alex Morgan",
+      },
+      body: JSON.stringify({ priorities: ["Margin protection"] }),
+    }),
+    { ASSETS: { fetch: async () => new Response("Not found", { status: 404 }) } },
+    { waitUntil() {}, passThroughOnException() {} },
+  );
+
+  assert.equal(response.status, 200);
+  const payload = await response.json();
+  assert.equal(payload.mode, "demo");
+  assert.ok(payload.brief.criticalHazards.hiddenAssumptions.length > 0);
+  assert.ok(payload.brief.criticalHazards.underestimatedRisks.length > 0);
+  assert.ok(payload.brief.criticalHazards.missingControls.length > 0);
+  assert.ok(payload.brief.criticalHazards.strategyInvalidators.length > 0);
+  assert.equal(payload.brief.performanceConnections.diagnosis.outcomeConversion, "Broken");
+  assert.ok(payload.brief.performanceConnections.brokenConnections.length > 0);
+  assert.ok(
+    payload.brief.recommendedDecisions.every(
+      (decision) =>
+        typeof decision.resilienceSafeguard === "string" &&
+        typeof decision.tradeoff === "string" &&
+        decision.businessConnections.length > 0,
+    ),
+  );
 });
 
 test("keeps the production and demo contracts explicit", async () => {
@@ -78,6 +124,15 @@ test("keeps the production and demo contracts explicit", async () => {
   assert.match(dashboard, /cfo-signal-profile/);
   assert.match(dashboard, /cfo-signal-journal/);
   assert.match(dashboard, /Proceed with safeguards/);
+  assert.match(dashboard, /MAX_ACTIVE_PRIORITIES = 3/);
+  assert.match(route, /maxItems: 3/);
+  assert.match(route, /fourth initiative must identify which active priority it replaces/i);
+  assert.match(route, /What critical hazard has not yet been identified/);
+  assert.match(route, /resilienceSafeguard/);
+  assert.match(route, /performanceConnections/);
+  assert.match(route, /connection-to-outcome system/);
+  assert.match(dashboard, /Peligros críticos/);
+  assert.match(dashboard, /Conexiones de desempeño/);
   assert.match(dashboard, /Buenos días/);
   assert.match(sample, /gross_margin/);
   assert.match(layout, /private morning finance brief/);

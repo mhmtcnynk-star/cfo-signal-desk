@@ -86,6 +86,12 @@ The product should never behave like a black box.
 
 Analysis is valuable only if it changes judgment. Every interpretation should clarify an action, a question, or a decision to wait.
 
+### Execution Focus
+
+Energy for ideas can remain unlimited. Execution capacity cannot. CFO Signal Desk should explore options broadly while limiting the active strategic portfolio to two or three initiatives. A new initiative must replace an existing priority or remain in exploration until capacity becomes available.
+
+The governing question is not only "Can we do this?" It is also "What will we stop or defer if we do?"
+
 ### 6. Human Systems Matter
 
 People and organizations do not only produce economic output. They also produce meaning, beauty, belonging, appreciation, respect, and trust. CFO Signal Desk should notice signals that create long-term relationship capital.
@@ -144,13 +150,40 @@ It should:
 Every brief should contain:
 
 - Executive Summary
+- Performance Connections
 - Top Risks
 - Top Opportunities
+- Critical Hazards
 - Recommended Direction
 - Immediate Actions
 - Tomorrow Watchlist
 
-Nothing more. Nothing less.
+The brief remains concise. Critical Hazards exists to reveal assumptions, missing controls, underestimated risks, and events that could invalidate the current direction before management acts.
+
+## Executive Risk Intelligence
+
+Before recommending a decision, ask: "What critical hazard has not yet been identified?"
+
+Review critical hazards, hidden operational risks, control weaknesses, concentration and dependency risk, tail exposure, and single points of failure. Use an aviation-safety mindset: do not assign blame; identify system weaknesses, missing controls, risk concentration, and process failures. Every recommendation should include a practical safeguard that strengthens organizational resilience.
+
+Organizations rarely fail because of one mistake. They fail when a critical hazard remains invisible until it becomes an incident.
+
+## Connection-to-Outcome Model
+
+Performance is not possession of resources or volume of activity. Performance is the ability to connect commercial behavior, operations, financial information, cash, and management decisions into economic outcomes.
+
+Every analysis should distinguish:
+
+1. Visible performance
+2. Real economic outcome
+3. Broken connections
+4. Outcome-producing connections
+5. Management decision
+6. Indicators to monitor
+
+Test whether the organization has resources, whether activity is circulating, whether the connections are meaningful, and whether the system converts them into outcomes. Do not recommend more activity when a better connection is required.
+
+Every financial recommendation should expose its business connections, material trade-off, and guardrail. The governing question is: resources and activity may be present, but are they producing a meaningful business connection and economic result?
 
 ## Success Metrics
 

@@ -6,6 +6,8 @@ type Locale = "en" | "es";
 type Severity = "High" | "Medium" | "Low";
 type PriorityLevel = "Monitor" | "Act today" | "Executive decision";
 
+const MAX_ACTIVE_PRIORITIES = 3;
+
 type CompanyProfile = {
   name: string;
   industry: string;
@@ -20,9 +22,36 @@ type Decision = {
   why: string;
   whyNow: string;
   ignoredConsequence: string;
+  businessConnections: string[];
+  tradeoff: string;
+  resilienceSafeguard: string;
   kpiAffected: string;
   confidence: number;
   priorityLevel: PriorityLevel;
+};
+
+type ConnectionState = "Established" | "Partial" | "Broken";
+
+type PerformanceConnections = {
+  visiblePerformance: string;
+  economicOutcome: string;
+  brokenConnections: string[];
+  productiveConnections: string[];
+  managementDecision: string;
+  indicators: string[];
+  diagnosis: {
+    possession: ConnectionState;
+    circulation: ConnectionState;
+    meaningfulConnection: ConnectionState;
+    outcomeConversion: ConnectionState;
+  };
+};
+
+type CriticalHazards = {
+  hiddenAssumptions: string[];
+  underestimatedRisks: string[];
+  missingControls: string[];
+  strategyInvalidators: string[];
 };
 
 type Brief = {
@@ -37,6 +66,8 @@ type Brief = {
     valueCreated: string;
     action: string;
   }>;
+  performanceConnections: PerformanceConnections;
+  criticalHazards: CriticalHazards;
   recommendedDecisions: Decision[];
   immediateActions: {
     today: string[];
@@ -161,12 +192,64 @@ const demoBrief: Brief = {
       action: "Assign account-level collection owners.",
     },
   ],
+  performanceConnections: {
+    visiblePerformance:
+      "Revenue activity remains material, but monthly revenue is 8.0% below budget and average order value is declining.",
+    economicOutcome:
+      "Lower average order value and a 3.2-point margin gap show that commercial activity is not converting into planned EBITDA quality.",
+    brokenConnections: [
+      "Sales activity is not consistently connected to customer-level margin evidence.",
+      "Discount approvals are not visibly connected to realized profitability.",
+      "Receivables deterioration is reaching treasury after the commercial decision.",
+    ],
+    productiveConnections: [
+      "A price-volume-mix bridge can connect customer behavior to gross margin.",
+      "Account-level collection ownership can connect sales relationships to liquidity.",
+    ],
+    managementDecision:
+      "Do not pursue blanket volume recovery. First connect price, mix, discount, and cash evidence into one commercial response.",
+    indicators: [
+      "Customer and product margin",
+      "Discount approval compliance",
+      "Average order value",
+      "Overdue receivables",
+    ],
+    diagnosis: {
+      possession: "Established",
+      circulation: "Established",
+      meaningfulConnection: "Partial",
+      outcomeConversion: "Broken",
+    },
+  },
+  criticalHazards: {
+    hiddenAssumptions: [
+      "The revenue shortfall is being treated as a commercial volume issue before price and mix are separated.",
+    ],
+    underestimatedRisks: [
+      "Discount exceptions may be concentrated in a small number of customers or products.",
+    ],
+    missingControls: [
+      "There is no visible invoice-level control linking discount approval to realized customer margin.",
+    ],
+    strategyInvalidators: [
+      "A sharp supplier-cost increase or customer concentration loss would invalidate the current margin recovery plan.",
+    ],
+  },
   recommendedDecisions: [
     {
       recommendation: "Run a margin bridge before revising the revenue forecast.",
       why: "Revenue, average order value, and gross margin moved together.",
       whyNow: "A forecast change made before driver clarity may institutionalize the wrong response.",
       ignoredConsequence: "Management may chase volume while accepting lower-quality revenue.",
+      businessConnections: [
+        "Sales behavior",
+        "Customer and product mix",
+        "Gross margin",
+        "Forecast",
+      ],
+      tradeoff:
+        "A short diagnostic delay protects decision quality, but waiting too long would slow commercial response.",
+      resilienceSafeguard: "Require price, volume, mix, and cost evidence before changing the forecast or sales response.",
       kpiAffected: "Gross Margin",
       confidence: 86,
       priorityLevel: "Executive decision",
@@ -176,6 +259,15 @@ const demoBrief: Brief = {
       why: "Working capital deterioration is already visible in receivables.",
       whyNow: "Liquidity risk can develop between monthly closes.",
       ignoredConsequence: "Short-term funding needs may be discovered too late.",
+      businessConnections: [
+        "Customer collections",
+        "Working capital",
+        "Treasury capacity",
+        "Liquidity",
+      ],
+      tradeoff:
+        "Tighter collections may create customer friction, but unmanaged delay transfers commercial risk into treasury.",
+      resilienceSafeguard: "Add downside collection scenarios and named escalation owners to the 13-week cash forecast.",
       kpiAffected: "Cash Conversion Cycle",
       confidence: 76,
       priorityLevel: "Act today",
@@ -223,12 +315,36 @@ const copy = {
     recommendation: "Recommended decision",
     whyNow: "Why now",
     inaction: "If ignored",
+    businessConnections: "Business connections",
+    tradeoff: "Risk and trade-off",
+    safeguard: "Resilience safeguard",
     confidence: "Confidence",
     permission: "Permission to act",
     permissionValue: "Proceed with safeguards",
     permissionReason: "The analysis is reversible; validate the bridge before changing the forecast.",
+    focus: "Execution focus",
+    focusSlots: "active strategic slots",
+    focusReason: "Ideas remain open. A fourth initiative must replace an active priority or stay in exploration.",
     risks: "Priority risks",
     opportunities: "Opportunities",
+    connections: "Performance connections",
+    connectionPrompt: "Resources and activity are visible. Are they connected into economic outcomes?",
+    visiblePerformance: "Visible performance",
+    economicOutcome: "Real economic outcome",
+    brokenConnections: "Broken connections",
+    productiveConnections: "Outcome-producing connections",
+    managementDecision: "Management decision",
+    trackedIndicators: "Indicators to monitor",
+    possession: "Resource ownership",
+    circulation: "Activity flow",
+    meaningfulConnection: "Meaningful connection",
+    outcomeConversion: "Outcome conversion",
+    hazards: "Critical hazards",
+    hazardPrompt: "What critical hazard has not yet been identified?",
+    hiddenAssumptions: "Hidden assumptions",
+    underestimatedRisks: "Underestimated risks",
+    missingControls: "Missing controls",
+    strategyInvalidators: "Events that could invalidate the strategy",
     actions: "Immediate actions",
     today: "Today",
     week: "This week",
@@ -245,6 +361,8 @@ const copy = {
     sources: "Source links",
     sourceIntro: "Every material claim points back to the visible demo report.",
     priorities: "Business priorities",
+    priorityGuidance: "Choose up to three active priorities. New ideas can remain in exploration without consuming execution capacity.",
+    priorityLimit: "Three active priorities already selected. Replace one before adding another.",
     identity: "Private workspace",
     signOut: "Sign out",
     saved: "Company context saved",
@@ -270,12 +388,36 @@ const copy = {
     recommendation: "Decisión recomendada",
     whyNow: "Por qué ahora",
     inaction: "Si se ignora",
+    businessConnections: "Conexiones del negocio",
+    tradeoff: "Riesgo y trade-off",
+    safeguard: "Salvaguarda de resiliencia",
     confidence: "Confianza",
     permission: "Permiso para actuar",
     permissionValue: "Proceder con salvaguardas",
     permissionReason: "El análisis es reversible; valide el puente antes de cambiar el forecast.",
+    focus: "Foco de ejecución",
+    focusSlots: "espacios estratégicos activos",
+    focusReason: "Las ideas siguen abiertas. Una cuarta iniciativa debe reemplazar una prioridad activa o permanecer en exploración.",
     risks: "Riesgos prioritarios",
     opportunities: "Oportunidades",
+    connections: "Conexiones de desempeño",
+    connectionPrompt: "Los recursos y la actividad son visibles. ¿Están conectados con resultados económicos?",
+    visiblePerformance: "Desempeño visible",
+    economicOutcome: "Resultado económico real",
+    brokenConnections: "Conexiones rotas",
+    productiveConnections: "Conexiones que producen resultados",
+    managementDecision: "Decisión de gestión",
+    trackedIndicators: "Indicadores a seguir",
+    possession: "Disponibilidad de recursos",
+    circulation: "Flujo de actividad",
+    meaningfulConnection: "Conexión significativa",
+    outcomeConversion: "Conversión en resultados",
+    hazards: "Peligros críticos",
+    hazardPrompt: "¿Qué peligro crítico aún no ha sido identificado?",
+    hiddenAssumptions: "Supuestos ocultos",
+    underestimatedRisks: "Riesgos subestimados",
+    missingControls: "Controles ausentes",
+    strategyInvalidators: "Eventos que podrían invalidar la estrategia",
     actions: "Acciones inmediatas",
     today: "Hoy",
     week: "Esta semana",
@@ -292,6 +434,8 @@ const copy = {
     sources: "Fuentes",
     sourceIntro: "Cada afirmación material apunta al reporte demo visible.",
     priorities: "Prioridades del negocio",
+    priorityGuidance: "Elija hasta tres prioridades activas. Las nuevas ideas pueden permanecer en exploración sin consumir capacidad de ejecución.",
+    priorityLimit: "Ya hay tres prioridades activas. Reemplace una antes de agregar otra.",
     identity: "Espacio privado",
     signOut: "Cerrar sesión",
     saved: "Contexto de empresa guardado",
@@ -302,10 +446,28 @@ function severityClass(severity: Severity) {
   return severity.toLowerCase();
 }
 
+function connectionStateLabel(state: ConnectionState, locale: Locale) {
+  if (locale === "en") return state;
+  return {
+    Established: "Establecida",
+    Partial: "Parcial",
+    Broken: "Rota",
+  }[state];
+}
+
 function nextReviewDate() {
   const date = new Date();
   date.setDate(date.getDate() + 7);
   return date.toISOString().slice(0, 10);
+}
+
+function limitProfilePriorities(profile: CompanyProfile): CompanyProfile {
+  return {
+    ...profile,
+    priorities: Array.isArray(profile.priorities)
+      ? profile.priorities.slice(0, MAX_ACTIVE_PRIORITIES)
+      : [],
+  };
 }
 
 export default function Dashboard({
@@ -332,7 +494,7 @@ export default function Dashboard({
         const savedProfile = window.localStorage.getItem("cfo-signal-profile");
         const savedJournal = window.localStorage.getItem("cfo-signal-journal");
         if (savedProfile) {
-          const parsed = JSON.parse(savedProfile) as CompanyProfile;
+          const parsed = limitProfilePriorities(JSON.parse(savedProfile) as CompanyProfile);
           setProfile(parsed);
           setDraftProfile(parsed);
         }
@@ -383,12 +545,18 @@ export default function Dashboard({
   }
 
   function togglePriority(priority: string) {
-    setDraftProfile((current) => ({
-      ...current,
-      priorities: current.priorities.includes(priority)
-        ? current.priorities.filter((item) => item !== priority)
-        : [...current.priorities, priority],
-    }));
+    if (!draftProfile.priorities.includes(priority) && draftProfile.priorities.length >= MAX_ACTIVE_PRIORITIES) {
+      setNotice(t.priorityLimit);
+      window.setTimeout(() => setNotice(""), 2400);
+      return;
+    }
+
+    setDraftProfile({
+      ...draftProfile,
+      priorities: draftProfile.priorities.includes(priority)
+        ? draftProfile.priorities.filter((item) => item !== priority)
+        : [...draftProfile.priorities, priority],
+    });
   }
 
   function saveProfile(event: FormEvent) {
@@ -415,6 +583,10 @@ export default function Dashboard({
   }
 
   const primaryDecision = brief.recommendedDecisions[0] ?? demoBrief.recommendedDecisions[0];
+  const activeDecisionCount = Math.min(
+    brief.recommendedDecisions.length,
+    MAX_ACTIVE_PRIORITIES,
+  );
 
   return (
     <main className="appShell">
@@ -477,6 +649,9 @@ export default function Dashboard({
           <div className="decisionRationale">
             <div><span>{t.whyNow}</span><p>{primaryDecision.whyNow}</p></div>
             <div><span>{t.inaction}</span><p>{primaryDecision.ignoredConsequence}</p></div>
+            <div><span>{t.businessConnections}</span><p>{primaryDecision.businessConnections.join(" → ")}</p></div>
+            <div><span>{t.tradeoff}</span><p>{primaryDecision.tradeoff}</p></div>
+            <div className="resilienceSafeguard"><span>{t.safeguard}</span><p>{primaryDecision.resilienceSafeguard}</p></div>
           </div>
         </div>
         <aside className="authorizationPanel" aria-label="Decision authorization">
@@ -490,6 +665,11 @@ export default function Dashboard({
             <span>{t.permission}</span>
             <strong>{t.permissionValue}</strong>
             <p>{t.permissionReason}</p>
+          </div>
+          <div className="authorizationMetric focus">
+            <span>{t.focus}</span>
+            <strong>{activeDecisionCount} / {MAX_ACTIVE_PRIORITIES} {t.focusSlots}</strong>
+            <p>{t.focusReason}</p>
           </div>
           <div className="decisionButtons">
             <button onClick={() => recordDecision(primaryDecision, "Accepted")}>{t.accepted}</button>
@@ -520,8 +700,36 @@ export default function Dashboard({
         </div>
       </section>
 
+      <section className="contentSection connectionSection" aria-labelledby="connections-title">
+        <div className="sectionHeader">
+          <div><p className="eyebrow">02 · {t.connections}</p><h2 id="connections-title">{t.connections}</h2></div>
+          <p className="connectionPrompt">{t.connectionPrompt}</p>
+        </div>
+        <div className="connectionDiagnosis">
+          {([
+            [t.possession, brief.performanceConnections.diagnosis.possession],
+            [t.circulation, brief.performanceConnections.diagnosis.circulation],
+            [t.meaningfulConnection, brief.performanceConnections.diagnosis.meaningfulConnection],
+            [t.outcomeConversion, brief.performanceConnections.diagnosis.outcomeConversion],
+          ] as const).map(([label, state]) => (
+            <div key={label}>
+              <span>{label}</span>
+              <strong className={state.toLowerCase()}>{connectionStateLabel(state, locale)}</strong>
+            </div>
+          ))}
+        </div>
+        <div className="connectionGrid">
+          <article><h3>{t.visiblePerformance}</h3><p>{brief.performanceConnections.visiblePerformance}</p></article>
+          <article><h3>{t.economicOutcome}</h3><p>{brief.performanceConnections.economicOutcome}</p></article>
+          <article><h3>{t.managementDecision}</h3><p>{brief.performanceConnections.managementDecision}</p></article>
+          <article><h3>{t.brokenConnections}</h3><ul>{brief.performanceConnections.brokenConnections.map((item) => <li key={item}>{item}</li>)}</ul></article>
+          <article><h3>{t.productiveConnections}</h3><ul>{brief.performanceConnections.productiveConnections.map((item) => <li key={item}>{item}</li>)}</ul></article>
+          <article><h3>{t.trackedIndicators}</h3><ul>{brief.performanceConnections.indicators.map((item) => <li key={item}>{item}</li>)}</ul></article>
+        </div>
+      </section>
+
       <section className="contentSection briefSection" aria-labelledby="brief-title">
-        <div className="sectionHeader compact"><div><p className="eyebrow">02 · {t.executiveBrief}</p><h2 id="brief-title">{t.executiveBrief}</h2></div></div>
+        <div className="sectionHeader compact"><div><p className="eyebrow">03 · {t.executiveBrief}</p><h2 id="brief-title">{t.executiveBrief}</h2></div></div>
         <div className="summaryBlock"><p>{brief.executiveSummary}</p></div>
         <div className="briefColumns">
           <article>
@@ -535,8 +743,28 @@ export default function Dashboard({
         </div>
       </section>
 
+      <section className="contentSection hazardSection" aria-labelledby="hazards-title">
+        <div className="sectionHeader">
+          <div><p className="eyebrow">04 · {t.hazards}</p><h2 id="hazards-title">{t.hazards}</h2></div>
+          <p className="hazardPrompt">{t.hazardPrompt}</p>
+        </div>
+        <div className="hazardGrid">
+          {([
+            [t.hiddenAssumptions, brief.criticalHazards.hiddenAssumptions],
+            [t.underestimatedRisks, brief.criticalHazards.underestimatedRisks],
+            [t.missingControls, brief.criticalHazards.missingControls],
+            [t.strategyInvalidators, brief.criticalHazards.strategyInvalidators],
+          ] as const).map(([label, items]) => (
+            <article key={label}>
+              <h3>{label}</h3>
+              <ul>{items.map((item) => <li key={item}>{item}</li>)}</ul>
+            </article>
+          ))}
+        </div>
+      </section>
+
       <section className="contentSection actionSection" aria-labelledby="actions-title">
-        <div className="sectionHeader compact"><div><p className="eyebrow">03 · {t.actions}</p><h2 id="actions-title">{t.actions}</h2></div></div>
+        <div className="sectionHeader compact"><div><p className="eyebrow">05 · {t.actions}</p><h2 id="actions-title">{t.actions}</h2></div></div>
         <div className="actionGrid">
           {([[t.today, brief.immediateActions.today], [t.week, brief.immediateActions.thisWeek], [t.month, brief.immediateActions.thisMonth]] as const).map(([label, items]) => (
             <article key={label}><h3>{label}</h3><ul>{items.map((item) => <li key={item}>{item}</li>)}</ul></article>
@@ -546,11 +774,11 @@ export default function Dashboard({
 
       <section className="lowerGrid">
         <article className="watchlistPanel">
-          <p className="eyebrow">04 · {t.watchlist}</p><h2>{t.watchlist}</h2>
+          <p className="eyebrow">06 · {t.watchlist}</p><h2>{t.watchlist}</h2>
           <ul>{brief.tomorrowWatchlist.map((item, index) => <li key={item}><span>{String(index + 1).padStart(2, "0")}</span>{item}</li>)}</ul>
         </article>
         <article className="journalPanel" id="journal">
-          <p className="eyebrow">05 · {t.journal}</p><h2>{t.journal}</h2><p>{t.journalIntro}</p>
+          <p className="eyebrow">07 · {t.journal}</p><h2>{t.journal}</h2><p>{t.journalIntro}</p>
           <div className="journalList">
             {journal.length === 0 ? <div className="emptyState">{t.noJournal}</div> : journal.map((entry) => (
               <div className="journalEntry" key={entry.id}><div><span className={`journalStatus ${entry.status.toLowerCase()}`}>{entry.status}</span><strong>{entry.decision}</strong></div><dl><div><dt>{t.owner}</dt><dd>{entry.owner}</dd></div><div><dt>{t.review}</dt><dd>{entry.reviewDate}</dd></div></dl></div>
@@ -560,7 +788,7 @@ export default function Dashboard({
       </section>
 
       <section className="sourceSection" id="sources">
-        <div><p className="eyebrow">06 · {t.sources}</p><h2>{t.sources}</h2><p>{t.sourceIntro}</p></div>
+        <div><p className="eyebrow">08 · {t.sources}</p><h2>{t.sources}</h2><p>{t.sourceIntro}</p></div>
         <div className="sourceLinks">
           <a href="/sample-data/management-report.json" target="_blank" rel="noreferrer"><strong>Monthly management report</strong><span>Actual · Budget · Prior period</span></a>
           <a href="/sample-data/management-report.json#methodology" target="_blank" rel="noreferrer"><strong>Interpretation methodology</strong><span>Facts · calculations · assumptions</span></a>
@@ -578,7 +806,22 @@ export default function Dashboard({
               <div className="formRow"><label>Industry<input value={draftProfile.industry} onChange={(event) => setDraftProfile({ ...draftProfile, industry: event.target.value })} required /></label><label>Company size<input value={draftProfile.size} onChange={(event) => setDraftProfile({ ...draftProfile, size: event.target.value })} required /></label></div>
               <label>Geographic exposure<input value={draftProfile.geography} onChange={(event) => setDraftProfile({ ...draftProfile, geography: event.target.value })} /></label>
               <label>FX exposure<textarea value={draftProfile.fxExposure} onChange={(event) => setDraftProfile({ ...draftProfile, fxExposure: event.target.value })} rows={2} /></label>
-              <fieldset><legend>{t.priorities}</legend><div className="priorityPicker">{priorities.map((priority) => <label key={priority} className={draftProfile.priorities.includes(priority) ? "selected" : ""}><input type="checkbox" checked={draftProfile.priorities.includes(priority)} onChange={() => togglePriority(priority)} />{priority}</label>)}</div></fieldset>
+              <fieldset aria-describedby="priority-guidance">
+                <legend>{t.priorities}</legend>
+                <p className="fieldHint" id="priority-guidance">{t.priorityGuidance}</p>
+                <div className="priorityPicker">
+                  {priorities.map((priority) => {
+                    const selected = draftProfile.priorities.includes(priority);
+                    const disabled = !selected && draftProfile.priorities.length >= MAX_ACTIVE_PRIORITIES;
+                    return (
+                      <label key={priority} className={`${selected ? "selected" : ""} ${disabled ? "disabled" : ""}`.trim()}>
+                        <input type="checkbox" checked={selected} disabled={disabled} onChange={() => togglePriority(priority)} />
+                        {priority}
+                      </label>
+                    );
+                  })}
+                </div>
+              </fieldset>
               <button className="primaryButton" type="submit">{t.save}</button>
             </form>
           </section>
