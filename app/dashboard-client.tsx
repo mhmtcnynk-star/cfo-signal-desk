@@ -25,12 +25,21 @@ type Decision = {
   businessConnections: string[];
   tradeoff: string;
   resilienceSafeguard: string;
+  conversionTest: string;
   kpiAffected: string;
   confidence: number;
   priorityLevel: PriorityLevel;
 };
 
 type ConnectionState = "Established" | "Partial" | "Broken";
+
+type ValueConversionAnalysis = {
+  revenueConversion: { state: ConnectionState; assessment: string };
+  ebitdaConversion: { state: ConnectionState; assessment: string };
+  cashConversion: { state: ConnectionState; assessment: string };
+  bottlenecks: string[];
+  recommendedActions: string[];
+};
 
 type PerformanceConnections = {
   visiblePerformance: string;
@@ -67,6 +76,7 @@ type Brief = {
     action: string;
   }>;
   performanceConnections: PerformanceConnections;
+  valueConversionAnalysis: ValueConversionAnalysis;
   criticalHazards: CriticalHazards;
   recommendedDecisions: Decision[];
   immediateActions: {
@@ -133,50 +143,50 @@ const signals: Signal[] = [
     updated: "Today · 07:30",
   },
   {
-    id: "margin",
+    id: "ebitda",
     category: "Profitability",
-    title: "Gross margin",
-    value: "29.8%",
-    delta: "3.2 pts below budget",
+    title: "EBITDA",
+    value: "$0.31M",
+    delta: "43.6% below budget",
     severity: "High",
-    fact: "Gross margin is below both budget and the prior period.",
-    inference: "Discounting, customer mix, or product mix may be weakening revenue quality.",
-    relevance: "Gross margin · EBITDA",
-    source: "/sample-data/management-report.json#gross-margin",
+    fact: "EBITDA margin is 6.7% versus 11.0% in the approved budget.",
+    inference: "Price, discount, product mix, or input cost is weakening revenue-to-profit conversion.",
+    relevance: "Revenue conversion · EBITDA",
+    source: "/sample-data/management-report.json#ebitda",
     updated: "Today · 07:30",
   },
   {
-    id: "cash",
+    id: "operating-cash-flow",
     category: "Liquidity",
-    title: "Cash conversion cycle",
-    value: "61 days",
-    delta: "9 days above budget",
+    title: "Operating cash flow",
+    value: "−$0.18M",
+    delta: "$0.60M below budget",
     severity: "High",
-    fact: "Receivables days increased while inventory remained broadly stable.",
-    inference: "Collection pressure can create a near-term liquidity gap.",
-    relevance: "Cash flow · Working capital",
-    source: "/sample-data/management-report.json#cash-conversion-cycle",
+    fact: "Positive EBITDA did not convert into positive operating cash flow.",
+    inference: "Receivables growth and the longer cash cycle are absorbing reported profit.",
+    relevance: "EBITDA conversion · Cash",
+    source: "/sample-data/management-report.json#operating-cash-flow",
     updated: "Today · 07:30",
   },
 ];
 
 const demoBrief: Brief = {
   executiveSummary:
-    "Revenue is 8.0% below budget, but the more consequential pattern is the simultaneous decline in average order value and gross margin. This suggests a price, discount, or mix issue rather than a simple volume shortfall. The company should clarify the margin bridge before changing the sales forecast. Cash conversion also deserves action today because collection pressure can move faster than the monthly reporting cycle.",
+    "Revenue is 8.0% below budget, EBITDA is 43.6% below budget, and operating cash flow is negative. The central issue is not activity volume but weak conversion from revenue into profit and from profit into cash. Management should isolate price, mix, cost, and working-capital leakage before revising the revenue forecast or pushing broad sales volume. The objective is profitable, cash-generating growth.",
   highestPriorityRisks: [
     {
       description: "Revenue quality is weakening.",
-      businessImpact: "Broad volume action could recover sales while further reducing EBITDA.",
+      businessImpact: "Broad volume action could recover sales while further weakening EBITDA and cash conversion.",
       urgency: "Resolve before forecast revision",
     },
     {
       description: "Gross margin is 3.2 points below plan.",
-      businessImpact: "Price, discount, and mix effects are not yet separated.",
+      businessImpact: "Only 6.7% of revenue is converting into EBITDA versus 11.0% in the plan.",
       urgency: "Margin bridge this week",
     },
     {
       description: "Collections are extending the cash cycle.",
-      businessImpact: "A liquidity need may emerge before the next reporting close.",
+      businessImpact: "Positive EBITDA is converting into negative operating cash flow.",
       urgency: "Refresh cash forecast today",
     },
   ],
@@ -221,6 +231,32 @@ const demoBrief: Brief = {
       outcomeConversion: "Broken",
     },
   },
+  valueConversionAnalysis: {
+    revenueConversion: {
+      state: "Broken",
+      assessment:
+        "$4.6M of revenue converts into $0.31M of EBITDA, a 6.7% margin versus 11.0% in the plan. Price, mix, discount, and cost leakage are reducing revenue quality.",
+    },
+    ebitdaConversion: {
+      state: "Broken",
+      assessment:
+        "$0.31M of EBITDA converts into negative $0.18M of operating cash flow. Receivables growth and the longer cash cycle absorb the reported profit.",
+    },
+    cashConversion: {
+      state: "Broken",
+      assessment:
+        "Operating cash flow is $0.60M below budget. The company is funding activity rather than generating cash from it.",
+    },
+    bottlenecks: [
+      "Revenue-to-EBITDA leakage in price, customer mix, discounts, and input cost.",
+      "EBITDA-to-cash leakage in receivables and collection timing.",
+    ],
+    recommendedActions: [
+      "Build one Revenue → EBITDA bridge by price, volume, mix, and cost.",
+      "Build one EBITDA → Operating Cash Flow bridge by working-capital driver.",
+      "Assign joint Sales, FP&A, Controller, and Treasury ownership to both bridges.",
+    ],
+  },
   criticalHazards: {
     hiddenAssumptions: [
       "The revenue shortfall is being treated as a commercial volume issue before price and mix are separated.",
@@ -250,6 +286,8 @@ const demoBrief: Brief = {
       tradeoff:
         "A short diagnostic delay protects decision quality, but waiting too long would slow commercial response.",
       resilienceSafeguard: "Require price, volume, mix, and cost evidence before changing the forecast or sales response.",
+      conversionTest:
+        "Yes. Driver clarity protects revenue quality before growth action and strengthens the Revenue → EBITDA conversion.",
       kpiAffected: "Gross Margin",
       confidence: 86,
       priorityLevel: "Executive decision",
@@ -268,6 +306,8 @@ const demoBrief: Brief = {
       tradeoff:
         "Tighter collections may create customer friction, but unmanaged delay transfers commercial risk into treasury.",
       resilienceSafeguard: "Add downside collection scenarios and named escalation owners to the 13-week cash forecast.",
+      conversionTest:
+        "Yes. Collection ownership directly improves the conversion of EBITDA into Operating Cash Flow.",
       kpiAffected: "Cash Conversion Cycle",
       confidence: 76,
       priorityLevel: "Act today",
@@ -328,7 +368,14 @@ const copy = {
     risks: "Priority risks",
     opportunities: "Opportunities",
     connections: "Performance connections",
-    connectionPrompt: "Resources and activity are visible. Are they connected into economic outcomes?",
+    connectionPrompt: "Quality of conversion matters more than volume of activity.",
+    valueConversion: "Value Conversion Analysis",
+    revenueConversion: "Revenue Conversion",
+    ebitdaConversion: "EBITDA Conversion",
+    cashConversion: "Cash Conversion",
+    bottlenecks: "Bottlenecks",
+    conversionActions: "Recommended actions",
+    conversionTest: "Value conversion test",
     visiblePerformance: "Visible performance",
     economicOutcome: "Real economic outcome",
     brokenConnections: "Broken connections",
@@ -401,7 +448,14 @@ const copy = {
     risks: "Riesgos prioritarios",
     opportunities: "Oportunidades",
     connections: "Conexiones de desempeño",
-    connectionPrompt: "Los recursos y la actividad son visibles. ¿Están conectados con resultados económicos?",
+    connectionPrompt: "La calidad de conversión importa más que el volumen de actividad.",
+    valueConversion: "Análisis de Conversión de Valor",
+    revenueConversion: "Conversión de Revenue",
+    ebitdaConversion: "Conversión de EBITDA",
+    cashConversion: "Conversión de Cash",
+    bottlenecks: "Cuellos de botella",
+    conversionActions: "Acciones recomendadas",
+    conversionTest: "Prueba de conversión de valor",
     visiblePerformance: "Desempeño visible",
     economicOutcome: "Resultado económico real",
     brokenConnections: "Conexiones rotas",
@@ -652,6 +706,7 @@ export default function Dashboard({
             <div><span>{t.businessConnections}</span><p>{primaryDecision.businessConnections.join(" → ")}</p></div>
             <div><span>{t.tradeoff}</span><p>{primaryDecision.tradeoff}</p></div>
             <div className="resilienceSafeguard"><span>{t.safeguard}</span><p>{primaryDecision.resilienceSafeguard}</p></div>
+            <div className="conversionTest"><span>{t.conversionTest}</span><p>{primaryDecision.conversionTest}</p></div>
           </div>
         </div>
         <aside className="authorizationPanel" aria-label="Decision authorization">
@@ -717,6 +772,32 @@ export default function Dashboard({
               <strong className={state.toLowerCase()}>{connectionStateLabel(state, locale)}</strong>
             </div>
           ))}
+        </div>
+        <div className="valueConversionHeader">
+          <p className="eyebrow">{t.valueConversion}</p>
+          <strong>Revenue <span>→</span> EBITDA <span>→</span> Operating Cash Flow</strong>
+        </div>
+        <div className="valueConversionChain">
+          {([
+            [t.revenueConversion, brief.valueConversionAnalysis.revenueConversion],
+            [t.ebitdaConversion, brief.valueConversionAnalysis.ebitdaConversion],
+            [t.cashConversion, brief.valueConversionAnalysis.cashConversion],
+          ] as const).map(([label, stage]) => (
+            <article key={label}>
+              <div><h3>{label}</h3><strong className={stage.state.toLowerCase()}>{connectionStateLabel(stage.state, locale)}</strong></div>
+              <p>{stage.assessment}</p>
+            </article>
+          ))}
+        </div>
+        <div className="conversionDetailGrid">
+          <article>
+            <h3>{t.bottlenecks}</h3>
+            <ul>{brief.valueConversionAnalysis.bottlenecks.map((item) => <li key={item}>{item}</li>)}</ul>
+          </article>
+          <article>
+            <h3>{t.conversionActions}</h3>
+            <ul>{brief.valueConversionAnalysis.recommendedActions.map((item) => <li key={item}>{item}</li>)}</ul>
+          </article>
         </div>
         <div className="connectionGrid">
           <article><h3>{t.visiblePerformance}</h3><p>{brief.performanceConnections.visiblePerformance}</p></article>

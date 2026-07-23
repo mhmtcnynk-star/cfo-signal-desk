@@ -43,6 +43,11 @@ test("server-renders the authenticated CFO morning workflow", async () => {
   assert.match(html, /Execution focus/);
   assert.match(html, /active strategic slots/);
   assert.match(html, /Performance connections/);
+  assert.match(html, /Value Conversion Analysis/);
+  assert.match(html, /Revenue Conversion/);
+  assert.match(html, /EBITDA Conversion/);
+  assert.match(html, /Cash Conversion/);
+  assert.match(html, /Value conversion test/);
   assert.match(html, /Real economic outcome/);
   assert.match(html, /Outcome-producing connections/);
   assert.match(html, /Risk and trade-off/);
@@ -93,10 +98,15 @@ test("returns structured critical hazards in deterministic demo mode", async () 
   assert.ok(payload.brief.criticalHazards.strategyInvalidators.length > 0);
   assert.equal(payload.brief.performanceConnections.diagnosis.outcomeConversion, "Broken");
   assert.ok(payload.brief.performanceConnections.brokenConnections.length > 0);
+  assert.equal(payload.brief.valueConversionAnalysis.revenueConversion.state, "Broken");
+  assert.equal(payload.brief.valueConversionAnalysis.ebitdaConversion.state, "Broken");
+  assert.equal(payload.brief.valueConversionAnalysis.cashConversion.state, "Broken");
+  assert.ok(payload.brief.valueConversionAnalysis.bottlenecks.length > 0);
   assert.ok(
     payload.brief.recommendedDecisions.every(
       (decision) =>
         typeof decision.resilienceSafeguard === "string" &&
+        typeof decision.conversionTest === "string" &&
         typeof decision.tradeoff === "string" &&
         decision.businessConnections.length > 0,
     ),
@@ -130,10 +140,15 @@ test("keeps the production and demo contracts explicit", async () => {
   assert.match(route, /What critical hazard has not yet been identified/);
   assert.match(route, /resilienceSafeguard/);
   assert.match(route, /performanceConnections/);
+  assert.match(route, /valueConversionAnalysis/);
+  assert.match(route, /Revenue → EBITDA → Operating Cash Flow/);
+  assert.match(route, /Quality of Conversion/);
   assert.match(route, /connection-to-outcome system/);
   assert.match(dashboard, /Peligros críticos/);
   assert.match(dashboard, /Conexiones de desempeño/);
+  assert.match(dashboard, /Análisis de Conversión de Valor/);
   assert.match(dashboard, /Buenos días/);
   assert.match(sample, /gross_margin/);
+  assert.match(sample, /operating_cash_flow/);
   assert.match(layout, /private morning finance brief/);
 });

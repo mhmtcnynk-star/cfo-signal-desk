@@ -22,6 +22,20 @@
       "prior_period_pct": 31.6,
       "variance_to_budget_points": -3.2
     },
+    "ebitda": {
+      "actual": 310000,
+      "budget": 550000,
+      "prior_period": 438000,
+      "actual_margin_pct": 6.7,
+      "budget_margin_pct": 11.0,
+      "variance_to_budget_pct": -43.6
+    },
+    "operating_cash_flow": {
+      "actual": -180000,
+      "budget": 420000,
+      "prior_period": 265000,
+      "variance_to_budget": -600000
+    },
     "cash_conversion_cycle": {
       "actual_days": 61,
       "budget_days": 52,

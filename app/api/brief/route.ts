@@ -39,12 +39,30 @@ type Decision = {
   businessConnections: string[];
   tradeoff: string;
   resilienceSafeguard: string;
+  conversionTest: string;
   kpiAffected: string;
   confidence: number;
   priorityLevel: PriorityLevel;
 };
 
 type ConnectionState = "Established" | "Partial" | "Broken";
+
+type ValueConversionAnalysis = {
+  revenueConversion: {
+    state: ConnectionState;
+    assessment: string;
+  };
+  ebitdaConversion: {
+    state: ConnectionState;
+    assessment: string;
+  };
+  cashConversion: {
+    state: ConnectionState;
+    assessment: string;
+  };
+  bottlenecks: string[];
+  recommendedActions: string[];
+};
 
 type PerformanceConnections = {
   visiblePerformance: string;
@@ -79,6 +97,7 @@ type Brief = {
   highestPriorityRisks: ExecutiveRisk[];
   opportunities: Opportunity[];
   performanceConnections: PerformanceConnections;
+  valueConversionAnalysis: ValueConversionAnalysis;
   criticalHazards: CriticalHazards;
   recommendedDecisions: Decision[];
   immediateActions: ImmediateActions;
@@ -87,24 +106,24 @@ type Brief = {
 
 const fallbackBrief: Brief = {
   executiveSummary:
-    "The sample management report shows revenue 8.0% below budget, but the stronger management signal is an 11.0% decline in average order value combined with a 3.2 point gross margin gap. This points to pricing, discounting, customer mix, or product mix rather than a simple volume problem. Management should run a margin bridge before revising the revenue forecast or pushing broad sales volume. The next watchlist should focus on AOV by segment, discount exceptions, gross margin bridge, and cash conversion cycle.",
+    "Revenue is 8.0% below budget, EBITDA is 43.6% below budget, and operating cash flow is negative. The central issue is therefore not activity volume but weak conversion from revenue into profit and from profit into cash. Management should isolate price, mix, cost, and working-capital leakage before revising the revenue forecast or pushing broad sales volume. The objective is profitable, cash-generating growth.",
   highestPriorityRisks: [
     {
       description: "Management may misdiagnose the revenue miss as a volume problem.",
       businessImpact:
-        "A generic commercial reaction could recover revenue while lowering gross margin and EBITDA quality.",
+        "A generic commercial reaction could recover revenue while further weakening EBITDA and cash conversion.",
       urgency: "Executive decision before forecast revision",
     },
     {
       description: "Gross margin is 3.2 points below budget.",
       businessImpact:
-        "The company is selling lower-quality revenue unless price, mix, and discount drivers are controlled.",
+        "Only 6.7% of revenue is converting into EBITDA versus 11.0% in the plan.",
       urgency: "Margin bridge this week",
     },
     {
       description: "Cash conversion cycle is 9 days above budget.",
       businessImpact:
-        "Receivables pressure may create liquidity risk even if sales activity appears stable.",
+        "Positive EBITDA is converting into negative operating cash flow.",
       urgency: "13-week cash forecast refresh today",
     },
   ],
@@ -154,6 +173,32 @@ const fallbackBrief: Brief = {
       outcomeConversion: "Broken",
     },
   },
+  valueConversionAnalysis: {
+    revenueConversion: {
+      state: "Broken",
+      assessment:
+        "$4.6M of revenue converts into $0.31M of EBITDA, a 6.7% margin versus 11.0% in the plan. Price, mix, discount, and cost leakage are reducing revenue quality.",
+    },
+    ebitdaConversion: {
+      state: "Broken",
+      assessment:
+        "$0.31M of EBITDA converts into negative $0.18M of operating cash flow. Receivables growth and the longer cash cycle absorb the reported profit.",
+    },
+    cashConversion: {
+      state: "Broken",
+      assessment:
+        "Operating cash flow is $0.60M below budget. The company is funding activity rather than generating cash from it.",
+    },
+    bottlenecks: [
+      "Revenue-to-EBITDA leakage in price, customer mix, discounts, and input cost.",
+      "EBITDA-to-cash leakage in receivables and collection timing.",
+    ],
+    recommendedActions: [
+      "Build one Revenue → EBITDA bridge by price, volume, mix, and cost.",
+      "Build one EBITDA → Operating Cash Flow bridge by working-capital driver.",
+      "Assign joint Sales, FP&A, Controller, and Treasury ownership to both bridges.",
+    ],
+  },
   criticalHazards: {
     hiddenAssumptions: [
       "Management is treating the revenue shortfall as a volume issue before price and mix are separated.",
@@ -185,6 +230,8 @@ const fallbackBrief: Brief = {
         "A short diagnostic delay protects decision quality, but waiting too long would slow commercial response.",
       resilienceSafeguard:
         "Require price, volume, mix, and cost evidence before changing the forecast or sales response.",
+      conversionTest:
+        "Yes. Driver clarity protects revenue quality before growth action and strengthens the Revenue → EBITDA conversion.",
       kpiAffected: "Gross Margin",
       confidence: 86,
       priorityLevel: "Executive decision",
@@ -206,6 +253,8 @@ const fallbackBrief: Brief = {
         "Tighter discount control protects margin but may reduce sales flexibility for strategically justified exceptions.",
       resilienceSafeguard:
         "Require named approval, expiry, and realized-margin review for every non-standard discount.",
+      conversionTest:
+        "Yes. Discount discipline improves the share of Revenue that converts into EBITDA.",
       kpiAffected: "Average Order Value",
       confidence: 78,
       priorityLevel: "Act today",
@@ -227,6 +276,8 @@ const fallbackBrief: Brief = {
         "Tighter collections may create customer friction, but unmanaged delay transfers commercial risk into treasury.",
       resilienceSafeguard:
         "Add downside collection scenarios and named escalation owners to the 13-week cash forecast.",
+      conversionTest:
+        "Yes. Collection ownership directly improves the conversion of EBITDA into Operating Cash Flow.",
       kpiAffected: "Cash Conversion Cycle",
       confidence: 76,
       priorityLevel: "Act today",
@@ -300,6 +351,7 @@ function validateDecision(value: unknown): value is Decision {
     isStringArray(candidate.businessConnections) &&
     typeof candidate.tradeoff === "string" &&
     typeof candidate.resilienceSafeguard === "string" &&
+    typeof candidate.conversionTest === "string" &&
     typeof candidate.kpiAffected === "string" &&
     typeof candidate.confidence === "number" &&
     ["Monitor", "Act today", "Executive decision"].includes(
@@ -331,6 +383,32 @@ function validatePerformanceConnections(value: unknown): value is PerformanceCon
   );
 }
 
+function validateValueConversionAnalysis(
+  value: unknown,
+): value is ValueConversionAnalysis {
+  if (!value || typeof value !== "object") {
+    return false;
+  }
+  const candidate = value as Record<string, unknown>;
+  const states = ["Established", "Partial", "Broken"];
+  const validStage = (stage: unknown) => {
+    if (!stage || typeof stage !== "object") return false;
+    const item = stage as Record<string, unknown>;
+    return (
+      states.includes(String(item.state)) &&
+      typeof item.assessment === "string"
+    );
+  };
+
+  return (
+    validStage(candidate.revenueConversion) &&
+    validStage(candidate.ebitdaConversion) &&
+    validStage(candidate.cashConversion) &&
+    isStringArray(candidate.bottlenecks) &&
+    isStringArray(candidate.recommendedActions)
+  );
+}
+
 function validateBrief(value: unknown): Brief | null {
   if (!value || typeof value !== "object") {
     return null;
@@ -346,6 +424,7 @@ function validateBrief(value: unknown): Brief | null {
     !Array.isArray(candidate.highestPriorityRisks) ||
     !Array.isArray(candidate.opportunities) ||
     !validatePerformanceConnections(candidate.performanceConnections) ||
+    !validateValueConversionAnalysis(candidate.valueConversionAnalysis) ||
     !candidate.criticalHazards ||
     typeof candidate.criticalHazards !== "object" ||
     !Array.isArray(candidate.recommendedDecisions) ||
@@ -398,7 +477,7 @@ export async function POST(request: NextRequest) {
           {
             role: "system",
             content:
-              "You are CFO Signal Desk, a calm executive finance companion for CFOs and finance teams. Mission: turn company reports, KPIs, and business context into perspective, judgment, direction, and accountable actions. Trust is created by showing the boundaries of confidence. Never produce generic summaries or hidden reasoning. Distinguish verified facts, user-provided information, model inference, working assumptions, insufficient data, stale signals, and conflicting evidence. Analyze performance as a connection-to-outcome system. Ask whether resources and activity are connected through commercial behavior, pricing, cost, operations, cash flow, customer behavior, and management decisions into real economic outcomes. Separate visible activity from value creation, margin percentage from total contribution, budget compliance from economic correctness, departmental success from company success, and data ownership from decision production. Identify where information stalls, functions optimize locally, decisions arrive late, or activity circulates without producing outcomes. Every decision must state its cross-functional business connections and material trade-off. Separate Confidence from Permission to Act. Confidence estimates whether the assessment is correct; Permission to Act evaluates whether execution is justified now based on reversibility, financial exposure, time pressure, governance, operational risk, and confidence influence. Never imply that high confidence automatically means act or low confidence automatically means wait. Before recommending any decision, ask: What critical hazard has not yet been identified? Evaluate critical hazards, hidden operational risks, control weaknesses, concentration and dependency risks, tail exposure, and single points of failure. Think like an aviation safety investigator: avoid blame and identify system weaknesses, missing controls, risk concentration, and process failures. Every recommendation must include a concrete resilience safeguard. Explore options broadly, but recommend no more than three simultaneous strategic initiatives. A fourth initiative must identify which active priority it replaces or remain in exploration. Reports show performance; you explain what it means, what deserves attention, what can wait, and what should happen next. Return only valid JSON.",
+              "You are CFO Signal Desk, a calm executive finance companion for CFOs and finance teams. Mission: turn company reports, KPIs, and business context into perspective, judgment, direction, and accountable actions. Trust is created by showing the boundaries of confidence. Never produce generic summaries or hidden reasoning. Distinguish verified facts, user-provided information, model inference, working assumptions, insufficient data, stale signals, and conflicting evidence. Analyze business performance through the value-conversion chain Revenue → EBITDA → Operating Cash Flow. Revenue alone is not success and EBITDA alone is not success; the objective is profitable, cash-generating growth. Ask why Revenue does or does not convert into EBITDA, why EBITDA does or does not convert into Operating Cash Flow, where value leaks from the chain, and which management connection would improve conversion quality. Treat Quality of Conversion as more important than Volume of Activity. Use the broader connection-to-outcome system to explain commercial behavior, pricing, cost, operations, working capital, customer behavior, and management decisions behind each conversion. Separate visible activity from value creation, margin percentage from total contribution, budget compliance from economic correctness, departmental success from company success, and data ownership from decision production. Identify where information stalls, functions optimize locally, decisions arrive late, or activity circulates without producing outcomes. Every decision must state its cross-functional business connections, material trade-off, and whether it improves Revenue → EBITDA → Operating Cash Flow conversion quality. Separate Confidence from Permission to Act. Confidence estimates whether the assessment is correct; Permission to Act evaluates whether execution is justified now based on reversibility, financial exposure, time pressure, governance, operational risk, and confidence influence. Never imply that high confidence automatically means act or low confidence automatically means wait. Before recommending any decision, ask: What critical hazard has not yet been identified? Evaluate critical hazards, hidden operational risks, control weaknesses, concentration and dependency risks, tail exposure, and single points of failure. Think like an aviation safety investigator: avoid blame and identify system weaknesses, missing controls, risk concentration, and process failures. Every recommendation must include a concrete resilience safeguard. Explore options broadly, but recommend no more than three simultaneous strategic initiatives. A fourth initiative must identify which active priority it replaces or remain in exploration. Reports show performance; you explain what it means, what deserves attention, what can wait, and what should happen next. Return only valid JSON.",
           },
           {
             role: "user",
@@ -413,10 +492,12 @@ export async function POST(request: NextRequest) {
                 opportunities: "Maximum three, focused on value creation.",
                 performanceConnections:
                   "State visible performance, real economic outcome, broken and productive cross-functional connections, the management decision, indicators, and a four-part possession-to-outcome diagnosis.",
+                valueConversionAnalysis:
+                  "Always analyze Revenue Conversion, EBITDA Conversion, Cash Conversion, bottlenecks, and recommended actions. Explain the Revenue → EBITDA → Operating Cash Flow chain and where value is lost.",
                 criticalHazards:
                   "Identify hidden assumptions, underestimated risks, missing controls, and events that could invalidate the strategy. Focus on systems, not blame.",
                 recommendedDecisions:
-                  "Two or three concrete management decisions with confidence boundaries, not observations. Never exceed three active initiatives; a fourth must replace one or remain exploratory.",
+                  "Two or three concrete management decisions with confidence boundaries, not observations. End every decision with a conversion test stating whether and how it improves Revenue → EBITDA → Operating Cash Flow quality. Never exceed three active initiatives; a fourth must replace one or remain exploratory.",
                 tomorrowWatchlist:
                   "Only signals that deserve executive attention tomorrow.",
               },
@@ -435,6 +516,7 @@ export async function POST(request: NextRequest) {
                 "highestPriorityRisks",
                 "opportunities",
                 "performanceConnections",
+                "valueConversionAnalysis",
                 "criticalHazards",
                 "recommendedDecisions",
                 "immediateActions",
@@ -507,6 +589,48 @@ export async function POST(request: NextRequest) {
                     },
                   },
                 },
+                valueConversionAnalysis: {
+                  type: "object",
+                  additionalProperties: false,
+                  required: [
+                    "revenueConversion",
+                    "ebitdaConversion",
+                    "cashConversion",
+                    "bottlenecks",
+                    "recommendedActions",
+                  ],
+                  properties: {
+                    revenueConversion: {
+                      type: "object",
+                      additionalProperties: false,
+                      required: ["state", "assessment"],
+                      properties: {
+                        state: { type: "string", enum: ["Established", "Partial", "Broken"] },
+                        assessment: { type: "string" },
+                      },
+                    },
+                    ebitdaConversion: {
+                      type: "object",
+                      additionalProperties: false,
+                      required: ["state", "assessment"],
+                      properties: {
+                        state: { type: "string", enum: ["Established", "Partial", "Broken"] },
+                        assessment: { type: "string" },
+                      },
+                    },
+                    cashConversion: {
+                      type: "object",
+                      additionalProperties: false,
+                      required: ["state", "assessment"],
+                      properties: {
+                        state: { type: "string", enum: ["Established", "Partial", "Broken"] },
+                        assessment: { type: "string" },
+                      },
+                    },
+                    bottlenecks: { type: "array", minItems: 1, maxItems: 4, items: { type: "string" } },
+                    recommendedActions: { type: "array", minItems: 1, maxItems: 4, items: { type: "string" } },
+                  },
+                },
                 criticalHazards: {
                   type: "object",
                   additionalProperties: false,
@@ -538,6 +662,7 @@ export async function POST(request: NextRequest) {
                       "businessConnections",
                       "tradeoff",
                       "resilienceSafeguard",
+                      "conversionTest",
                       "kpiAffected",
                       "confidence",
                       "priorityLevel",
@@ -550,6 +675,7 @@ export async function POST(request: NextRequest) {
                       businessConnections: { type: "array", minItems: 1, maxItems: 5, items: { type: "string" } },
                       tradeoff: { type: "string" },
                       resilienceSafeguard: { type: "string" },
+                      conversionTest: { type: "string" },
                       kpiAffected: { type: "string" },
                       confidence: { type: "number", minimum: 0, maximum: 100 },
                       priorityLevel: {
