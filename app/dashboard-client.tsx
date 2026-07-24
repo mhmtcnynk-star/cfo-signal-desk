@@ -540,6 +540,7 @@ export default function Dashboard({
   const [loading, setLoading] = useState(false);
   const [notice, setNotice] = useState("");
   const [journal, setJournal] = useState<JournalEntry[]>([]);
+  const [dateLabel, setDateLabel] = useState("");
   const t = copy[locale];
 
   useEffect(() => {
@@ -564,16 +565,23 @@ export default function Dashboard({
     return () => window.clearTimeout(timer);
   }, []);
 
+  useEffect(() => {
+    const timer = window.setTimeout(() => {
+      setDateLabel(
+        new Intl.DateTimeFormat(locale === "en" ? "en-US" : "es-ES", {
+          weekday: "long",
+          month: "long",
+          day: "numeric",
+        }).format(new Date()),
+      );
+    }, 0);
+    return () => window.clearTimeout(timer);
+  }, [locale]);
+
   const firstName = useMemo(
     () => user.displayName.split(/[\s@]/)[0] || "CFO",
     [user.displayName],
   );
-  const dateLabel = new Intl.DateTimeFormat(locale === "en" ? "en-US" : "es-ES", {
-    weekday: "long",
-    month: "long",
-    day: "numeric",
-  }).format(new Date());
-
   async function refreshBrief() {
     setLoading(true);
     try {
@@ -669,7 +677,7 @@ export default function Dashboard({
 
       <section className="morningHeader" id="top">
         <div>
-          <p className="eyebrow">{t.briefDate} · {dateLabel}</p>
+          <p className="eyebrow">{t.briefDate}{dateLabel ? ` · ${dateLabel}` : ""}</p>
           <h1>{t.morning}, {firstName}.</h1>
           <p>{t.intro}</p>
         </div>
